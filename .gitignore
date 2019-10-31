@@ -1,0 +1,16 @@
+.vs/*
+Debug/*
+.idea/*
+cmake-build-debug/*
+CMakeLists.txt
+*.sln/*
+*.vcxproj/*
+*.filters/*
+*.user/*
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.out
+*.exe
+*.o

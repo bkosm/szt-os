@@ -1,2 +1,10 @@
-# szt-OS
-Operating system simulator made for an university project.
+# sztOS
+Simple, zippy, transparent operating system.
+```
+                    __            ________    _________
+   _______________/  |_          \_____  \  /   _____/
+  /  ___/\___   /\   __\  ______  /   |   \ \_____  \ 
+  \___ \  /    /  |  |   /_____/ /    |    \/        \
+ /____  >/_____ \ |__|           \_______  /_______  /
+      \/       \/                        \/        \/ 
+```

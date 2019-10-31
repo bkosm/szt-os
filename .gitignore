@@ -14,3 +14,4 @@ CMakeLists.txt
 *.out
 *.exe
 *.o
+*_test.cpp

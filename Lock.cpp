@@ -1,6 +1,6 @@
 #include "Lock.hpp"
 
-int Lock::init(std::unique_ptr<File>& file)
+int Lock::init(uPtr<File>& file)
 {
     if (!file->lock) {
         file->lock = std::make_unique<Lock>();
@@ -14,7 +14,7 @@ int Lock::init(std::unique_ptr<File>& file)
     return LockState::CantInit;
 }
 
-int Lock::aquire(std::unique_ptr<File>& file)
+int Lock::aquire(uPtr<File>& file)
 {
     if (file->lock->file_index == file->block_index
         && !file->lock->locked) {
@@ -25,7 +25,7 @@ int Lock::aquire(std::unique_ptr<File>& file)
     return LockState::CantLock;
 }
 
-int Lock::unlock(std::unique_ptr<File>& file)
+int Lock::unlock(uPtr<File>& file)
 {
     if (file->lock->file_index == file->block_index
         && file->lock->locked) {

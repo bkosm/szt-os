@@ -1,5 +1,6 @@
 #pragma once
 #include "Definitions.hpp"
+#include <memory>
 
 // Pogladowe wymagania dotyczace pliku.
 struct File;

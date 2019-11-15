@@ -16,3 +16,4 @@ CMakeLists.txt
 *.o
 *_test.cpp
 *.txt
+.vscode

@@ -63,6 +63,9 @@ CMakeLists.txt
 # Linker input
 *.ilk
 
-# Ignore gui binaries
-gui/Debug/*
-gui/Release/*
+# Keep gui project
+!gui/*.sln
+!gui/*.vcxproj
+!gui/*.vcxproj.filters
+!gui/*.vcxproj.user
+!gui/.vs/*

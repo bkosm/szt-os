@@ -1,0 +1,4 @@
+﻿  FirstForm.cpp
+E:\source\szt-OS\gui\FirstForm.cpp(9,7): warning C4930: 'Lock lock(void)': prototyped function not called (was a variable definition intended?)
+  FirstForm.obj : MSIL module encountered; incremental linking is disabled for MSIL; performing full link
+  gui.vcxproj -> E:\source\szt-OS\gui\Debug\gui.exe

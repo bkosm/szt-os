@@ -62,3 +62,7 @@ CMakeLists.txt
 
 # Linker input
 *.ilk
+
+# Ignore gui binaries
+gui/Debug/*
+gui/Release/*

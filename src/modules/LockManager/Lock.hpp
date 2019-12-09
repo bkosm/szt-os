@@ -1,6 +1,4 @@
 #pragma once
-#include "Definitions.hpp"
-
 
 class Lock {
 private:
@@ -11,7 +9,7 @@ public:
     ~Lock() = default;
 
     bool aquire();
-    /* Funkcja blokujaca zamek na podanym pliku.
+    /* Funkcja blokujaca zamek na pliku.
      *
      * @return Wynik dzialania funkcji, false oznacza niepowodzenie.
      */

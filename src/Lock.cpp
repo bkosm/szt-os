@@ -1,37 +1,23 @@
 #include "Lock.hpp"
 
-int Lock::init(uPtr<File>& file)
+Lock::Lock() { this->locked = false; }
+
+bool Lock::aquire()
 {
-    if (!file->lock) {
-        file->lock = std::make_unique<Lock>();
-
-        file->lock->file_index = file->block_index;
-        file->lock->locked = false;
-
-        return LockState::OK;
+    if (this->locked == false) {
+        this->locked = true;
+        return true;
     }
 
-    return LockState::CantInit;
+    return false;
 }
 
-int Lock::aquire(uPtr<File>& file)
+bool Lock::unlock()
 {
-    if (file->lock->file_index == file->block_index
-        && !file->lock->locked) {
-        file->lock->locked = true;
-        return LockState::OK;
+    if (this->locked == true) {
+        this->locked = false;
+        return true;
     }
 
-    return LockState::CantLock;
-}
-
-int Lock::unlock(uPtr<File>& file)
-{
-    if (file->lock->file_index == file->block_index
-        && file->lock->locked) {
-        file->lock->locked = false;
-        return LockState::OK;
-    }
-
-    return LockState::CantUnlock;
+    return false;
 }

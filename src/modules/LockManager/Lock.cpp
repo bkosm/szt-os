@@ -1,11 +1,11 @@
 #include "Lock.hpp"
 
-Lock::Lock() { this->locked = false; }
+Lock::Lock() { this->locked_ = false; }
 
 bool Lock::aquire()
 {
-    if (this->locked == false) {
-        this->locked = true;
+    if (this->locked_ == false) {
+        this->locked_ = true;
         return true;
     }
 
@@ -14,8 +14,8 @@ bool Lock::aquire()
 
 bool Lock::unlock()
 {
-    if (this->locked == true) {
-        this->locked = false;
+    if (this->locked_ == true) {
+        this->locked_ = false;
         return true;
     }
 

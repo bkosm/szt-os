@@ -2,6 +2,7 @@
 #include <unordered_map>
 #include <string>
 #include <cstdint>
+#include <stdexcept>
 
 // instantiate pair <string, method ptr> for each instruction available
 #define INSN(NAME) { #NAME, &Interpreter::insn##NAME }

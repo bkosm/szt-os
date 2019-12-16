@@ -1,9 +1,13 @@
 #pragma once
 #include "Lock.hpp"
+#include "../Interpreter/Interpreter.hpp"
 
 class LockManager {
+private:
+    Shell& shell_;
+	
 public:
-    LockManager() = default;
+    LockManager(Shell& shell);
     ~LockManager() = default;
 
     Lock createLock(bool startLocked = false);

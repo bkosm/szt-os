@@ -6,7 +6,8 @@
 #include <random>
 #include <list>
 
-enum class PCBStatus {
+enum class PCBStatus
+{
 	New = 0,
 	Waiting = 1,
 	Ready = 2,
@@ -14,7 +15,8 @@ enum class PCBStatus {
 	Terminated = 4
 };
 
-class PCB {
+class PCB
+{
 public:
 	std::string processName;
 	int processID;
@@ -39,7 +41,8 @@ public:
 	void showProcess();
 };
 
-class ProcessManager {
+class ProcessManager
+{
 	std::vector<PCB> processList;
 	std::vector<PCB*> readyQueue;
 public:

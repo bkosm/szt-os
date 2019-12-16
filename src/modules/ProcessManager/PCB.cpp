@@ -1,13 +1,13 @@
-#include "ProcessControl.hpp"
 #include <random>
-#include <memory>
+#include <iostream>
+#include "PCB.hpp"
 
 
-PCB::PCB(std::string name, int ID, PCBStatus processstatus) {
+PCB::PCB(std::string name, int ID, PCBStatus processStatus) {
 	std::cout << "Process was created!\n";
 	processName = name;
 	processID = ID;
-	status = processstatus;
+	status = processStatus;
 }
 
 PCB::~PCB()

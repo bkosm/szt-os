@@ -1,11 +1,17 @@
 #include "LockManager.hpp"
 
-Lock createLock(bool startLocked) {
-    Lock newLock = Lock();
+LockManager::LockManager(Shell& shell) : shell_(shell)
+{
+}
 
-    if (startLocked) {
-        newLock.aquire();
-    }
+Lock createLock(const bool startLocked)
+{
+	auto newLock = Lock();
 
-    return newLock;
+	if (startLocked)
+	{
+		newLock.aquire();
+	}
+
+	return newLock;
 }

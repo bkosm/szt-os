@@ -64,10 +64,10 @@ CMakeLists.txt
 *.ilk
 
 # Keep gui project files without binaries
-!gui/*.sln
-!gui/*.vcxproj
-!gui/*.vcxproj.filters
-!gui/*.vcxproj.user
-!gui/.vs/*
-gui/Debug/*
-gui/Release/*
+!src/gui/Game_1/*.sln
+!src/gui/Game_1/*.vcxproj
+!src/gui/Game_1/*.vcxproj.filters
+!src/gui/Game_1/*.vcxproj.user
+!src/gui/Game_1/.vs/*
+src/gui/Game_1/Debug/*
+src/gui/Game_1/Release/*

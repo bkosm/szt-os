@@ -14,10 +14,6 @@ CMakeLists.txt
 *.vcxproj/*
 *.filters/*
 *.user/*
-*.sln
-*.vcxproj
-*.vcxproj.filters
-*.vcxproj.user
 *.out
 *.exe
 *.o

@@ -1,9 +1,12 @@
 #include "App.h"
 #include "StartState.h"
 
-Resources::Resources(const sf::String& fontPath)
+Resources::Resources(const sf::String& fontPath, sf::RenderWindow& window) :
+	taskbar(window),
+	wallpaper(window)
 {
 	appFont.loadFromFile(fontPath);
+	taskbar.setFont(appFont);
 }
 
 App::App(const sf::VideoMode& videoMode, const sf::String& title)
@@ -18,6 +21,8 @@ App::App(const sf::VideoMode& videoMode, const sf::String& title)
 
 void App::run_() const
 {
+	data_->resources.sounds.boot.play();
+	
 	while (data_->window.isOpen())
 	{
 		data_->states.processStateChanges();
@@ -25,7 +30,13 @@ void App::run_() const
 		data_->states.getActiveState()->handleInput();
 		data_->states.getActiveState()->update();
 
+		/* Drawing section */
+		data_->window.clear();
+
+		data_->resources.wallpaper.draw();
 		data_->states.getActiveState()->draw();
+		data_->resources.taskbar.draw();
+
 		data_->window.display();
 	}
 }

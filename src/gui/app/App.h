@@ -1,23 +1,26 @@
 #pragma once
 #include "StateMaschine.hpp"
 #include "Definitions.h"
+#include "Taskbar.h"
+#include "Wallpaper.h"
+#include "Sounds.h"
 #include <SFML/Graphics.hpp>
-#include <SFML/Audio.hpp>
 
 struct Resources
 {
+	Taskbar taskbar;
+	Wallpaper wallpaper;
+	Sounds sounds;
 	sf::Font appFont;
-	sf::Sound bootSound;
-	sf::Sound shutdownSound;
-
-	Resources(const sf::String& fontPath);
+	
+	Resources(const sf::String& fontPath, sf::RenderWindow& window);
 };
 
 struct AppData
 {
 	sf::RenderWindow window;
 	StateMaschine states;
-	Resources resources{FONT_PATH};
+	Resources resources{FONT_PATH, window};
 };
 
 class App

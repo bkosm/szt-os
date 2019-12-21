@@ -1,0 +1,4 @@
+Change system path to SFML in VS' Project Properties:
+
+C++	->	General	->	Additional Include Directories	->	"\SFML\include"
+Linker	->	General	->	Additional Library Directories	->	"\SFML\lib"

@@ -1,7 +1,0 @@
-﻿  Button.cpp
-C:\Users\bk\Desktop\szt-OS\src\gui\app\Button.cpp(44,48): warning C4244: 'argument': conversion from 'double' to 'T', possible loss of data
-          with
-          [
-              T=float
-          ]
-  app.vcxproj -> C:\Users\bk\Desktop\szt-OS\src\gui\app\x64\Debug\app.exe

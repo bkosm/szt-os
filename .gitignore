@@ -1,8 +1,9 @@
 # Keep gui project files without binaries
 !src/gui/*
-src/gui/Debug/*
-src/gui/Release/*
-src/gui/x64/*
+src/gui/app/Debug/*
+src/gui/app/Release/*
+src/gui/app/x64/*
+src/gui/app/.vs/*
 
 .vs/*
 Debug/*

@@ -11,7 +11,7 @@
 **Simple, zippy, transparent operating system.**
 # About
 <p align="center">
-  <img src="/src/gui/resources/LogoSZTOS.png" width="250" title="Logo">
+  <img src="/src/gui/app/resources/LogoSZTOS.png" width="250" title="Logo">
 </p>
 
 # Authors

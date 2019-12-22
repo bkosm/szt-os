@@ -144,29 +144,32 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Button.cpp" />
     <ClCompile Include="App.cpp" />
-    <ClCompile Include="DateTimeWidget.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="SelbaWard\ConsoleScreen.cpp" />
     <ClCompile Include="Sounds.cpp" />
-    <ClCompile Include="StartMenu.cpp" />
     <ClCompile Include="StartState.cpp" />
     <ClCompile Include="StateMaschine.cpp" />
-    <ClCompile Include="Taskbar.cpp" />
-    <ClCompile Include="Wallpaper.cpp" />
+    <ClCompile Include="Widgets\Button.cpp" />
+    <ClCompile Include="Widgets\DateTimeWidget.cpp" />
+    <ClCompile Include="Widgets\StartMenu.cpp" />
+    <ClCompile Include="Widgets\Taskbar.cpp" />
+    <ClCompile Include="Widgets\Wallpaper.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Button.h" />
-    <ClInclude Include="DateTimeWidget.h" />
     <ClInclude Include="Definitions.h" />
     <ClInclude Include="App.h" />
+    <ClInclude Include="SelbaWard\Common.h" />
+    <ClInclude Include="SelbaWard\ConsoleScreen.h" />
     <ClInclude Include="Sounds.h" />
-    <ClInclude Include="StartMenu.h" />
     <ClInclude Include="StartState.h" />
     <ClInclude Include="State.h" />
-    <ClInclude Include="StateMaschine.hpp" />
-    <ClInclude Include="Taskbar.h" />
-    <ClInclude Include="Wallpaper.h" />
+    <ClInclude Include="StateMaschine.h" />
+    <ClInclude Include="Widgets\Button.h" />
+    <ClInclude Include="Widgets\DateTimeWidget.h" />
+    <ClInclude Include="Widgets\StartMenu.h" />
+    <ClInclude Include="Widgets\Taskbar.h" />
+    <ClInclude Include="Widgets\Wallpaper.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

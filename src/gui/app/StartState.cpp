@@ -1,7 +1,6 @@
 #include "StartState.h"
 #include <SFML/Graphics.hpp>
 #include <utility>
-#include <Windows.h>
 
 StartState::StartState(std::shared_ptr<AppData> data) :
 	data_(std::move(data))
@@ -22,6 +21,42 @@ StartState::StartState(std::shared_ptr<AppData> data) :
 	for (auto& button : buttons_) button.setLabelFont(data_->resources.appFont);
 }
 
+void StartState::handleLeftClick_(const sf::Vector2f& mousePos, bool released)
+{
+	if (released)
+	{
+		for (auto& button : buttons_)
+		{
+			button.markAsReleased();
+		}
+	}
+	else
+	{
+		/* Przyciski pulpitu */
+		for (auto& button : buttons_)
+		{
+			if (button.getGlobalBounds().contains(mousePos))
+			{
+				button.markAsClicked();
+			}
+		}
+
+		/* Przycisk start */
+		if (data_->resources.taskbar.containsStartButton(mousePos))
+		{
+			data_->resources.taskbar.toggleMenuDraw();
+		}
+		else if (data_->resources.taskbar.containsShutdownButton(mousePos))
+		{
+			data_->systemShutdown();
+		}
+	}
+}
+
+void StartState::handleRightClick_(const sf::Vector2f& mousePos, bool released)
+{
+}
+
 void StartState::handleInput()
 {
 	sf::Event event{};
@@ -32,16 +67,39 @@ void StartState::handleInput()
 		{
 		case sf::Event::Closed:
 			{
-				data_->resources.sounds.shutdown.play();
-				Sleep(3000);
-				
-				data_->window.close();
+				data_->systemShutdown();
 				break;
 			}
-		default:
+
+		case sf::Event::MouseButtonPressed:
 			{
+				if (event.mouseButton.button == sf::Mouse::Left)
+				{
+					const auto position = sf::Mouse::getPosition(data_->window);
+					handleLeftClick_(sf::Vector2f(position.x, position.y));
+				}
+				else if (event.mouseButton.button == sf::Mouse::Right)
+				{
+					const auto position = sf::Mouse::getPosition(data_->window);
+					handleRightClick_(sf::Vector2f(position.x, position.y));
+				}
 				break;
 			}
+		case sf::Event::MouseButtonReleased:
+			{
+				if (event.mouseButton.button == sf::Mouse::Left)
+				{
+					const auto position = sf::Mouse::getPosition(data_->window);
+					handleLeftClick_(sf::Vector2f(position.x, position.y), true);
+				}
+				else if (event.mouseButton.button == sf::Mouse::Right)
+				{
+					const auto position = sf::Mouse::getPosition(data_->window);
+					handleRightClick_(sf::Vector2f(position.x, position.y), true);
+				}
+				break;
+			}
+		default: break;
 		}
 	}
 }

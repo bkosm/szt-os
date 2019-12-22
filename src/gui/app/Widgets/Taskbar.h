@@ -9,7 +9,11 @@ public:
 	Taskbar(sf::RenderWindow& window);
 	~Taskbar() = default;
 
-	void draw();
+	bool containsStartButton(const sf::Vector2f& point) const;
+	bool containsShutdownButton(const sf::Vector2f& point) const;
+
+	void toggleMenuDraw();
+	void drawTaskbar();
 	void setFont(const sf::Font& font);
 
 private:

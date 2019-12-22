@@ -1,9 +1,9 @@
+#include "../Definitions.h"
 #include "DateTimeWidget.h"
 #include <chrono>
 #include <ctime>
 #include <sstream>
 #include <iomanip>
-#include "Definitions.h"
 
 /* Cpp date is a joke */
 #pragma warning(disable : 4996)

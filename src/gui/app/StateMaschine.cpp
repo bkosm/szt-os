@@ -1,4 +1,4 @@
-#include "StateMaschine.hpp"
+#include "StateMaschine.h"
 
 void StateMaschine::addState(std::unique_ptr<State> new_state, const bool is_replacing)
 {

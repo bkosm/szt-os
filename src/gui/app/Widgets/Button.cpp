@@ -1,6 +1,32 @@
 #include "Button.h"
-#include "Definitions.h"
 #include <SFML/Graphics.hpp>
+#include "../Definitions.h"
+
+sf::FloatRect Button::getGlobalBounds() const
+{
+	return shape_.getGlobalBounds();
+}
+
+void Button::markAsClicked()
+{
+	shape_.setFillColor(sf::Color(0, 0, 0, 50));
+	label_.setFillColor(sf::Color(255, 255, 255, 50));
+
+	clicked = true;
+}
+
+void Button::markAsReleased()
+{
+	shape_.setFillColor(sf::Color(0, 0, 0));
+	label_.setFillColor(sf::Color(255, 255, 255));
+
+	clicked = false;
+}
+
+void Button::setTemporaryColor(const sf::Color& color)
+{
+	shape_.setFillColor(color);
+}
 
 void Button::drawTo(sf::RenderWindow& window) const
 {
@@ -24,11 +50,10 @@ void Button::setLabelFont(const sf::Font& font)
 Button::Button(float x, float y, const sf::Vector2f& size, const sf::String& title)
 {
 	label_.setString(title);
-	label_.setFillColor(sf::Color::White);
 	label_.setCharacterSize(24);
 
 	shape_ = sf::RectangleShape(size);
-	shape_.setFillColor(sf::Color::Black);
+	markAsReleased();
 
 	shape_.setPosition(sf::Vector2f(x, y));
 }

@@ -1,5 +1,7 @@
 #include "App.h"
 #include "StartState.h"
+#include <Windows.h>
+
 
 Resources::Resources(const sf::String& fontPath, sf::RenderWindow& window) :
 	taskbar(window),
@@ -7,6 +9,14 @@ Resources::Resources(const sf::String& fontPath, sf::RenderWindow& window) :
 {
 	appFont.loadFromFile(fontPath);
 	taskbar.setFont(appFont);
+}
+void AppData::systemShutdown()
+{
+	resources.sounds.shutdown.play();
+	window.clear(sf::Color::Blue);
+	
+	Sleep(SHUTDOWN_DURATION);
+	window.close();
 }
 
 App::App(const sf::VideoMode& videoMode, const sf::String& title)
@@ -35,7 +45,7 @@ void App::run_() const
 
 		data_->resources.wallpaper.draw();
 		data_->states.getActiveState()->draw();
-		data_->resources.taskbar.draw();
+		data_->resources.taskbar.drawTaskbar();
 
 		data_->window.display();
 	}

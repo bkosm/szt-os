@@ -1,11 +1,11 @@
+#include "../Definitions.h"
 #include "Wallpaper.h"
-#include "Definitions.h"
 
 Wallpaper::Wallpaper(sf::RenderWindow& window) :
 	window_(window)
 {
-	textures_[0].loadFromFile(WALLPAPER_PATH_1);
-	textures_[1].loadFromFile(WALLPAPER_PATH_2);
+	textures_[0].loadFromFile(SZTOS_WALLPAPER_PATH_1);
+	textures_[1].loadFromFile(SZTOS_WALLPAPER_PATH_2);
 
 	sprites_[0].setTexture(textures_[0]);
 	sprites_[1].setTexture(textures_[1]);

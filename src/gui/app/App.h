@@ -1,10 +1,9 @@
 #pragma once
-#include "StateMaschine.hpp"
-#include "Definitions.h"
-#include "Taskbar.h"
-#include "Wallpaper.h"
+#include "Widgets/Taskbar.h"
+#include "Widgets/Wallpaper.h"
+#include "StateMaschine.h"
 #include "Sounds.h"
-#include <SFML/Graphics.hpp>
+#include "Definitions.h"
 
 struct Resources
 {
@@ -21,6 +20,8 @@ struct AppData
 	sf::RenderWindow window;
 	StateMaschine states;
 	Resources resources{FONT_PATH, window};
+
+	void systemShutdown();
 };
 
 class App

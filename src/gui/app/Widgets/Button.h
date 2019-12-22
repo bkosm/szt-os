@@ -8,7 +8,14 @@ public:
 	~Button() = default;
 
 	bool draw{ false };
+	bool clicked{ false };
 
+	sf::FloatRect getGlobalBounds() const;
+
+	void markAsClicked();
+	void markAsReleased();
+
+	void setTemporaryColor(const sf::Color& color);
 	void drawTo(sf::RenderWindow& window) const;
 	void setPosition(const sf::Vector2f& position);
 	void setLabelFont(const sf::Font& font);

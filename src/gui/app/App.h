@@ -1,5 +1,4 @@
 #pragma once
-#include "Widgets/Taskbar.h"
 #include "Widgets/Wallpaper.h"
 #include "StateMaschine.h"
 #include "Sounds.h"
@@ -7,7 +6,6 @@
 
 struct Resources
 {
-	Taskbar taskbar;
 	Wallpaper wallpaper;
 	Sounds sounds;
 	sf::Font appFont;
@@ -20,8 +18,6 @@ struct AppData
 	sf::RenderWindow window;
 	StateMaschine states;
 	Resources resources{FONT_PATH, window};
-
-	void systemShutdown();
 };
 
 class App

@@ -1,21 +1,24 @@
 #include "StartState.h"
+#include "ShutdownState.h"
 #include <SFML/Graphics.hpp>
 #include <utility>
 
 StartState::StartState(std::shared_ptr<AppData> data) :
-	data_(std::move(data))
+	data_(std::move(data)),
+	consoleScreen_(CONSOLE_FONT_PATH)
 {
+	taskbar_.setFont(data_->resources.appFont);
+	consoleSetup_();
+
 	buttons_ = {
-		Button(float(RESOLUTION.width) / 12.0 * 2, float(RESOLUTION.height) / 5.0,
-		       START_STATE_BUTTON_SIZE, "CP"),
-		Button(float(RESOLUTION.width) / 12.0 * 4, float(RESOLUTION.height) / 5.0,
-		       START_STATE_BUTTON_SIZE, "DP"),
-		Button(float(RESOLUTION.width) / 12.0 * 6, float(RESOLUTION.height) / 5.0,
-		       START_STATE_BUTTON_SIZE, "CF"),
-		Button(float(RESOLUTION.width) / 12.0 * 8, float(RESOLUTION.height) / 5.0,
-		       START_STATE_BUTTON_SIZE, "DF"),
-		Button(float(RESOLUTION.width) / 12.0 * 10, float(RESOLUTION.height) / 5.0,
-		       START_STATE_BUTTON_SIZE, "SP"),
+		Button(float(RESOLUTION.width) / 8.0, float(RESOLUTION.height) / 5.0,
+		       START_STATE_BUTTON_SIZE, "Processor Status"),
+		Button(float(RESOLUTION.width) / 8.0, float(RESOLUTION.height) / 5.0 * 2.0,
+		       START_STATE_BUTTON_SIZE, "Process Management"),
+		Button(float(RESOLUTION.width) / 8.0, float(RESOLUTION.height) / 5.0 * 3.0,
+		       START_STATE_BUTTON_SIZE, "Memory Management"),
+		Button(float(RESOLUTION.width) / 8.0, float(RESOLUTION.height) / 5.0 * 4.0,
+		       START_STATE_BUTTON_SIZE, "File Management"),
 	};
 
 	for (auto& button : buttons_) button.setLabelFont(data_->resources.appFont);
@@ -25,6 +28,8 @@ void StartState::handleLeftClick_(const sf::Vector2f& mousePos, bool released)
 {
 	if (released)
 	{
+		consoleScreen_ << Cs::CursorCommand::Tab <<"puszczasz lefta byku!" << Cs::CursorCommand::Newline;
+
 		for (auto& button : buttons_)
 		{
 			button.markAsReleased();
@@ -42,22 +47,33 @@ void StartState::handleLeftClick_(const sf::Vector2f& mousePos, bool released)
 		}
 
 		/* Przycisk start */
-		if (data_->resources.taskbar.containsStartButton(mousePos))
+		if (taskbar_.containsStartButton(mousePos))
 		{
-			data_->resources.taskbar.toggleMenuDraw();
+			taskbar_.toggleMenuDraw();
 		}
-		else if (data_->resources.taskbar.containsShutdownButton(mousePos))
+		else if (taskbar_.containsShutdownButton(mousePos))
 		{
-			data_->systemShutdown();
+			data_->states.addState(std::make_unique<ShutdownState>(data_), true);
 		}
 	}
 }
 
 void StartState::handleRightClick_(const sf::Vector2f& mousePos, bool released)
 {
+	consoleScreen_ << DateTimeWidget::getTimestamp() <<"klikasz righta!" << Cs::CursorCommand::Newline;
 }
 
-void StartState::handleInput()
+void StartState::consoleSetup_()
+{
+	consoleScreen_.setTextureTileSize({8, 12});
+	consoleScreen_.setNumberOfTextureTilesPerRow(16);
+	consoleScreen_.setSize(consoleScreen_.getPerfectSize());
+
+	consoleScreen_.setPosition(float(RESOLUTION.width / 2),
+	                           float(RESOLUTION.height / 2 - consoleScreen_.getGlobalBounds().height / 2));
+}
+
+void StartState::update()
 {
 	sf::Event event{};
 
@@ -67,8 +83,8 @@ void StartState::handleInput()
 		{
 		case sf::Event::Closed:
 			{
-				data_->systemShutdown();
-				break;
+				data_->states.addState(std::make_unique<ShutdownState>(data_), true);
+				return;
 			}
 
 		case sf::Event::MouseButtonPressed:
@@ -104,11 +120,14 @@ void StartState::handleInput()
 	}
 }
 
-void StartState::update()
-{
-}
-
 void StartState::draw()
 {
+	data_->window.clear();
+
+	data_->resources.wallpaper.draw();
+
 	for (const auto& button : buttons_) button.drawTo(data_->window);
+	data_->window.draw(consoleScreen_);
+
+	taskbar_.drawTo(data_->window);
 }

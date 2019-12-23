@@ -6,19 +6,17 @@
 class Taskbar
 {
 public:
-	Taskbar(sf::RenderWindow& window);
+	Taskbar();
 	~Taskbar() = default;
 
 	bool containsStartButton(const sf::Vector2f& point) const;
 	bool containsShutdownButton(const sf::Vector2f& point) const;
 
 	void toggleMenuDraw();
-	void drawTaskbar();
+	void drawTo(sf::RenderWindow& window);
 	void setFont(const sf::Font& font);
 
 private:
-	sf::RenderWindow& window_;
-
 	DateTimeWidget dateTime_;
 	sf::RectangleShape bar_;
 	StartMenu menu_;

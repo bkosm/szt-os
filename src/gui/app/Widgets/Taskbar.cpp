@@ -1,8 +1,7 @@
 #include "../Definitions.h"
 #include "Taskbar.h"
 
-Taskbar::Taskbar(sf::RenderWindow& window) :
-	window_(window)
+Taskbar::Taskbar()
 {
 	bar_ = sf::RectangleShape(sf::Vector2f(RESOLUTION.width, RESOLUTION.height / 16));
 	bar_.setFillColor(sf::Color::Black);
@@ -34,11 +33,11 @@ void Taskbar::toggleMenuDraw()
 	}
 }
 
-void Taskbar::drawTaskbar()
+void Taskbar::drawTo(sf::RenderWindow& window)
 {
-	window_.draw(bar_);
-	dateTime_.updateAndDrawTo(window_);
-	menu_.drawTo(window_);
+	window.draw(bar_);
+	dateTime_.updateAndDrawTo(window);
+	menu_.drawTo(window);
 }
 
 void Taskbar::setFont(const sf::Font& font)

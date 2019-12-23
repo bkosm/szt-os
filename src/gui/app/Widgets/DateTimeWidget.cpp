@@ -18,7 +18,7 @@ DateTimeWidget::DateTimeWidget()
 
 	time_.setFillColor(sf::Color::White);
 	date_.setFillColor(sf::Color::White);
-	
+
 	time_.setPosition(float(RESOLUTION.width * 96 / 100), float(RESOLUTION.height * 95 / 100));
 	date_.setPosition(float(RESOLUTION.width * 96 / 100), float(RESOLUTION.height * 98 / 100));
 }
@@ -40,6 +40,11 @@ void DateTimeWidget::updateAndDrawTo(sf::RenderWindow& window)
 
 	window.draw(time_);
 	window.draw(date_);
+}
+
+sf::String DateTimeWidget::getTimestamp()
+{
+	return sf::String(getSystemTime_().toAnsiString() + " ~> ");
 }
 
 sf::String DateTimeWidget::getSystemTime_()

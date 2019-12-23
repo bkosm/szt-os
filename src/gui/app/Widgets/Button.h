@@ -5,24 +5,24 @@ class Button
 {
 public:
 	Button(float x, float y, const sf::Vector2f& size, const sf::String& title);
-	~Button() = default;
+	virtual ~Button() = default;
 
 	bool draw{ false };
 	bool clicked{ false };
 
-	sf::FloatRect getGlobalBounds() const;
+	virtual sf::FloatRect getGlobalBounds() const;
 
-	void markAsClicked();
-	void markAsReleased();
+	virtual void markAsClicked();
+	virtual void markAsReleased();
 
-	void setTemporaryColor(const sf::Color& color);
-	void drawTo(sf::RenderWindow& window) const;
-	void setPosition(const sf::Vector2f& position);
-	void setLabelFont(const sf::Font& font);
+	virtual void setTemporaryColor(const sf::Color& color);
+	virtual void drawTo(sf::RenderWindow& window) const;
+	virtual void setPosition(const sf::Vector2f& position);
+	virtual void setLabelFont(const sf::Font& font);
 
 private:
 	sf::RectangleShape shape_;
 	sf::Text label_;
 
-	void setRelativeLabelPosition_();
+	virtual void setRelativeLabelPosition_();
 };

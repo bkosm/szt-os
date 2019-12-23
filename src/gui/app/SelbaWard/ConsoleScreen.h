@@ -36,6 +36,7 @@
 #include "Common.h"
 
 #include <unordered_map>
+#include <SFML/Graphics.hpp>
 
 namespace sf
 {
@@ -193,7 +194,7 @@ namespace selbaward
 
 
 		// setup
-		explicit ConsoleScreen(sf::Vector2u mode = {80u, 45u});
+		explicit ConsoleScreen(const sf::String& texturePath, sf::Vector2u mode = {80u, 45u});
 		void setMode(sf::Vector2u mode); // "mode" is the number of cells used to fit the screen
 		sf::Vector2u getMode() const;
 		unsigned int getNumberOfCells() const;
@@ -434,6 +435,8 @@ namespace selbaward
 
 
 	private:
+		sf::Texture csTexture_;
+
 		struct StackCell
 		{
 			unsigned int index;

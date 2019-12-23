@@ -9,6 +9,7 @@ public:
 
 	void setFont(const sf::Font& font);
 	void updateAndDrawTo(sf::RenderWindow& window);
+	static sf::String getTimestamp();
 	
 private:
 	sf::Text time_;

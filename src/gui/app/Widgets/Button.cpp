@@ -2,6 +2,17 @@
 #include <SFML/Graphics.hpp>
 #include "../Definitions.h"
 
+Button::Button(float x, float y, const sf::Vector2f& size, const sf::String& title)
+{
+	label_.setString(title);
+	label_.setCharacterSize(24);
+
+	shape_ = sf::RectangleShape(size);
+	markAsReleased();
+
+	shape_.setPosition(sf::Vector2f(x, y));
+}
+
 sf::FloatRect Button::getGlobalBounds() const
 {
 	return shape_.getGlobalBounds();
@@ -47,17 +58,6 @@ void Button::setLabelFont(const sf::Font& font)
 	setRelativeLabelPosition_();
 }
 
-Button::Button(float x, float y, const sf::Vector2f& size, const sf::String& title)
-{
-	label_.setString(title);
-	label_.setCharacterSize(24);
-
-	shape_ = sf::RectangleShape(size);
-	markAsReleased();
-
-	shape_.setPosition(sf::Vector2f(x, y));
-}
-
 void Button::setRelativeLabelPosition_()
 {
 	const auto shapePos = shape_.getGlobalBounds();
@@ -65,5 +65,5 @@ void Button::setRelativeLabelPosition_()
 	const auto labelIndent = (shapePos.width - labelSize.width) / 2.0;
 
 	label_.setPosition(sf::Vector2f(shapePos.left + labelIndent,
-	                                shapePos.top + BUTTON_LABEL_TOP_INDENT));
+	                                shapePos.top + shapePos.height / 2 - labelSize.height / 2));
 }

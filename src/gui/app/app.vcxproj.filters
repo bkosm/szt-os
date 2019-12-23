@@ -48,6 +48,9 @@
     <ClCompile Include="Widgets\Wallpaper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ShutdownState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Definitions.h">
@@ -87,6 +90,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SelbaWard\Common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ShutdownState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

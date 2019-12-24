@@ -9,9 +9,12 @@ public:
 	Taskbar();
 	~Taskbar() = default;
 
+	bool toggleTermButton();
 	bool containsStartButton(const sf::Vector2f& point) const;
+	bool containsTermButton(const sf::Vector2f& point) const;
 	bool containsShutdownButton(const sf::Vector2f& point) const;
 
+	void dontDrawMenu();
 	void toggleMenuDraw();
 	void drawTo(sf::RenderWindow& window);
 	void setFont(const sf::Font& font);

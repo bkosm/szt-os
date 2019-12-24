@@ -9,9 +9,20 @@ Taskbar::Taskbar()
 	bar_.setPosition(0.0, float(RESOLUTION.height * 15 / 16));
 }
 
+bool Taskbar::toggleTermButton()
+{
+	return menu_.toggleTermButtonState();
+}
+
 bool Taskbar::containsStartButton(const sf::Vector2f& point) const
 {
 	if (menu_.getLogo().getGlobalBounds().contains(point)) return true;
+	return false;
+}
+
+bool Taskbar::containsTermButton(const sf::Vector2f& point) const
+{
+	if (menu_.getTermIcon().getGlobalBounds().contains(point)) return true;
 	return false;
 }
 
@@ -19,6 +30,11 @@ bool Taskbar::containsShutdownButton(const sf::Vector2f& point) const
 {
 	if (menu_.getButton().getGlobalBounds().contains(point) and menu_.isMenuDrawn()) return true;
 	return false;
+}
+
+void Taskbar::dontDrawMenu()
+{
+	menu_.hideMenuButton();
 }
 
 void Taskbar::toggleMenuDraw()

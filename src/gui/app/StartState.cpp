@@ -26,10 +26,10 @@ StartState::StartState(std::shared_ptr<AppData> data) :
 
 void StartState::handleLeftClick_(const sf::Vector2f& mousePos, bool released)
 {
+	consoleScreen_.println("lewa siema!");
+
 	if (released)
 	{
-		consoleScreen_ << Cs::CursorCommand::Tab <<"puszczasz lefta byku!" << Cs::CursorCommand::Newline;
-
 		for (auto& button : buttons_)
 		{
 			button.markAsReleased();
@@ -55,12 +55,19 @@ void StartState::handleLeftClick_(const sf::Vector2f& mousePos, bool released)
 		{
 			data_->states.addState(std::make_unique<ShutdownState>(data_), true);
 		}
+
+		/* Ikona terminala */
+		if (taskbar_.containsTermButton(mousePos))
+		{
+			taskbar_.toggleTermButton();
+		}
 	}
 }
 
 void StartState::handleRightClick_(const sf::Vector2f& mousePos, bool released)
 {
-	consoleScreen_ << DateTimeWidget::getTimestamp() <<"klikasz righta!" << Cs::CursorCommand::Newline;
+	consoleScreen_.logln("no siema!");
+	taskbar_.dontDrawMenu();
 }
 
 void StartState::consoleSetup_()

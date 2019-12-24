@@ -8,6 +8,7 @@ const sf::VideoMode RESOLUTION{1280, 720};
 const sf::String FONT_PATH{"./resources/arial.ttf"};
 const sf::String CONSOLE_FONT_PATH{"./resources/consoleFont.png"};
 const sf::String LOGO_PATH{"./resources/logoLowRes.png"};
+const sf::String TERM_ICON_PATH{ "./resources/termIcon.png" };
 
 const sf::String WALLPAPER_PATH_1{"./resources/winWall1.jpg"};
 const sf::String WALLPAPER_PATH_2{"./resources/winWall2.jpg"};

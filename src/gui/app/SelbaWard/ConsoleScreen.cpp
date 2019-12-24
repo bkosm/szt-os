@@ -31,6 +31,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include "ConsoleScreen.h"
+#include "../Widgets/DateTimeWidget.h"
 
 #include <random>
 #include <functional>
@@ -955,6 +956,26 @@ namespace selbaward
 	{
 		for (auto& character : string)
 			print(character);
+	}
+
+	void ConsoleScreen::println(const std::string& string)
+	{
+		for (auto& character : string)
+			print(character);
+		*this << CursorCommand::Newline;
+	}
+
+
+	void ConsoleScreen::log(const std::string& string)
+	{
+		*this << Fg(12) << DateTimeWidget::getTimestamp() <<
+			Fg(15) << string;
+	}
+
+	void ConsoleScreen::logln(const std::string& string)
+	{
+		*this << Fg(12) << DateTimeWidget::getTimestamp() <<
+			Fg(15) << string << CursorCommand::Newline;
 	}
 
 	void ConsoleScreen::print(const Location& location, char character)

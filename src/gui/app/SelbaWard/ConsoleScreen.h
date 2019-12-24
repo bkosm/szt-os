@@ -297,9 +297,15 @@ namespace selbaward
 
 		// print
 		void print(char character);
-		void print(const std::string& string);
 		void print(const Location& location, char character);
 		void print(const Location& location, const std::string& string);
+
+		/* bart-kosmala: functional printing for sztOS */
+		void print(const std::string& text);
+		void println(const std::string& text);
+		/* logs require DateTimeWidget */
+		void log(const std::string& text);
+		void logln(const std::string& string);
 
 		// stack printing (over- and under-printing)
 		void addOverAt(const Location& location, char character, sf::Vector2f offset = {0.f, 0.f});

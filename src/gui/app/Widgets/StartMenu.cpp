@@ -52,11 +52,13 @@ bool StartMenu::isMenuDrawn() const
 
 void StartMenu::drawMenuButton()
 {
+	logo_.setColor(sf::Color(255, 255, 255, 30));
 	shutdown_.draw = true;
 }
 
 void StartMenu::hideMenuButton()
 {
+	logo_.setColor(sf::Color(255, 255, 255, 255));
 	shutdown_.draw = false;
 }
 

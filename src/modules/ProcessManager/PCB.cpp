@@ -1,9 +1,10 @@
+#include "PCB.hpp"
 #include <random>
 #include <iostream>
-#include "PCB.hpp"
 
 
-PCB::PCB(std::string name, int ID, PCBStatus processStatus) {
+PCB::PCB(std::string name, int ID, PCBStatus processStatus)
+{
 	std::cout << "Process was created!\n";
 	processName = name;
 	processID = ID;
@@ -41,11 +42,10 @@ void PCB::showProcess()
 		std::cout << "WAITING |\n";
 		break;
 	case PCBStatus::Terminated:
-		std::cout << "TERMINATED |\n";  //useless
+		std::cout << "TERMINATED |\n"; //useless
 		break;
 	}
 }
-
 
 
 void showChosenProcess(PCB process)
@@ -66,7 +66,7 @@ void showChosenProcess(PCB process)
 		std::cout << "WAITING |\n";
 		break;
 	case PCBStatus::Terminated:
-		std::cout << "TERMINATED |\n";  //useless
+		std::cout << "TERMINATED |\n"; //useless
 		break;
 	}
 }
@@ -75,7 +75,6 @@ void showProcessList(std::list<PCB> list)
 {
 	for (int i = 0; i < list.size(); i++)
 	{
-
 	}
 }
 
@@ -106,10 +105,10 @@ int ProcessManager::getNextPID()
 	return id;
 }
 
-int randomPID(int min, int max) {
+int randomPID(int min, int max)
+{
 	std::random_device rd;
 	std::mt19937 gen(rd());
 	std::uniform_int_distribution<int> dis(min, max);
 	return dis(gen);
 }
-

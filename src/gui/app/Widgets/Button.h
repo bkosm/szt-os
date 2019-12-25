@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include "../CommandButton.h"
 
 class Button
 {
@@ -19,6 +20,8 @@ public:
 	virtual void drawTo(sf::RenderWindow& window) const;
 	virtual void setPosition(const sf::Vector2f& position);
 	virtual void setLabelFont(const sf::Font& font);
+
+	std::vector<CommandButton> commands;
 
 private:
 	sf::RectangleShape shape_;

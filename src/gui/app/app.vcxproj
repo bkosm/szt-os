@@ -144,7 +144,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\modules\Interpreter\Interpreter.cpp" />
+    <ClCompile Include="..\..\modules\LockManager\Lock.cpp" />
+    <ClCompile Include="..\..\modules\LockManager\LockManager.cpp" />
+    <ClCompile Include="..\..\modules\MemoryManager\MemoryManager.cpp" />
+    <ClCompile Include="..\..\modules\ProcessManager\PCB.cpp" />
+    <ClCompile Include="..\..\modules\Scheduler\Scheduler.cpp" />
     <ClCompile Include="App.cpp" />
+    <ClCompile Include="CommandButton.cpp" />
+    <ClCompile Include="InputField.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="SelbaWard\ConsoleScreen.cpp" />
     <ClCompile Include="ShutdownState.cpp" />
@@ -158,8 +166,16 @@
     <ClCompile Include="Widgets\Wallpaper.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\modules\Interpreter\Interpreter.hpp" />
+    <ClInclude Include="..\..\modules\LockManager\Lock.hpp" />
+    <ClInclude Include="..\..\modules\LockManager\LockManager.hpp" />
+    <ClInclude Include="..\..\modules\MemoryManager\MemoryManager.h" />
+    <ClInclude Include="..\..\modules\ProcessManager\PCB.hpp" />
+    <ClInclude Include="..\..\modules\Scheduler\Scheduler.hpp" />
+    <ClInclude Include="CommandButton.h" />
     <ClInclude Include="Definitions.h" />
     <ClInclude Include="App.h" />
+    <ClInclude Include="InputField.h" />
     <ClInclude Include="SelbaWard\Common.h" />
     <ClInclude Include="SelbaWard\ConsoleScreen.h" />
     <ClInclude Include="ShutdownState.h" />

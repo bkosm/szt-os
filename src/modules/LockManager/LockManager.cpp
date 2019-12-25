@@ -8,10 +8,7 @@ Lock createLock(const bool startLocked)
 {
 	auto newLock = Lock();
 
-	if (startLocked)
-	{
-		newLock.aquire();
-	}
+	if (startLocked) newLock.aquire();
 
 	return newLock;
 }

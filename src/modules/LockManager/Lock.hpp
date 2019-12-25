@@ -2,9 +2,6 @@
 
 class Lock
 {
-private:
-	bool locked_;
-
 public:
 	Lock();
 	~Lock() = default;
@@ -19,4 +16,7 @@ public:
 	 *
 	 * @return Wynik dzialania funkcji, false oznacza niepowodzenie.
 	 */
+
+private:
+	bool locked_;
 };

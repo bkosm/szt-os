@@ -8,6 +8,7 @@ StartState::StartState(std::shared_ptr<AppData> data) :
 	consoleScreen_(CONSOLE_FONT_PATH)
 {
 	taskbar_.setFont(data_->resources.appFont);
+
 	consoleSetup_();
 
 	buttons_ = {
@@ -20,6 +21,13 @@ StartState::StartState(std::shared_ptr<AppData> data) :
 		Button(float(RESOLUTION.width) / 8.0, float(RESOLUTION.height) / 5.0 * 4.0,
 		       START_STATE_BUTTON_SIZE, "File Management"),
 	};
+
+	buttons_[0].commands.emplace_back("CP", 2, data_->resources.appFont, "");
+	buttons_[0].commands[0].inputFields[0].setLabelAndFont("siema", data_->resources.appFont);
+	buttons_[0].commands[0].inputFields[1].setLabelAndFont("elo elo", data_->resources.appFont);
+
+	buttons_[0].commands[0].draw = true;
+	buttons_[0].commands[0].setPosition({ 400.0, 200.0 });
 
 	for (auto& button : buttons_) button.setLabelFont(data_->resources.appFont);
 }
@@ -59,7 +67,7 @@ void StartState::handleLeftClick_(const sf::Vector2f& mousePos, bool released)
 		/* Ikona terminala */
 		if (taskbar_.containsTermButton(mousePos))
 		{
-			taskbar_.toggleTermButton();
+			drawConsole_ = taskbar_.toggleTermButton();
 		}
 	}
 }
@@ -133,8 +141,16 @@ void StartState::draw()
 
 	data_->resources.wallpaper.draw();
 
-	for (const auto& button : buttons_) button.drawTo(data_->window);
-	data_->window.draw(consoleScreen_);
+	for (const auto& button : buttons_)
+	{
+		button.drawTo(data_->window);
+		for (const auto& command : button.commands)
+		{
+			command.drawTo(data_->window);
+		}
+	}
+
+	if (drawConsole_) data_->window.draw(consoleScreen_);
 
 	taskbar_.drawTo(data_->window);
 }

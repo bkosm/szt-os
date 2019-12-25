@@ -8,7 +8,8 @@ enum class PCBStatus {
 	Waiting = 1,
 	Ready = 2,
 	Running = 3,
-	Terminated = 4
+	Terminated = 4,
+	Dummy = 5
 };
 
 class PCB {
@@ -40,6 +41,13 @@ public:
 	void showProcess() const;
 	int getPID() const;
 	void changeStatus(PCBStatus status);
+	/*
+	 * PCB - konstruktor
+	 *
+	 * showProcess - metoda wyœwietlaj¹ca w³asnoœci wybranego procesu
+	 * getPID - metoda zwracaj¹ca ID wybranego procesu
+	 * changeStatus - metoda zmieniaj¹ca status wybranego procesu
+	 */
 };
 
 int randomPID(int min, int max);

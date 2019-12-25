@@ -1,4 +1,4 @@
-#include "PCB.hpp"
+#include "ProcessControl.hpp"
 #include "ProcessManager.hpp"
 #include <random>
 #include <iostream>
@@ -12,6 +12,7 @@ void ProcessManager::createProcess(std::string name, std::string fileName)
 
 void ProcessManager::showChosenProcess(const PCB& process)
 {
+	std::cout << "| CHOSEN PROCESS |\n";
 	std::cout << "| " << process.processName << " | " << process.processID << " | ";
 	switch (process.status)
 	{
@@ -35,9 +36,37 @@ void ProcessManager::showChosenProcess(const PCB& process)
 
 void ProcessManager::showProcessList(std::vector<PCB> list)
 {
+	std::cout << "| PROCESS LIST |\n";
 	for (auto const element : list)
 	{
-		std::cout << element.processName << " | " << element.processID << " | ";
+		std::cout << "| " << element.processName << " | " << element.processID << " | ";
+		switch (element.status)
+		{
+		case PCBStatus::New:
+			std::cout << "NEW |\n";
+			break;
+		case PCBStatus::Ready:
+			std::cout << "READY |\n";
+			break;
+		case PCBStatus::Running:
+			std::cout << "RUNNING |\n";
+			break;
+		case PCBStatus::Waiting:
+			std::cout << "WAITING |\n";
+			break;
+		case PCBStatus::Terminated:
+			std::cout << "TERMINATED |\n";  //useless
+			break;
+		}
+	}
+}
+
+void ProcessManager::showReadyQueue(std::vector<PCB> queue)
+{
+	std::cout << "| READY QUEUE |\n";
+	for (auto const element : queue)
+	{
+		std::cout << "| " << element.processName << " | " << element.processID << " | ";
 		switch (element.status)
 		{
 		case PCBStatus::New:
@@ -72,7 +101,6 @@ std::vector<PCB>& ProcessManager::getProcessList()
 int ProcessManager::getNextPID()
 {
 	int id = 0;
-
 	bool ok = true;
 	for (;;)
 	{
@@ -112,6 +140,12 @@ void ProcessManager::addProcessToList(PCB process)
 	processList.push_back(process);
 }
 
+void ProcessManager::addProcessToQueue(PCB process)
+{
+	readyQueue.push_back(process);
+}
+
+
 PCB& ProcessManager::getProcessFromList(std::string processName)
 {
 	for (int i = 0; i < this->processList.size(); i++)
@@ -122,3 +156,15 @@ PCB& ProcessManager::getProcessFromList(std::string processName)
 		}
 	}
 }
+
+void ProcessManager::changeStatusChosenProcess(int pid, PCBStatus sts)
+{
+	for (auto& pcb : processList)
+	{
+		if (pcb.processID == pid)
+		{
+			pcb.changeStatus(sts);
+		}
+	}
+}
+

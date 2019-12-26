@@ -23,27 +23,30 @@ PCB::~PCB()
 	//std::cout << "Process was terminated!\n";
 }
 
-void PCB::showProcess() const
+std::string PCB::showProcess() const
 {
-	std::cout << "| " << processName << " | " << processID << " | ";
+	std::string word;
+	word = "| " + processName + " | " + std::to_string(processID) + " | ";
 	switch (status)
 	{
 	case PCBStatus::New:
-		std::cout << "NEW |\n";
+		word = word + "NEW |\n";
 		break;
 	case PCBStatus::Ready:
-		std::cout << "READY |\n";
+		word = word + "READY |\n";
 		break;
 	case PCBStatus::Running:
-		std::cout << "RUNNING |\n";
+		word = word + "RUNNING |\n";
 		break;
 	case PCBStatus::Waiting:
-		std::cout << "WAITING |\n";
+		word = word + "WAITING |\n";
 		break;
 	case PCBStatus::Terminated:
-		std::cout << "TERMINATED |\n";  //useless
+		word = word + "TERMINATED |\n";  //useless
 		break;
 	}
+	std::cout << word;
+	return word;
 }
 
 int PCB::getPID() const

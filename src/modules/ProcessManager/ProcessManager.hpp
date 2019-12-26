@@ -14,9 +14,9 @@ public:
 	std::vector<PCB>& getReadyQueue();
 	std::vector<PCB>& getProcessList();
 
-	void showChosenProcess(const PCB& process);
-	static void showProcessList(std::vector<PCB> list);
-	static void showReadyQueue(std::vector<PCB> queue);
+	static std::string showChosenProcess(const PCB& process);
+	static std::string showProcessList(std::vector<PCB> list);
+	static std::string showReadyQueue(std::vector<PCB> queue);
 
 	void deleteProcessFromList(int pid);
 
@@ -42,7 +42,6 @@ public:
 	 * deleteProcessFromList - metoda usuwaj¹ca proces o podanym ID
 	 * addProcessToList - metoda dodaj¹ca wybrany proces do listy
 	 * getProcessFromList - metoda zwracaj¹ca proces o podanej nazwie
-	 * TO DO
 	 * changeStatusChosenProcess - metoda zmieniaja status procesu wybranego z listy
 	 */
 };

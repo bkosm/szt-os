@@ -38,7 +38,7 @@ public:
 
 	~PCB();
 
-	void showProcess() const;
+	std::string showProcess() const;
 	int getPID() const;
 	void changeStatus(PCBStatus status);
 	/*

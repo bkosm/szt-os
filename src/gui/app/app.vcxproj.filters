@@ -143,5 +143,8 @@
     <ClInclude Include="InputField.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SystemHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -10,11 +10,15 @@ public:
 
 	bool draw{ false };
 	bool clicked{ false };
+	bool areCommandsDrawn{ false };
 
 	virtual sf::FloatRect getGlobalBounds() const;
 
 	virtual void markAsClicked();
 	virtual void markAsReleased();
+
+	void drawCommands();
+	void hideCommands();
 
 	virtual void setTemporaryColor(const sf::Color& color);
 	virtual void drawTo(sf::RenderWindow& window) const;

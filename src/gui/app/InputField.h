@@ -18,7 +18,7 @@ public:
 	void setPosition(const sf::Vector2f& position);
 	void drawTo(sf::RenderWindow& window) const;
 
-	sf::String getInput() const;
+	sf::String getInput();
 	float getLength() const;
 
 	bool isFocused{false};

@@ -1,11 +1,12 @@
 #include "App.h"
 #include "StartState.h"
-
+#include "Definitions.h"
 
 Resources::Resources(const sf::String& fontPath, sf::RenderWindow& window) :
 	wallpaper(window)
 {
 	appFont.loadFromFile(fontPath);
+	runButtonTexture.loadFromFile(PLAY_BUTTON_PATH);
 }
 
 App::App(const sf::VideoMode& videoMode, const sf::String& title)

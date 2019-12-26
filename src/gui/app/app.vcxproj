@@ -183,6 +183,7 @@
     <ClInclude Include="StartState.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="StateMaschine.h" />
+    <ClInclude Include="SystemHandler.h" />
     <ClInclude Include="Widgets\Button.h" />
     <ClInclude Include="Widgets\DateTimeWidget.h" />
     <ClInclude Include="Widgets\StartMenu.h" />

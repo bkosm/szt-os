@@ -5,7 +5,7 @@
 class CommandButton
 {
 public:
-	CommandButton(const sf::String& instruction, unsigned numberOfInputs, const sf::Font& font, const sf::String& runTexturePath);
+	CommandButton(const sf::String& instruction, unsigned numberOfInputs, const sf::Font& font, const sf::Texture& texture);
 	~CommandButton() = default;
 
 	bool containsRunButton(const sf::Vector2f& point) const;
@@ -14,21 +14,21 @@ public:
 	void writeCommand(const sf::String& string);
 	void setPosition(const sf::Vector2f& position);
 	void drawTo(sf::RenderWindow& window) const;
+	void disableFocus();
+	
+	std::string getInstruction();
+	
+	void markRunButtonReleased();
+	void markRunButtonPressed();
 
 	bool draw{false};
 	std::vector<InputField> inputFields;
 	
 private:
-	void setSize_(unsigned amount);
+	void adjustBackgroundSize_();
 	
 	sf::Text buttonLabel_;
 	sf::RectangleShape background_;
 
-	struct RunButton
-	{
-		RunButton(const sf::String& texturePath);
-
-		sf::Texture texture;
-		sf::Sprite sprite;
-	} runButton_;
+	sf::Sprite runButton_;
 };

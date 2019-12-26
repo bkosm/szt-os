@@ -34,6 +34,24 @@ void Button::markAsReleased()
 	clicked = false;
 }
 
+void Button::drawCommands()
+{
+	areCommandsDrawn = true;
+	for (auto& command : commands)
+	{
+		command.draw = true;
+	}
+}
+
+void Button::hideCommands()
+{
+	areCommandsDrawn = false;
+	for (auto& command : commands)
+	{
+		command.draw = false;
+	}
+}
+
 void Button::setTemporaryColor(const sf::Color& color)
 {
 	shape_.setFillColor(color);

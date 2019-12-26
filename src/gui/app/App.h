@@ -1,21 +1,25 @@
 #pragma once
+#include "../../modules/Interpreter/Interpreter.hpp"
 #include "Widgets/Wallpaper.h"
 #include "StateMaschine.h"
 #include "Sounds.h"
 #include "Definitions.h"
+#include <SFML/Graphics.hpp>
 
 struct Resources
 {
 	Wallpaper wallpaper;
 	Sounds sounds;
 	sf::Font appFont;
-	
+	sf::Texture runButtonTexture;
+
 	Resources(const sf::String& fontPath, sf::RenderWindow& window);
 };
 
 struct AppData
 {
 	sf::RenderWindow window;
+	Shell shell;
 	StateMaschine states;
 	Resources resources{FONT_PATH, window};
 };

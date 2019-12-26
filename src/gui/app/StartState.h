@@ -26,4 +26,5 @@ private:
 	void handleRightClick_(const sf::Vector2f& mousePos, bool released = false);
 
 	void consoleSetup_();
+	void configureButtons_();
 };

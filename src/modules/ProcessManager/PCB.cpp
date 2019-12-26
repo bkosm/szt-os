@@ -1,30 +1,38 @@
 #include "PCB.hpp"
 #include <random>
+<<<<<<< HEAD
 #include <iostream>
+=======
+#include <memory>
+#include <iostream>
+#include <utility>
+>>>>>>> origin/hubert
 
+PCB::PCB()
+{
+	this->processName = "error";
+	this->processID = -1;
+	this->status = PCBStatus::Error;
+}
 
+<<<<<<< HEAD
 PCB::PCB(std::string name, int ID, PCBStatus processStatus)
 {
+=======
+PCB::PCB(std::string name, int ID, PCBStatus processStatus) {
+>>>>>>> origin/hubert
 	std::cout << "Process was created!\n";
-	processName = name;
+	processName = std::move(name);
 	processID = ID;
 	status = processStatus;
 }
 
 PCB::~PCB()
 {
-	std::cout << "Process was terminated!\n";
+	//std::cout << "Process was terminated!\n";
 }
 
-PCB& ProcessManager::createProcess(std::string name, std::string fileName)
-{
-	//std::vector<PCB> queue;
-	//queue.add(PCB("xD", 0, PCBStatus::New));
-	processList.emplace_back("XD", getNextPID(), PCBStatus::New);
-	return processList.back();
-}
-
-void PCB::showProcess()
+void PCB::showProcess() const
 {
 	std::cout << "| " << processName << " | " << processID << " | ";
 	switch (status)
@@ -47,6 +55,7 @@ void PCB::showProcess()
 	}
 }
 
+<<<<<<< HEAD
 
 void showChosenProcess(PCB process)
 {
@@ -76,33 +85,16 @@ void showProcessList(std::list<PCB> list)
 	for (int i = 0; i < list.size(); i++)
 	{
 	}
+=======
+int PCB::getPID() const
+{
+	return this->processID;
+>>>>>>> origin/hubert
 }
 
-std::vector<PCB*> ProcessManager::getReadyQueue()
+void PCB::changeStatus(PCBStatus status)
 {
-	return readyQueue;
-}
-
-int ProcessManager::getNextPID()
-{
-	int id = 0;
-
-	bool ok = true;
-	for (;;)
-	{
-		ok = true;
-		for (PCB pcb : processList)
-		{
-			if (pcb.processID == id)
-			{
-				id++;
-				ok = false;
-				break;
-			}
-		}
-		if (ok) break;
-	}
-	return id;
+	this->status = status;
 }
 
 int randomPID(int min, int max)

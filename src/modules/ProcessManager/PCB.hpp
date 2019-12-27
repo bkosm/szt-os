@@ -1,22 +1,16 @@
 #pragma once
 #include <string>
-<<<<<<< HEAD
-#include <queue>
-#include <list>
+#include <random>
 
 enum class PCBStatus
 {
-=======
-#include <random>
-
-enum class PCBStatus {
 	Error = -1,
->>>>>>> origin/hubert
 	New = 0,
 	Waiting = 1,
 	Ready = 2,
 	Running = 3,
-	Terminated = 4
+	Terminated = 4,
+	Dummy = 5
 };
 
 class PCB
@@ -44,26 +38,18 @@ public:
 	PCB();
 	PCB(std::string name, int ID, PCBStatus processStatus);
 
-<<<<<<< HEAD
-class ProcessManager
-{
-	std::vector<PCB> processList;
-	std::vector<PCB*> readyQueue;
-public:
-	PCB& createProcess(std::string name, std::string fileName);
-	int getNextPID();
-=======
 	~PCB();
->>>>>>> origin/hubert
 
-	void showProcess() const;
+	std::string showProcess() const;
 	int getPID() const;
 	void changeStatus(PCBStatus status);
+	/*
+	 * PCB - konstruktor
+	 *
+	 * showProcess - metoda wyœwietlaj¹ca w³asnoœci wybranego procesu
+	 * getPID - metoda zwracaj¹ca ID wybranego procesu
+	 * changeStatus - metoda zmieniaj¹ca status wybranego procesu
+	 */
 };
 
-<<<<<<< HEAD
 int randomPID(int min, int max);
-void showChosenProcess(PCB process);
-=======
-int randomPID(int min, int max);
->>>>>>> origin/hubert

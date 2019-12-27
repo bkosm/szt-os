@@ -1,7 +1,6 @@
 #pragma once
 #include "PCB.hpp"
 #include <vector>
-#include <memory>
 #include <string>
 
 class ProcessManager {

@@ -13,7 +13,6 @@ void Scheduler::updateReadyQueue() {
     }
     sortReadyProcesses();
 }
-
 uint8_t Scheduler::calculateEstimatedTime(PCB &pcb) {
     return {}; //brakuje pola executed Instr pcb.executedInstr * Alpha + (1 - Alpha) * pcb.estimatedTime;
 }
@@ -27,6 +26,6 @@ void Scheduler::sortReadyProcesses() {
 
 void Scheduler::runProcess()
 {
-	auto& pcb = getCurrentProcess();
+	//auto& pcb = getCurrentProcess();
 	//Shell.Interpreter.handleInst(pcb);
 }

@@ -1,5 +1,4 @@
 #pragma once
-#include <string>
 #include <vector>
 #include "../ProcessManager/PCB.hpp"
 
@@ -8,9 +7,7 @@ class Scheduler
 public:
 	Scheduler(std::vector<PCB>& readyProcesses);
 
-	std::string toString();
 	void updateReadyQueue();
-	PCB& getCurrentProcess();
 	void runProcess();
 
 private:

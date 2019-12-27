@@ -25,12 +25,13 @@ std::string Lock::getProcessQueueString() const
 {
 	std::string queueString = "Processes requesting the file:\n";
 
-	unsigned number = 1;
+	unsigned number = 0;
 	for (const auto& pcb : processQueue_)
 	{
-		queueString += std::to_string(number) + ":\tName: " + pcb->processName + "\tPID: " + std::to_string(pcb->processID) + "\n";
 		++number;
+		queueString += std::to_string(number) + ":\tName: " + pcb->processName + "\tPID: " + std::
+			to_string(pcb->processID) + "\n";
 	}
 
-	return queueString;
+	return number == 0 ? queueString += "~none~\n" : queueString;
 }

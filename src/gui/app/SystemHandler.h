@@ -3,7 +3,7 @@
 
 class Shell;
 
-inline void handleSystemOperations(Cs& console, std::vector<std::string>& arguments)
+inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::string>& arguments)
 {
 	for (int i = 0; i < arguments.size(); i++)
 	{

@@ -1,10 +1,10 @@
 #include "Shell.hpp"
 
 Shell::Shell() :
-	interpreter(*this),
-	scheduler(*this),
-	processManager(*this),
-	lockManager(*this)
+	interpreter(this),
+	scheduler(this),
+	processManager(this),
+	lockManager(this)
 {
 }
 

@@ -3,7 +3,9 @@
 #include "StateMaschine.h"
 #include "Sounds.h"
 #include "Definitions.h"
+#include "../../Shell.hpp"
 #include <SFML/Graphics.hpp>
+
 
 struct Resources
 {
@@ -18,7 +20,7 @@ struct Resources
 struct AppData
 {
 	sf::RenderWindow window;
-	//Shell shell;
+	Shell shell;
 	StateMaschine states;
 	Resources resources{FONT_PATH, window};
 };

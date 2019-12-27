@@ -1,9 +1,10 @@
 #pragma once
 #include "PCB.hpp"
-#include "../../Shell.hpp"
 #include <vector>
 #include <memory>
 #include <string>
+
+class Shell;
 
 class ProcessManager {
 	using PCB_ptr = std::shared_ptr<PCB>;
@@ -11,12 +12,12 @@ class ProcessManager {
 	std::vector<PCB_ptr> processList;
 	std::vector<PCB_ptr> readyQueue;
 public:
-	ProcessManager(Shell& shell);
+	ProcessManager(Shell *shell);
 	~ProcessManager();
 
 	void createProcess(std::string name, std::string fileName);
 	int getNextPID();
-	Shell& shell;
+	Shell *shell;
 
 	std::vector<PCB_ptr> getReadyQueue();
 	std::vector<PCB_ptr> getProcessList();

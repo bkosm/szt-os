@@ -18,7 +18,7 @@
 #define MATH_LAMBDA(EXP) [](uint8_t a, uint8_t b) -> uint8_t { return EXP; }
 #define JUMP_LAMBDA(EXP) [](uint8_t a, uint8_t b) -> bool { return EXP; }
 
-Interpreter::Interpreter(Shell &shell) : insnMap {
+Interpreter::Interpreter(Shell *shell) : insnMap {
 	INSN(ADD),	INSN(SUB),	INSN(MUL),	INSN(DIV),	INSN(INC),	INSN(DSC),
 	INSN(JP),	INSN(JZ),	INSN(JNZ),
 	INSN(JE),	INSN(JNE),	INSN(JA),	INSN(JAE),	INSN(JB),	INSN(JBE),

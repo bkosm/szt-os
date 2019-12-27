@@ -14,7 +14,7 @@ class Shell {
 
 public:
 	Shell();
-	virtual ~Shell();
+	virtual ~Shell() = default;
 
 	Interpreter& getInterpreter();
 	Scheduler& getScheduler();

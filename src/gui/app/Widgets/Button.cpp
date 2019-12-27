@@ -1,6 +1,5 @@
 #include "Button.h"
 #include <SFML/Graphics.hpp>
-#include "../Definitions.h"
 
 Button::Button(float x, float y, const sf::Vector2f& size, const sf::String& title)
 {

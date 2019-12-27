@@ -7,9 +7,13 @@
 
 using PCB_ptr = std::shared_ptr<PCB>;
 
-ProcessManager::ProcessManager(Shell& shell) : shell(shell) {}
+ProcessManager::ProcessManager(Shell& shell) : shell(shell)
+{
+}
 
-ProcessManager::~ProcessManager() {}
+ProcessManager::~ProcessManager()
+{
+}
 
 void ProcessManager::createProcess(std::string name, std::string fileName)
 {
@@ -37,7 +41,7 @@ std::string ProcessManager::showChosenProcess(PCB_ptr process)
 		word = word + "WAITING |\n";
 		break;
 	case PCBStatus::Terminated:
-		word = word + "TERMINATED |\n";  //useless
+		word = word + "TERMINATED |\n"; //useless
 		break;
 	}
 	return word;
@@ -65,7 +69,7 @@ std::string ProcessManager::showProcessList(std::vector<PCB_ptr> list)
 			word = word + "WAITING |\n";
 			break;
 		case PCBStatus::Terminated:
-			word = word + "TERMINATED |\n";  //useless
+			word = word + "TERMINATED |\n"; //useless
 			break;
 		}
 	}
@@ -95,7 +99,7 @@ std::string ProcessManager::showReadyQueue(std::vector<PCB_ptr> queue)
 			word = word + "WAITING |\n";
 			break;
 		case PCBStatus::Terminated:
-			word = word + "TERMINATED |\n";  //useless
+			word = word + "TERMINATED |\n"; //useless
 			break;
 		}
 	}
@@ -136,10 +140,9 @@ int ProcessManager::getNextPID()
 
 void ProcessManager::deleteProcessFromList(int pid)
 {
-	processList.erase(std::remove_if(std::begin(processList), std::end(processList), 
-		[](auto &pcb){ return pcb->processID == pid; }),
-		std::end(processList));
-	
+	processList.erase(std::remove_if(std::begin(processList), std::end(processList),
+	                                 [&pid](auto& pcb) { return pcb->processID == pid; }),
+	                  std::end(processList));
 }
 
 void ProcessManager::addProcessToList(std::shared_ptr<PCB> process)
@@ -174,4 +177,3 @@ void ProcessManager::changeStatusChosenProcess(int pid, PCBStatus sts)
 		}
 	}
 }
-

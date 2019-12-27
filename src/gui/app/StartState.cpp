@@ -58,7 +58,7 @@ void StartState::handleLeftClick_(const sf::Vector2f& mousePos, bool released)
 							input.push_back(field.getInput());
 						}
 
-						handleSystemOperations(consoleScreen_, data_->shell, input);
+						handleSystemOperations(consoleScreen_, input);
 					}
 					else
 					{

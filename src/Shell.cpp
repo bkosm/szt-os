@@ -1,26 +1,34 @@
 #include "Shell.hpp"
 
-Shell::Shell() : interpreter(*this), scheduler(*this), processManager(*this),
-memoryManager(), lockManager(*this) {}
+Shell::Shell() :
+	interpreter(*this),
+	scheduler(*this),
+	processManager(*this),
+	lockManager(*this)
+{
+}
 
-Shell::~Shell() {}
-
-Interpreter& Shell::getInterpreter() {
+Interpreter& Shell::getInterpreter()
+{
 	return interpreter;
 }
 
-Scheduler& Shell::getScheduler() {
+Scheduler& Shell::getScheduler()
+{
 	return scheduler;
 }
 
-ProcessManager& Shell::getProcessManager() {
+ProcessManager& Shell::getProcessManager()
+{
 	return processManager;
 }
 
-MemoryManager& Shell::getMemoryManager() {
+MemoryManager& Shell::getMemoryManager()
+{
 	return memoryManager;
 }
 
-LockManager& Shell::getLockManager() {
+LockManager& Shell::getLockManager()
+{
 	return lockManager;
 }

@@ -1,6 +1,6 @@
 #pragma once
 #include "Lock.hpp"
-#include "../Interpreter/Interpreter.hpp"
+#include "../../Shell.hpp"
 
 class LockManager
 {

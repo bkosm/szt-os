@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <string>
 #include <random>
 
@@ -19,7 +19,6 @@ public:
 	std::string processName;
 	int processID;
 	PCBStatus status;
-	//Shell& shell;
 	//===== PROCESSOR CONTROL ======
 	int t;
 	int tau;
@@ -33,7 +32,7 @@ public:
 	//===== FILE CONTROL =====
 
 	//===== LOCK CONTROL =====
-	//Absolutna cisza w samym œrodku szalej¹cego ¿ywio³u. 
+	//Absolutna cisza w samym ï¿½rodku szalejï¿½cego ï¿½ywioï¿½u. 
 
 	PCB();
 	PCB(std::string name, int ID, PCBStatus processStatus);
@@ -46,9 +45,9 @@ public:
 	/*
 	 * PCB - konstruktor
 	 *
-	 * showProcess - metoda wyœwietlaj¹ca w³asnoœci wybranego procesu
-	 * getPID - metoda zwracaj¹ca ID wybranego procesu
-	 * changeStatus - metoda zmieniaj¹ca status wybranego procesu
+	 * showProcess - metoda wyï¿½wietlajï¿½ca wï¿½asnoï¿½ci wybranego procesu
+	 * getPID - metoda zwracajï¿½ca ID wybranego procesu
+	 * changeStatus - metoda zmieniajï¿½ca status wybranego procesu
 	 */
 };
 

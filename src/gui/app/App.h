@@ -4,6 +4,7 @@
 #include "StateMaschine.h"
 #include "Sounds.h"
 #include "Definitions.h"
+#include "../../Shell.hpp"
 #include <SFML/Graphics.hpp>
 
 struct Resources

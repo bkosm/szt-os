@@ -1,11 +1,12 @@
 #pragma once
 #include "Lock.hpp"
-#include "../../Shell.hpp"
+
+class Shell;
 
 class LockManager
 {
 public:
-	explicit LockManager(Shell& shell);
+	explicit LockManager(Shell *shell);
 	~LockManager() = default;
 
 	Lock createLock(bool startLocked = false);
@@ -16,5 +17,5 @@ public:
 	 */
 
 private:
-	Shell& shell_;
+	Shell *shell_;
 };

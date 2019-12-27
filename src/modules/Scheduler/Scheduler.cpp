@@ -1,10 +1,9 @@
 #include "Scheduler.hpp"
-#include "../../Shell.hpp"
 #include <algorithm>
 #include <iterator>
 
 
-Scheduler::Scheduler(Shell &shell) : shell(shell) {
+Scheduler::Scheduler(Shell *shell) : shell(shell) {
 }
 
 void Scheduler::updateReadyQueue() {

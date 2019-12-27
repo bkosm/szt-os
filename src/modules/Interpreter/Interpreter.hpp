@@ -2,13 +2,13 @@
 #include <unordered_map>
 #include <string>
 #include <cstdint>
-#include "../../Shell.hpp"
 #include "../../modules/ProcessManager/PCB.hpp"
 
+class Shell;
 
 class Interpreter {
 	std::unordered_map<std::string, void(Interpreter::*)(PCB &)> insnMap;
-	Shell &shell;
+	Shell *shell;
 
 	void handleArithm(PCB &process, uint8_t(*op)(uint8_t, uint8_t));
 	void insnADD(PCB &process); void insnSUB(PCB &process); void insnMUL(PCB &process);
@@ -34,7 +34,7 @@ class Interpreter {
 	void setValue(PCB &process, std::string dest, uint8_t value);
 
 public:
-	Interpreter(Shell &shell);
+	Interpreter(Shell *shell);
 	~Interpreter();
 
 	void handleInsn(PCB &process);

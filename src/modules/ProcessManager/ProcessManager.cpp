@@ -7,7 +7,7 @@
 
 using PCB_ptr = std::shared_ptr<PCB>;
 
-ProcessManager::ProcessManager(Shell& shell) : shell(shell)
+ProcessManager::ProcessManager(Shell *shell) : shell(shell)
 {
 }
 

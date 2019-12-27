@@ -1,7 +1,7 @@
 #pragma once
 #include "SelbaWard/ConsoleScreen.h"
-//#include "../../Shell.hpp"
 
+class Shell;
 
 inline void handleSystemOperations(Cs& console, std::vector<std::string>& arguments)
 {

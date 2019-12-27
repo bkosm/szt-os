@@ -1,6 +1,6 @@
 #include "LockManager.hpp"
 
-LockManager::LockManager(Shell& shell) : shell_(shell)
+LockManager::LockManager(Shell *shell) : shell_(shell)
 {
 }
 

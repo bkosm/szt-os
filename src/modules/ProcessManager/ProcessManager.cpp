@@ -10,53 +10,90 @@ void ProcessManager::createProcess(std::string name, std::string fileName)
 	processList.push_back(pcb);
 }
 
-void ProcessManager::showChosenProcess(const PCB& process)
+std::string ProcessManager::showChosenProcess(const PCB& process)
 {
-	std::cout << "| " << process.processName << " | " << process.processID << " | ";
+	std::string word;
+	word = "| CHOSEN PROCESS |\n";
+	word = word + "| " + process.processName + " | " + (char)process.processID + " | ";
 	switch (process.status)
 	{
 	case PCBStatus::New:
-		std::cout << "NEW |\n";
+		word = word + "NEW |\n";
 		break;
 	case PCBStatus::Ready:
-		std::cout << "READY |\n";
+		word = word + "READY |\n";
 		break;
 	case PCBStatus::Running:
-		std::cout << "RUNNING |\n";
+		word = word + "RUNNING |\n";
 		break;
 	case PCBStatus::Waiting:
-		std::cout << "WAITING |\n";
+		word = word + "WAITING |\n";
 		break;
 	case PCBStatus::Terminated:
-		std::cout << "TERMINATED |\n";  //useless
+		word = word + "TERMINATED |\n";  //useless
 		break;
 	}
+	return word;
 }
 
-void ProcessManager::showProcessList(std::vector<PCB> list)
+std::string ProcessManager::showProcessList(std::vector<PCB> list)
 {
+	std::string word;
+	word = "| PROCESS LIST |\n";
 	for (auto const element : list)
 	{
-		std::cout << element.processName << " | " << element.processID << " | ";
+		word = word + "| " + element.processName + " | " + std::to_string(element.processID) + " | ";
 		switch (element.status)
 		{
 		case PCBStatus::New:
-			std::cout << "NEW |\n";
+			word = word + "NEW |\n";
 			break;
 		case PCBStatus::Ready:
-			std::cout << "READY |\n";
+			word = word + "READY |\n";
 			break;
 		case PCBStatus::Running:
-			std::cout << "RUNNING |\n";
+			word = word + "RUNNING |\n";
 			break;
 		case PCBStatus::Waiting:
-			std::cout << "WAITING |\n";
+			word = word + "WAITING |\n";
 			break;
 		case PCBStatus::Terminated:
-			std::cout << "TERMINATED |\n";  //useless
+			word = word + "TERMINATED |\n";  //useless
 			break;
 		}
 	}
+	std::cout << word;
+	return word;
+}
+
+std::string ProcessManager::showReadyQueue(std::vector<PCB> queue)
+{
+	std::string word;
+	word = "| READY QUEUE |\n";
+	for (auto const element : queue)
+	{
+		word = word + "| " + element.processName + " | " + std::to_string(element.processID) + " | ";
+		switch (element.status)
+		{
+		case PCBStatus::New:
+			word = word + "NEW |\n";
+			break;
+		case PCBStatus::Ready:
+			word = word + "READY |\n";
+			break;
+		case PCBStatus::Running:
+			word = word + "RUNNING |\n";
+			break;
+		case PCBStatus::Waiting:
+			word = word + "WAITING |\n";
+			break;
+		case PCBStatus::Terminated:
+			word = word + "TERMINATED |\n";  //useless
+			break;
+		}
+	}
+	std::cout << word;
+	return word;
 }
 
 std::vector<PCB>& ProcessManager::getReadyQueue()
@@ -72,7 +109,6 @@ std::vector<PCB>& ProcessManager::getProcessList()
 int ProcessManager::getNextPID()
 {
 	int id = 0;
-
 	bool ok = true;
 	for (;;)
 	{
@@ -112,6 +148,12 @@ void ProcessManager::addProcessToList(PCB process)
 	processList.push_back(process);
 }
 
+void ProcessManager::addProcessToQueue(PCB process)
+{
+	readyQueue.push_back(process);
+}
+
+
 PCB& ProcessManager::getProcessFromList(std::string processName)
 {
 	for (int i = 0; i < this->processList.size(); i++)
@@ -122,3 +164,15 @@ PCB& ProcessManager::getProcessFromList(std::string processName)
 		}
 	}
 }
+
+void ProcessManager::changeStatusChosenProcess(int pid, PCBStatus sts)
+{
+	for (auto& pcb : processList)
+	{
+		if (pcb.processID == pid)
+		{
+			pcb.changeStatus(sts);
+		}
+	}
+}
+

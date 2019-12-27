@@ -2,21 +2,24 @@
 #include <algorithm>
 #include <iterator>
 
-void Scheduler::calculateEstimatedTime(PCB &pcb) {
-    pcb.estimatedTime =
-        pcb.executedInstr * alpha + (1 - alpha) * pcb.estimatedTime;
+Scheduler::Scheduler(std::vector<PCB> &readyProcesses) : readyProcesses(readyProcesses) {
+    updateReadyQueue();
 }
 
 void Scheduler::updateReadyQueue() {
     for (auto pcb : readyProcesses) {
-        calculateEstimatedTime(pcb);
+        pcb.estimatedTime = pcb.estimatedTime == 0 ? DefaultEstimatedTime : calculateEstimatedTime(pcb);
     }
     sortReadyProcesses();
 }
 
+uint8_t Scheduler::calculateEstimatedTime(PCB &pcb) {
+    return pcb.executedInstr * Alpha + (1 - Alpha) * pcb.estimatedTime;
+}
+
 void Scheduler::sortReadyProcesses() {
     std::stable_sort(std::begin(readyProcesses), std::end(readyProcesses),
-                     [](auto &lfs, auto &rhs) {
+                     [](auto &lhs, auto &rhs) {
                          return lhs.estimatedTime <= rhs.estimatedTime;
                      });
 }

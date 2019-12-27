@@ -2,16 +2,9 @@
 #include <unordered_map>
 #include <string>
 #include <cstdint>
+#include "../../Shell.hpp"
+#include "../../modules/ProcessManager/PCB.hpp"
 
-// dummy PCB for insnMap
-struct PCB {
-	uint8_t AX, BX, CX, DX;
-	uint8_t IC;
-	bool state;
-};
-
-// dummy Shell for nothing yet
-struct Shell {};
 
 class Interpreter {
 	std::unordered_map<std::string, void(Interpreter::*)(PCB &)> insnMap;

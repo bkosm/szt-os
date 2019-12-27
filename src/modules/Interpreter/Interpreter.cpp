@@ -3,6 +3,7 @@
 #include <string>
 #include <cstdint>
 #include <stdexcept>
+#include "../../modules/ProcessManager/PCB.hpp"
 
 // instantiate pair <string, method ptr> for each instruction available
 #define INSN(NAME) { #NAME, &Interpreter::insn##NAME }
@@ -32,7 +33,7 @@ std::string Interpreter::readNextParam(PCB &process) {
 	bool loadsFileName = false;
 	for (std::string buffer = "";; buffer += c) {
 		c = ' ';// TODO read byte from RAM using IC
-		++process.IC;
+		++process.insnIndex;
 
 		if (c == '\"') loadsFileName = !loadsFileName;
 		if (!loadsFileName && c == ' ') return buffer;
@@ -41,11 +42,12 @@ std::string Interpreter::readNextParam(PCB &process) {
 
 void Interpreter::handleInsn(PCB &process) {
 	char c;
+	
 	for (std::string buffer = "";;) {
 		if (process.AX == 0) break;// dummy break (just to fully compile class)
 
 		c = ' ';// TODO read byte from RAM using IC
-		++process.IC;
+		++process.insnIndex;
 
 		if (c == ' ') {
 			try {
@@ -58,7 +60,7 @@ void Interpreter::handleInsn(PCB &process) {
 
 		buffer += c;
 		if (buffer == "HLT") {
-			process.state = 0;
+			// TODO terminate process
 			return;
 		}
 	}

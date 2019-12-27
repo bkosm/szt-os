@@ -1,28 +1,36 @@
 #pragma once
 #include "PCB.hpp"
+#include "../../Shell.hpp"
 #include <vector>
+#include <memory>
 #include <string>
 
 class ProcessManager {
-	std::vector<PCB> processList;
-	std::vector<PCB> readyQueue;
+	using PCB_ptr = std::shared_ptr<PCB>;
+
+	std::vector<PCB_ptr> processList;
+	std::vector<PCB_ptr> readyQueue;
 public:
+	ProcessManager(Shell& shell);
+	~ProcessManager();
+
 	void createProcess(std::string name, std::string fileName);
 	int getNextPID();
+	Shell& shell;
 
-	std::vector<PCB>& getReadyQueue();
-	std::vector<PCB>& getProcessList();
+	std::vector<PCB_ptr> getReadyQueue();
+	std::vector<PCB_ptr> getProcessList();
 
-	static std::string showChosenProcess(const PCB& process);
-	static std::string showProcessList(std::vector<PCB> list);
-	static std::string showReadyQueue(std::vector<PCB> queue);
+	static std::string showChosenProcess(PCB_ptr process);
+	static std::string showProcessList(std::vector<PCB_ptr> list);
+	static std::string showReadyQueue(std::vector<PCB_ptr> queue);
 
 	void deleteProcessFromList(int pid);
 
-	void addProcessToList(PCB process);
-	void addProcessToQueue(PCB process);
+	void addProcessToList(PCB_ptr process);
+	void addProcessToQueue(PCB_ptr process);
 
-	PCB& getProcessFromList(std::string processName);
+	PCB_ptr getProcessFromList(std::string processName);
 
 	void changeStatusChosenProcess(int pid, PCBStatus sts);
 	/*

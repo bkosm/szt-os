@@ -5,7 +5,8 @@
 #include "modules/MemoryManager/MemoryManager.h"
 #include "modules/LockManager/LockManager.hpp"
 
-class Shell {
+class Shell
+{
 	Interpreter interpreter;
 	Scheduler scheduler;
 	ProcessManager processManager;
@@ -22,4 +23,3 @@ public:
 	MemoryManager& getMemoryManager();
 	LockManager& getLockManager();
 };
-

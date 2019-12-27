@@ -48,6 +48,7 @@ void Button::hideCommands()
 	for (auto& command : commands)
 	{
 		command.draw = false;
+		command.disableFocus();
 	}
 }
 

@@ -19,14 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\modules\Interpreter\Interpreter.cpp" />
-    <ClCompile Include="..\..\modules\LockManager\Lock.cpp" />
-    <ClCompile Include="..\..\modules\LockManager\LockManager.cpp" />
-    <ClCompile Include="..\..\modules\MemoryManager\MemoryManager.cpp" />
-    <ClCompile Include="..\..\modules\ProcessManager\PCB.cpp" />
-    <ClCompile Include="..\..\modules\ProcessManager\ProcessManager.cpp" />
-    <ClCompile Include="..\..\modules\Scheduler\Scheduler.cpp" />
-    <ClCompile Include="..\..\Shell.cpp" />
     <ClCompile Include="App.cpp" />
     <ClCompile Include="CommandButton.cpp" />
     <ClCompile Include="InputField.cpp" />
@@ -43,14 +35,6 @@
     <ClCompile Include="Widgets\Wallpaper.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\modules\Interpreter\Interpreter.hpp" />
-    <ClInclude Include="..\..\modules\LockManager\Lock.hpp" />
-    <ClInclude Include="..\..\modules\LockManager\LockManager.hpp" />
-    <ClInclude Include="..\..\modules\MemoryManager\MemoryManager.h" />
-    <ClInclude Include="..\..\modules\ProcessManager\PCB.hpp" />
-    <ClInclude Include="..\..\modules\ProcessManager\ProcessManager.hpp" />
-    <ClInclude Include="..\..\modules\Scheduler\Scheduler.hpp" />
-    <ClInclude Include="..\..\Shell.hpp" />
     <ClInclude Include="App.h" />
     <ClInclude Include="CommandButton.h" />
     <ClInclude Include="Definitions.h" />

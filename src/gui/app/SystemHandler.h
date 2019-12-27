@@ -36,7 +36,7 @@ inline void handleSystemOperations(Cs& console, std::vector<std::string>& argume
 	else if (arguments[0] == "Long File")
 	{
 	}
-	else if (arguments[0] == "Show i-note")
+	else if (arguments[0] == "Show i-node")
 	{
 	}
 	else if (arguments[0] == "Show Priority")

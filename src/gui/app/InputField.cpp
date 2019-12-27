@@ -40,23 +40,23 @@ void InputField::setLabelAndFont(const sf::String& label, const sf::Font& font)
 
 void InputField::writeText(const sf::String& string)
 {
-	if (string.getData()[0] == 8 and inputString_.getSize() > 0)
-	{
-		inputString_.erase(inputString_.getSize() - 1);
-	}
-		/* handle backspace and newline chars */
-	else if (string.getData()[0] != 8 and string.getData()[0] != 13)
-	{
-		inputString_ += string;
-	}
+		if (string.getData()[0] == 8 and inputString_.getSize() > 0)
+		{
+			inputString_.erase(inputString_.getSize() - 1);
+		}
+			/* handle backspace and newline chars */
+		else if (string.getData()[0] != 8 and string.getData()[0] != 13)
+		{
+			inputString_ += string;
+		}
 
-	if (inputString_.getSize() > 16)
-	{
-		visibleText_ = inputString_.substring(inputString_.getSize() - 15);
-	}
-	else visibleText_ = inputString_;
+		if (inputString_.getSize() > 16)
+		{
+			visibleText_ = inputString_.substring(inputString_.getSize() - 15);
+		}
+		else visibleText_ = inputString_;
 
-	enteredText_.setString(visibleText_);
+		enteredText_.setString(visibleText_);
 }
 
 void InputField::setFocused()
@@ -94,7 +94,7 @@ sf::String InputField::getInput()
 	inputString_ = "";
 	visibleText_ = "";
 	enteredText_.setString(visibleText_);
-	
+
 	return out;
 }
 

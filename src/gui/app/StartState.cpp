@@ -16,8 +16,6 @@ StartState::StartState(std::shared_ptr<AppData> data) :
 
 void StartState::handleLeftClick_(const sf::Vector2f& mousePos, bool released)
 {
-	consoleScreen_.println("lewa siema!");
-
 	if (released)
 	{
 		for (auto& button : buttons_)
@@ -28,75 +26,75 @@ void StartState::handleLeftClick_(const sf::Vector2f& mousePos, bool released)
 				command.markRunButtonReleased();
 			}
 		}
+
+		return;
 	}
-	else
+	/* Przyciski pulpitu */
+	for (auto& button : buttons_)
 	{
-		/* Przyciski pulpitu */
-		for (auto& button : buttons_)
+		/* Glowny przycisk */
+		if (button.getGlobalBounds().contains(mousePos))
 		{
-			/* Glowny przycisk */
-			if (button.getGlobalBounds().contains(mousePos))
+			for (auto& b : buttons_) b.hideCommands();
+
+			button.markAsClicked();
+			button.drawCommands();
+		}
+		else
+		{
+			/* Przyciski komend */
+			for (auto& command : button.commands)
 			{
-				for (auto& b : buttons_) b.hideCommands();
-				
-				button.markAsClicked();
-				button.drawCommands();
-			}
-			else
-			{
-				/* Przyciski komend */
-				for (auto& command : button.commands)
+				/* Przycisk startu komendy */
+				if (command.containsRunButton(mousePos) and command.draw)
 				{
-					if (command.containsRunButton(mousePos))
+					command.markRunButtonPressed();
+					std::vector<std::string> input = {command.getInstruction()};
+
+					for (auto& field : command.inputFields)
 					{
-						command.markRunButtonPressed();
-						
-						std::vector<std::string> input = {command.getInstruction()};
-
-						for (auto& field : command.inputFields)
-						{
-							input.push_back(field.getInput());
-						}
-
-						handleSystemOperations(consoleScreen_, input);
+						input.push_back(field.getInput());
 					}
-					else
+
+					handleSystemOperations(consoleScreen_, input);
+				}
+				else
+				{
+					/* Pola do wprowadzania argumentow */
+					for (auto& field : command.inputFields)
 					{
-						/* Pola do wprowadzania argumentow */
-						for (auto& field : command.inputFields)
+						if (field.contains(mousePos) and command.draw)
 						{
-							if (field.contains(mousePos))
-							{
-								field.setFocused();
-							}
+							field.setFocused();
 						}
 					}
 				}
 			}
 		}
+	}
 
-		/* Przycisk start */
-		if (taskbar_.containsStartButton(mousePos))
-		{
-			taskbar_.toggleMenuDraw();
-		}
-		else if (taskbar_.containsShutdownButton(mousePos))
-		{
-			data_->states.addState(std::make_unique<ShutdownState>(data_), true);
-		}
-			/* Ikona terminala */
-		else if (taskbar_.containsTermButton(mousePos))
-		{
-			drawConsole_ = taskbar_.toggleTermButton();
-		}
+	/* Przycisk start */
+	if (taskbar_.containsStartButton(mousePos))
+	{
+		taskbar_.toggleMenuDraw();
+	}
+	else if (taskbar_.containsShutdownButton(mousePos))
+	{
+		data_->states.addState(std::make_unique<ShutdownState>(data_), true);
+	}
+		/* Ikona terminala */
+	else if (taskbar_.containsTermButton(mousePos))
+	{
+		drawConsole_ = taskbar_.toggleTermButton();
 	}
 }
 
 void StartState::handleRightClick_(const sf::Vector2f& mousePos, bool released)
 {
-	consoleScreen_.logln("no siema!");
 	taskbar_.dontDrawMenu();
-	for (auto& button : buttons_) button.hideCommands();
+	for (auto& button : buttons_) {
+		button.hideCommands();
+	}
 }
 
 void StartState::consoleSetup_()
@@ -125,20 +123,20 @@ void StartState::configureButtons_()
 	for (auto& button : buttons_) button.setLabelFont(data_->resources.appFont);
 
 	/* Processor Status command buttons */
-
+	/* GO */
+	buttons_[0].commands.emplace_back("Go", 1, data_->resources.appFont, data_->resources.runButtonTexture);
+	buttons_[0].commands[0].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 3 / 100));
+	buttons_[0].commands[0].inputFields[0].setLabelAndFont("Number of runs:", data_->resources.appFont);
 	/* Process Manager command buttons */
 	/* CP */
 	buttons_[1].commands.emplace_back("Create Process", 2, data_->resources.appFont, data_->resources.runButtonTexture);
+	buttons_[1].commands[0].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 3 / 100));
 	buttons_[1].commands[0].inputFields[0].setLabelAndFont("Process name:", data_->resources.appFont);
 	buttons_[1].commands[0].inputFields[1].setLabelAndFont("File containing program:", data_->resources.appFont);
-
-	buttons_[1].commands[0].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 3 / 100));
-
 	/* KP */
 	buttons_[1].commands.emplace_back("Kill Process", 1, data_->resources.appFont, data_->resources.runButtonTexture);
-	buttons_[1].commands[1].inputFields[0].setLabelAndFont("Process PID:", data_->resources.appFont);
-
 	buttons_[1].commands[1].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 30 / 100));
+	buttons_[1].commands[1].inputFields[0].setLabelAndFont("Process PID:", data_->resources.appFont);
 	/* Memory Manager command buttons */
 
 	/* File Manager command buttons */
@@ -202,7 +200,6 @@ void StartState::update()
 					for (auto& command : button.commands)
 					{
 						command.writeCommand(event.text.unicode);
-						break;
 					}
 				}
 				break;

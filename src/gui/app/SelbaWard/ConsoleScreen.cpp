@@ -986,7 +986,7 @@ namespace selbaward
 
 	void ConsoleScreen::logln(const std::string& string)
 	{
-		*this << Fg(12) << DateTimeWidget::getTimestamp() <<Fg(15);
+		*this << Fg(12) << DateTimeWidget::getTimestamp() << Fg(15);
 		println(string);
 	}
 

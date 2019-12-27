@@ -1,4 +1,4 @@
-#include "ProcessControl.hpp"
+#include "PCB.hpp"
 #include "ProcessManager.hpp"
 #include <random>
 #include <iostream>

@@ -1,5 +1,5 @@
 #pragma once
-#include "ProcessControl.hpp"
+#include "PCB.hpp"
 #include <vector>
 #include <memory>
 #include <string>

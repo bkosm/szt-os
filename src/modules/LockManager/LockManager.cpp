@@ -6,7 +6,7 @@ LockManager::LockManager(Shell& shell) : shell_(shell)
 
 Lock createLock(const bool startLocked)
 {
-	auto newLock = Lock();
+	Lock newLock;
 
 	if (startLocked) newLock.aquire();
 

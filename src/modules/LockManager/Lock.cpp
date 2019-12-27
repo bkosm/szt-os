@@ -1,25 +1,36 @@
 #include "Lock.hpp"
 
-Lock::Lock() { this->locked_ = false; }
+Lock::Lock() { locked_ = false; }
 
 bool Lock::aquire()
 {
-	if (this->locked_ == false)
-	{
-		this->locked_ = true;
-		return true;
-	}
+	if (locked_ == false) locked_ = true;
 
-	return false;
+	return locked_;
 }
 
 bool Lock::unlock()
 {
-	if (this->locked_ == true)
+	if (locked_ == true) locked_ = false;
+
+	return locked_;
+}
+
+std::vector<std::shared_ptr<PCB>>& Lock::getProcessQueue()
+{
+	return processQueue_;
+}
+
+std::string Lock::getProcessQueueString() const
+{
+	std::string queueString = "Processes requesting the file:\n";
+
+	unsigned number = 1;
+	for (const auto& pcb : processQueue_)
 	{
-		this->locked_ = false;
-		return true;
+		queueString += std::to_string(number) + ":\tName: " + pcb->processName + "\tPID: " + std::to_string(pcb->processID) + "\n";
+		++number;
 	}
 
-	return false;
+	return queueString;
 }

@@ -5,7 +5,7 @@
 class LockManager
 {
 public:
-	LockManager(Shell& shell);
+	explicit LockManager(Shell& shell);
 	~LockManager() = default;
 
 	Lock createLock(bool startLocked = false);
@@ -14,7 +14,7 @@ public:
 	 * @param startLocked w jakim stanie ma byc utworzony zamek.
 	 * @return Nowy obiekt zamka.
 	 */
-	
+
 private:
 	Shell& shell_;
 };

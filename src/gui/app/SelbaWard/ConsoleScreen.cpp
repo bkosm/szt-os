@@ -955,27 +955,39 @@ namespace selbaward
 	void ConsoleScreen::print(const std::string& string)
 	{
 		for (auto& character : string)
-			print(character);
+		{
+			if (character == '\n')
+			{
+				*this << CursorCommand::Newline;
+			}
+			else if (character == '\t')
+			{
+				*this << CursorCommand::Tab;
+			}
+			else
+			{
+				print(character);
+			}
+		}
 	}
 
 	void ConsoleScreen::println(const std::string& string)
 	{
-		for (auto& character : string)
-			print(character);
+		print(string);
 		*this << CursorCommand::Newline;
 	}
 
 
 	void ConsoleScreen::log(const std::string& string)
 	{
-		*this << Fg(12) << DateTimeWidget::getTimestamp() <<
-			Fg(15) << string;
+		*this << Fg(12) << DateTimeWidget::getTimestamp() << Fg(15);
+		print(string);
 	}
 
 	void ConsoleScreen::logln(const std::string& string)
 	{
-		*this << Fg(12) << DateTimeWidget::getTimestamp() <<
-			Fg(15) << string << CursorCommand::Newline;
+		*this << Fg(12) << DateTimeWidget::getTimestamp() <<Fg(15);
+		println(string);
 	}
 
 	void ConsoleScreen::print(const Location& location, char character)

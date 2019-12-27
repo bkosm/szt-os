@@ -1,14 +1,8 @@
 #pragma once
+#include "../ProcessManager/PCB.hpp"
 #include <unordered_map>
 #include <string>
 #include <cstdint>
-
-// dummy PCB for insnMap
-struct PCB {
-	uint8_t AX, BX, CX, DX;
-	uint8_t IC;
-	bool state;
-};
 
 // dummy Shell for nothing yet
 struct Shell {};

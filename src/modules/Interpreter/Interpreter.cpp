@@ -32,7 +32,7 @@ std::string Interpreter::readNextParam(PCB &process) {
 	bool loadsFileName = false;
 	for (std::string buffer = "";; buffer += c) {
 		c = ' ';// TODO read byte from RAM using IC
-		++process.IC;
+		++process.insnCounter;
 
 		if (c == '\"') loadsFileName = !loadsFileName;
 		if (!loadsFileName && c == ' ') return buffer;
@@ -45,7 +45,7 @@ void Interpreter::handleInsn(PCB &process) {
 		if (process.AX == 0) break;// dummy break (just to fully compile class)
 
 		c = ' ';// TODO read byte from RAM using IC
-		++process.IC;
+		++process.insnCounter;
 
 		if (c == ' ') {
 			try {
@@ -58,7 +58,7 @@ void Interpreter::handleInsn(PCB &process) {
 
 		buffer += c;
 		if (buffer == "HLT") {
-			process.state = 0;
+			process.status = PCBStatus::Terminated;
 			return;
 		}
 	}
@@ -136,19 +136,19 @@ void Interpreter::insnDSC(PCB &process) { LOAD(param1); SET(param1, GET(param1) 
 
 void Interpreter::handleJump(PCB &process, bool(*op)(uint8_t, uint8_t)) {
 	LOAD(param1); LOAD(param2); LOAD(param3);
-	if (op(GET(param1), GET(param2))) process.IC = GET(param3);
+	if (op(GET(param1), GET(param2))) process.insnCounter = GET(param3);
 }
 
-void Interpreter::insnJP(PCB &process) { LOAD(param1); process.IC = GET(param1); }
+void Interpreter::insnJP(PCB &process) { LOAD(param1); process.insnCounter = GET(param1); }
 
 void Interpreter::insnJZ(PCB &process) {
 	LOAD(param1); LOAD(param2);
-	if (GET(param1) == 0) process.IC = GET(param2);
+	if (GET(param1) == 0) process.insnCounter = GET(param2);
 }
 
 void Interpreter::insnJNZ(PCB &process) {
 	LOAD(param1); LOAD(param2);
-	if (GET(param1) != 0) process.IC = GET(param2);
+	if (GET(param1) != 0) process.insnCounter = GET(param2);
 }
 
 void Interpreter::insnJE(PCB &process)	{ handleJump(process, JUMP_LAMBDA(a == b)); }

@@ -5,7 +5,7 @@
 #include <system_error>
 #include "../../Shell.hpp"
 
-Scheduler::Scheduler(Shell &shell) : shell(shell) {
+Scheduler::Scheduler(Shell *shell) : shell(shell) {
 }
 
 void Scheduler::onReadyPcb(PCB_ptr readyPcb) {
@@ -31,7 +31,7 @@ void Scheduler::updateEstimatedTime(PCB_ptr pcb) {
 }
 
 void Scheduler::schedulePcb() {
-    auto readyProcesses = shell.getProcessManager().getReadyQueue();
+    auto readyProcesses = shell->getProcessManager().getReadyQueue();
 
     std::stable_sort(std::begin(readyProcesses), std::end(readyProcesses),
                      [](auto &lhs, auto &rhs) {

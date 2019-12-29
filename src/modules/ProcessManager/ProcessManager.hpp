@@ -19,8 +19,8 @@ public:
 	int getNextPID();
 	Shell *shell;
 
-	std::vector<PCB_ptr> getReadyQueue();
-	std::vector<PCB_ptr> getProcessList();
+	std::vector<PCB_ptr>& getReadyQueue();
+	std::vector<PCB_ptr>& getProcessList();
 
 	static std::string showChosenProcess(PCB_ptr process);
 	static std::string showProcessList(std::vector<PCB_ptr> list);

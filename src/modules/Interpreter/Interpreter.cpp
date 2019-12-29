@@ -86,7 +86,7 @@ uint8_t Interpreter::getValue(PCB &process, std::string dest) {
 		else if (dest == "CX") { value = process.CX; }
 		else if (dest == "DX") { value = process.DX; }
 		else value = static_cast<uint8_t>(std::stoul(dest));
-	} catch (std::invalid_argument) {
+	} catch (...) {
 		value = 0;// TODO handle error
 	}
 
@@ -110,7 +110,7 @@ void Interpreter::setValue(PCB &process, std::string dest, uint8_t value) {
 			else if (dest == "CX") { target = process.CX; }
 			else if (dest == "DX") { target = process.DX; }
 			else target = static_cast<uint8_t>(std::stoul(dest));
-		} catch (std::invalid_argument) {
+		} catch (...) {
 			target = 0;// TODO handle error
 		}
 
@@ -140,19 +140,19 @@ void Interpreter::insnDSC(PCB &process) { LOAD(param1); SET(param1, GET(param1) 
 
 void Interpreter::handleJump(PCB &process, bool(*op)(uint8_t, uint8_t)) {
 	LOAD(param1); LOAD(param2); LOAD(param3);
-	if (op(GET(param1), GET(param2))) process.IC = GET(param3);
+	if (op(GET(param1), GET(param2))) process.insnCounter = GET(param3);
 }
 
-void Interpreter::insnJP(PCB &process) { LOAD(param1); process.IC = GET(param1); }
+void Interpreter::insnJP(PCB &process) { LOAD(param1); process.insnCounter = GET(param1); }
 
 void Interpreter::insnJZ(PCB &process) {
 	LOAD(param1); LOAD(param2);
-	if (GET(param1) == 0) process.IC = GET(param2);
+	if (GET(param1) == 0) process.insnCounter = GET(param2);
 }
 
 void Interpreter::insnJNZ(PCB &process) {
 	LOAD(param1); LOAD(param2);
-	if (GET(param1) != 0) process.IC = GET(param2);
+	if (GET(param1) != 0) process.insnCounter = GET(param2);
 }
 
 void Interpreter::insnJE(PCB &process)	{ handleJump(process, JUMP_LAMBDA(a == b)); }

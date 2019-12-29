@@ -107,12 +107,12 @@ std::string ProcessManager::showReadyQueue(std::vector<PCB_ptr> queue)
 	return word;
 }
 
-std::vector<PCB_ptr> ProcessManager::getReadyQueue()
+std::vector<PCB_ptr>& ProcessManager::getReadyQueue()
 {
 	return readyQueue;
 }
 
-std::vector<PCB_ptr> ProcessManager::getProcessList()
+std::vector<PCB_ptr>& ProcessManager::getProcessList()
 {
 	return processList;
 }

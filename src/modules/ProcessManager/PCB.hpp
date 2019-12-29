@@ -25,7 +25,7 @@ public:
 	//===== INTEPRETER =====
 	uint8_t AX, BX, CX, DX;
 	uint8_t insnIndex;
-	uint8_t IC;
+	uint8_t insnCounter;
 	uint8_t estimatedTime;
 	//===== MEMORY CONTROL =====
 	//std::vector<PAGE> insnPages;

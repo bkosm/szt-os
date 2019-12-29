@@ -1,7 +1,6 @@
 #pragma once
 #include "SelbaWard/ConsoleScreen.h"
-
-class Shell;
+#include "../../Shell.hpp"
 
 inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::string>& arguments)
 {
@@ -18,28 +17,70 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 		}
 	}
 
-	if (arguments[0] == "Create Process")
+	if (arguments.empty()) return;
+
+	std::string cmd = arguments[0];
+
+	if (cmd == "Create Process")
+	{
+		/* if (sprawdzenie poprawnosci argumentow) */
+
+		try {
+			shell.getProcessManager().createProcess(arguments[1], arguments[2]);
+		} catch (...) {/* TODO obsluga bledu utworzenia procesu */
+			// wypisac blad
+			return;
+		}
+		
+		std::shared_ptr<PCB> pcb = shell.getProcessManager().getProcessFromList(arguments[1]);
+		try {
+			/* zaladowac program do pamieci */
+		} catch (...) {/* TODO obsluga bledu zaladowania do pamieci */
+			// wypisac blad
+			return;
+		}
+
+		pcb->changeStatus(PCBStatus::Ready);
+		shell.getProcessManager().addProcessToQueue(pcb);
+		shell.getScheduler().onReadyPcb(pcb);
+
+		console.println("Process " + arguments[1] + " created.");
+	}
+	else if (cmd == "Go")
+	{
+		/* ustalic ile razy */
+
+		/* planista ustala proces ktory ma sie wykonywac */
+
+		/* shell.getInterpreter().handleInsn(shell.getScheduler().getCurrentPCB());*/
+		std::shared_ptr<PCB> pcb;
+
+		if (pcb->status == PCBStatus::Terminated) {
+			
+		}
+		/* sprawdzenie, czy proces sie zakonczyl */
+
+		
+	}
+	else if(cmd == "Kill Process")
 	{
 	}
-	else if (arguments[0] == "GO")
+	else if (cmd == "Change Status")
 	{
 	}
-	else if (arguments[0] == "Change Status")
+	else if (cmd == "Show Pages")
 	{
 	}
-	else if (arguments[0] == "Show Pages")
+	else if (cmd == "Show Lock")
 	{
 	}
-	else if (arguments[0] == "Show Lock")
+	else if (cmd == "Long File")
 	{
 	}
-	else if (arguments[0] == "Long File")
+	else if (cmd == "Show i-node") //chyba nie mamy tego xd
 	{
 	}
-	else if (arguments[0] == "Show i-node")
-	{
-	}
-	else if (arguments[0] == "Show Priority")
+	else if (cmd == "Show Priority")
 	{
 	}
 }

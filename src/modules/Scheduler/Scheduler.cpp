@@ -1,7 +1,7 @@
 #include "Scheduler.hpp"
 #include <algorithm>
-#include <iterator>
 #include <exception>
+#include <iterator>
 #include <system_error>
 #include "../../Shell.hpp"
 
@@ -9,11 +9,9 @@ Scheduler::Scheduler(Shell *shell) : shell(shell) {
 }
 
 void Scheduler::onReadyPcb(PCB_ptr readyPcb) {
-    if (readyPcb == nullptr)
-        throw std::invalid_argument("argument of onProcessReady cannot be nullptr");
     if (runningProcess == nullptr)
         throw std::runtime_error("runningProcess should never be nullptr");
-    
+
     if (runningProcess->status != PCBStatus::Dummy)
         updateEstimatedTime(runningProcess);
 
@@ -27,7 +25,7 @@ std::shared_ptr<PCB> Scheduler::getRunningProcess() {
 void Scheduler::updateEstimatedTime(PCB_ptr pcb) {
     auto previousEstimatedTime = pcb->estimatedTime;
     pcb->estimatedTime = previousEstimatedTime == 0 ?
-        DefaultEstimatedTime : pcb->estimatedTime =  Alpha * pcb->insnCounter + (1 - Alpha) * pcb->estimatedTime;
+        DefaultEstimatedTime : pcb->estimatedTime = Alpha * pcb->insnCounter + (1 - Alpha) * pcb->estimatedTime;
 }
 
 void Scheduler::schedulePcb() {

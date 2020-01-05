@@ -36,6 +36,6 @@ void Scheduler::schedulePcb() {
                          return lhs->estimatedTime < rhs->estimatedTime;
                      });
 
-    runningProcess = readyProcesses.front();
+	runningProcess = readyProcesses.front();
 }
 

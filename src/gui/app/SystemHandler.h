@@ -19,18 +19,24 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 
 	if (arguments.empty()) return;
 
-	std::string cmd = arguments[0];
+	const auto cmd = arguments[0];
 
 	if (cmd == "Create Process")
 	{
 		/* if (sprawdzenie poprawnosci argumentow) */
+		if (arguments[1].empty() or arguments[2].empty()) return;
+		
 
-		try {
+		try
+		{
 			shell.getProcessManager().createProcess(arguments[1], arguments[2]);
-		} catch (std::invalid_argument &e) {
+		}
+		catch (std::invalid_argument& e)
+		{
 			/* wypisac blad: nie ma takiego programu */
 			return;
-		} catch (std::overflow_error &e) {
+		} catch (std::overflow_error& e)
+		{
 			/* wypisac blad: nie ma miejsca w pamieci */
 			return;
 		}
@@ -39,25 +45,36 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 	}
 	else if (cmd == "Go")
 	{
-		/* ustalic ile razy */
+		/* robi flipa gdy nie ma gotowych procesow do odpalenia wiec nara */
+		if (shell.getProcessManager().getReadyQueue().empty()
+			or std::stoi(arguments[1]) < 1
+			or arguments[1].empty())
+		{
+			return;
+		}
+
+		/* ilosc razy jest w arguments[1] */
 
 		shell.getScheduler().schedulePcb();
 
-		auto pcb = shell.getScheduler().getRunningProcess();
-		try {
+		const auto pcb = shell.getScheduler().getRunningProcess();
+		try
+		{
 			shell.getInterpreter().handleInsn(*pcb);
-		} catch (std::exception &e) {
+		}
+		catch (std::exception& e)
+		{
 			/* TODO: obsluga bledow (jak moduly beda skonczone) */
 		}
-		
 
-		if (pcb->status == PCBStatus::Terminated) {
+
+		if (pcb->status == PCBStatus::Terminated)
+		{
 			shell.getProcessManager().deleteProcessFromQueue(pcb->getPID());
 			/* TODO: usunac proces z listy procesow i kolejki */
 		}
-		
 	}
-	else if(cmd == "Kill Process")
+	else if (cmd == "Kill Process")
 	{
 	}
 	else if (cmd == "Change Status")

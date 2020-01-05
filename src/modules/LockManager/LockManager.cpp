@@ -4,7 +4,7 @@ LockManager::LockManager(Shell *shell) : shell_(shell)
 {
 }
 
-Lock createLock(const bool startLocked)
+Lock LockManager::createLock(const bool startLocked) const
 {
 	Lock newLock;
 

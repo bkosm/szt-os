@@ -25,7 +25,7 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 	{
 		/* if (sprawdzenie poprawnosci argumentow) */
 		if (arguments[1].empty() or arguments[2].empty()) return;
-		
+
 
 		try
 		{
@@ -91,6 +91,14 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 	}
 	else if (cmd == "Show i-node") //chyba nie mamy tego xd
 	{
+		auto test = shell.getLockManager().createLock();
+
+		console.println(test.getProcessQueueString());
+		
+		test.getProcessQueue().push_back(std::make_shared<PCB>(PCB("Siema", 123, PCBStatus::New)));
+		test.getProcessQueue().push_back(std::make_shared<PCB>(PCB("Byku", 321, PCBStatus::Running)));
+
+		console.println(test.getProcessQueueString());
 	}
 	else if (cmd == "Show Priority")
 	{

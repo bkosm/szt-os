@@ -27,22 +27,13 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 
 		try {
 			shell.getProcessManager().createProcess(arguments[1], arguments[2]);
-		} catch (...) {/* TODO obsluga bledu utworzenia procesu */
-			// wypisac blad
+		} catch (std::invalid_argument &e) {
+			/* wypisac blad: nie ma takiego programu */
+			return;
+		} catch (std::overflow_error &e) {
+			/* wypisac blad: nie ma miejsca w pamieci */
 			return;
 		}
-		
-		std::shared_ptr<PCB> pcb = shell.getProcessManager().getProcessFromList(arguments[1]);
-		try {
-			/* zaladowac program do pamieci */
-		} catch (...) {/* TODO obsluga bledu zaladowania do pamieci */
-			// wypisac blad
-			return;
-		}
-
-		pcb->changeStatus(PCBStatus::Ready);
-		shell.getProcessManager().addProcessToQueue(pcb);
-		shell.getScheduler().onReadyPcb(pcb);
 
 		console.println("Process " + arguments[1] + " created.");
 	}
@@ -50,16 +41,20 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 	{
 		/* ustalic ile razy */
 
-		/* planista ustala proces ktory ma sie wykonywac */
+		shell.getScheduler().schedulePcb();
 
-		/* shell.getInterpreter().handleInsn(shell.getScheduler().getCurrentPCB());*/
-		std::shared_ptr<PCB> pcb;
+		auto pcb = shell.getScheduler().getRunningProcess();
+		try {
+			shell.getInterpreter().handleInsn(*pcb);
+		} catch (std::exception &e) {
+			/* TODO: obsluga bledow (jak moduly beda skonczone) */
+		}
+		
 
 		if (pcb->status == PCBStatus::Terminated) {
-			
+			shell.getProcessManager().deleteProcessFromQueue(pcb->getPID());
+			/* TODO: usunac proces z listy procesow i kolejki */
 		}
-		/* sprawdzenie, czy proces sie zakonczyl */
-
 		
 	}
 	else if(cmd == "Kill Process")

@@ -1,7 +1,9 @@
 #include "PCB.hpp"
 #include "ProcessManager.hpp"
+#include "../../Shell.hpp"
 #include <random>
 #include <algorithm>
+#include <exception>
 #include <iostream>
 #include <utility>
 
@@ -19,6 +21,20 @@ void ProcessManager::createProcess(std::string name, std::string fileName)
 {
 	auto pcb = std::make_shared<PCB>(std::move(name), getNextPID(), PCBStatus::New);
 	processList.push_back(pcb);
+
+	try {
+		/* zaladowac program do pamieci */
+	} catch (std::overflow_error &e) {
+		deleteProcessFromList(pcb->getPID());
+		throw e;
+	} catch (std::invalid_argument &e) {
+		deleteProcessFromList(pcb->getPID());
+		throw e;
+	}
+
+	pcb->changeStatus(PCBStatus::Ready);
+	shell->getProcessManager().addProcessToQueue(pcb);
+	shell->getScheduler().onReadyPcb(pcb);
 }
 
 std::string ProcessManager::showChosenProcess(PCB_ptr process)
@@ -140,9 +156,24 @@ int ProcessManager::getNextPID()
 
 void ProcessManager::deleteProcessFromList(int pid)
 {
+	if (processList.empty())
+	{
+		throw std::length_error("ProcessList is empty. You cannot delete a process.");
+	}
 	processList.erase(std::remove_if(std::begin(processList), std::end(processList),
 	                                 [&pid](auto& pcb) { return pcb->processID == pid; }),
 	                  std::end(processList));
+}
+
+void ProcessManager::deleteProcessFromQueue(int pid)
+{
+	if (readyQueue.empty())
+	{
+		throw std::length_error("ReadyQueue is empty. You cannot delete a process.");
+	}
+	readyQueue.erase(std::remove_if(std::begin(readyQueue), std::end(readyQueue),
+	                                 [&pid](auto& pcb) { return pcb->processID == pid; }),
+	                  std::end(readyQueue));
 }
 
 void ProcessManager::addProcessToList(std::shared_ptr<PCB> process)
@@ -158,11 +189,20 @@ void ProcessManager::addProcessToQueue(std::shared_ptr<PCB> process)
 
 PCB_ptr ProcessManager::getProcessFromList(std::string processName)
 {
+	if(processList.empty())
+	{
+		throw std::length_error("ProcessList is empty.");
+	}
+	
 	for (int i = 0; i < this->processList.size(); i++)
 	{
 		if (this->processList[i]->processName == processName)
 		{
 			return this->processList.at(i);
+		}
+		else
+		{
+			throw std::invalid_argument("The process does not exist.");
 		}
 	}
 }
@@ -174,6 +214,10 @@ void ProcessManager::changeStatusChosenProcess(int pid, PCBStatus sts)
 		if (pcb->processID == pid)
 		{
 			pcb->changeStatus(sts);
+		}
+		else
+		{
+			throw std::invalid_argument("The process does not exist.");
 		}
 	}
 }

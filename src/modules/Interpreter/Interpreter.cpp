@@ -34,7 +34,12 @@ std::string Interpreter::readNextParam(PCB &process) {
 	char c;
 	bool loadsFileName = false;
 	for (std::string buffer = "";; buffer += c) {
-		c = ' ';// TODO read byte from RAM using IC
+		try {
+			c = ' ';// TODO read byte from RAM using IC
+		} catch (std::out_of_range &e) {
+			throw e;
+		}
+
 		++process.insnIndex;
 
 		if (c == '\"') loadsFileName = !loadsFileName;
@@ -43,33 +48,52 @@ std::string Interpreter::readNextParam(PCB &process) {
 }
 
 void Interpreter::handleInsn(PCB &process) {
-	char c;
-	
-	for (std::string buffer = "";;) {
-		if (process.AX == 0) break;// dummy break (just to fully compile class)
+	uint8_t prevInsnIndex = process.insnIndex;
 
-		c = ' ';// TODO read byte from RAM using IC
+	char c;
+	for (std::string buffer = "";;) {
+		try {
+			c = ' ';// TODO read byte from RAM using IC
+		} catch (std::out_of_range &e) {
+			process.insnIndex = prevInsnIndex;
+			process.changeStatus(PCBStatus::Error);
+			throw e;
+		}
+		
 		++process.insnIndex;
 
 		if (c == ' ') {
+			void (Interpreter::*insn)(PCB&) = nullptr;
+
 			try {
-				(this->*insnMap.at(buffer))(process);
-			} catch (std::out_of_range) {
-				// TODO error, not known instruction
+				insn = insnMap.at(buffer);
+			} catch (std::out_of_range &e) {
+				process.changeStatus(PCBStatus::Error);
+				process.insnIndex = prevInsnIndex;
+				throw std::out_of_range("Nieznana instrukcja: " + buffer);
+			}
+
+			try {
+				(this->*insn)(process);
+				++process.insnCounter;
+			} catch (std::exception &e) {
+				process.changeStatus(PCBStatus::Error);
+				process.insnIndex = prevInsnIndex;
+				throw e;
 			}
 			return;
 		}
 
 		buffer += c;
 		if (buffer == "HLT") {
-			// TODO terminate process
+			process.changeStatus(PCBStatus::Terminated);
 			return;
 		}
 	}
 }
 
 uint8_t Interpreter::getValue(PCB &process, std::string dest) {
-	if (dest.length() == 0) return 0;// TODO handle error
+	if (dest.length() == 0) throw std::invalid_argument("Parametr instrukcji jest pusty.");
 
 	bool isAddr;
 	if (dest.front() == '[' && dest.back() == ']') {
@@ -86,24 +110,29 @@ uint8_t Interpreter::getValue(PCB &process, std::string dest) {
 		else if (dest == "CX") { value = process.CX; }
 		else if (dest == "DX") { value = process.DX; }
 		else value = static_cast<uint8_t>(std::stoul(dest));
-	} catch (...) {
-		value = 0;// TODO handle error
+	} catch (std::exception &e) {
+		throw std::invalid_argument("Nie udalo sie przekonwertowac parametru instrukcji na liczbe.");
 	}
 
 	if (isAddr) {
-		value = 0;// TODO read byte from RAM by value
+		try {
+			value = 0;// TODO read byte from RAM by value
+		} catch (std::out_of_range &e) {
+			throw e;
+		}
+		
 	}
 
 	return value;
 }
 
 void Interpreter::setValue(PCB &process, std::string dest, uint8_t value) {
-	if (dest.length() == 0) return;// TODO handle error
+	if (dest.length() == 0) throw std::invalid_argument("Parametr instrukcji jest pusty.");
 
 	if (dest.front() == '[' && dest.back() == ']') {
 		dest = dest.substr(1, dest.length() - 2);
 
-		int target;
+		uint8_t target;
 		try {
 			if (dest == "AX") { target = process.AX; }
 			else if (dest == "BX") { target = process.BX; }
@@ -111,10 +140,14 @@ void Interpreter::setValue(PCB &process, std::string dest, uint8_t value) {
 			else if (dest == "DX") { target = process.DX; }
 			else target = static_cast<uint8_t>(std::stoul(dest));
 		} catch (...) {
-			target = 0;// TODO handle error
+			throw std::invalid_argument("Nie udalo sie przekonwertowac parametru instrukcji na liczbe.");
 		}
 
-		// TODO set byte in RAM using target
+		try {
+			target = 0;// TODO set byte in RAM using target
+		} catch (std::out_of_range &e) {
+			throw e;
+		}
 	}
 	else if (dest == "AX") { process.AX = value; }
 	else if (dest == "BX") { process.BX = value; }
@@ -140,19 +173,19 @@ void Interpreter::insnDSC(PCB &process) { LOAD(param1); SET(param1, GET(param1) 
 
 void Interpreter::handleJump(PCB &process, bool(*op)(uint8_t, uint8_t)) {
 	LOAD(param1); LOAD(param2); LOAD(param3);
-	if (op(GET(param1), GET(param2))) process.insnCounter = GET(param3);
+	if (op(GET(param1), GET(param2))) process.insnIndex = GET(param3);
 }
 
-void Interpreter::insnJP(PCB &process) { LOAD(param1); process.insnCounter = GET(param1); }
+void Interpreter::insnJP(PCB &process) { LOAD(param1); process.insnIndex = GET(param1); }
 
 void Interpreter::insnJZ(PCB &process) {
 	LOAD(param1); LOAD(param2);
-	if (GET(param1) == 0) process.insnCounter = GET(param2);
+	if (GET(param1) == 0) process.insnIndex = GET(param2);
 }
 
 void Interpreter::insnJNZ(PCB &process) {
 	LOAD(param1); LOAD(param2);
-	if (GET(param1) != 0) process.insnCounter = GET(param2);
+	if (GET(param1) != 0) process.insnIndex = GET(param2);
 }
 
 void Interpreter::insnJE(PCB &process)	{ handleJump(process, JUMP_LAMBDA(a == b)); }

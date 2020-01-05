@@ -27,6 +27,7 @@ public:
 	static std::string showReadyQueue(std::vector<PCB_ptr> queue);
 
 	void deleteProcessFromList(int pid);
+	void deleteProcessFromQueue(int pid);
 
 	void addProcessToList(PCB_ptr process);
 	void addProcessToQueue(PCB_ptr process);
@@ -48,6 +49,7 @@ public:
 	 * showProcessList - metoda wyswietlajaca listê wszystkich procesów
 	 * showReadyQueue - metoda wyswietlaj¹ca kolejkê procesow gotowych
 	 * deleteProcessFromList - metoda usuwaj¹ca proces o podanym ID
+	 * deleteProcessFromQueue - metoda usuwaj¹ca proces o podanym ID
 	 * addProcessToList - metoda dodaj¹ca wybrany proces do listy
 	 * getProcessFromList - metoda zwracaj¹ca proces o podanej nazwie
 	 * changeStatusChosenProcess - metoda zmieniaja status procesu wybranego z listy

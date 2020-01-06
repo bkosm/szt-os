@@ -12,7 +12,7 @@ void Scheduler::onReadyPcb(PCB_ptr readyPcb) {
     if (runningProcess == nullptr)
         throw std::runtime_error("runningProcess should never be nullptr");
     
-    if (runningProcess->status != PCBStatus::Dummy)
+    if (runningProcess->getStatus() != PCBStatus::Dummy)
         updateEstimatedTime(runningProcess);
 
     updateEstimatedTime(readyPcb);
@@ -30,6 +30,14 @@ void Scheduler::updateEstimatedTime(PCB_ptr pcb) {
 
 void Scheduler::schedulePcb() {
     std::vector<PCB_ptr> readyProcesses = shell->getProcessManager().getReadyQueue();
+    
+    for (auto &pcbPtr : readyProcesses) {
+		if (pcbPtr->getStatus() == PCBStatus::Running)
+		{
+            pcbPtr->changeStatus(PCBStatus::Ready);
+            break;
+		}
+    }
 
     std::stable_sort(std::begin(readyProcesses), std::end(readyProcesses),
                      [](auto &lhs, auto &rhs) {
@@ -37,5 +45,6 @@ void Scheduler::schedulePcb() {
                      });
 
 	runningProcess = readyProcesses.front();
+    runningProcess->changeStatus(PCBStatus::Running);
 }
 

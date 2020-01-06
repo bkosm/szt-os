@@ -15,7 +15,6 @@ CMakeLists.txt
 *.filters/*
 *.user/*
 *.out
-*.exe
 *.o
 *_test.cpp
 ### C++ ###

@@ -41,6 +41,7 @@ public:
 
 	std::string showProcess() const;
 	int getPID() const;
+	PCBStatus getStatus() const;
 	void changeStatus(PCBStatus status);
 	/*
 	 * PCB - konstruktor

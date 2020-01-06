@@ -54,6 +54,11 @@ int PCB::getPID() const
 	return this->processID;
 }
 
+PCBStatus PCB::getStatus() const
+{
+	return this->status;
+}
+
 void PCB::changeStatus(PCBStatus status)
 {
 	this->status = status;

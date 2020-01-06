@@ -1,23 +1,17 @@
 #include "MemoryManager.h"
-#include <fstream>
+#include "../ProcessManager/PCB.hpp"
 
-ProcessPageTableData::ProcessPageTableData(bool status, int frameNumber) : status(status), frameNumber(frameNumber)
-{
-}
+ProcessPageTableData::ProcessPageTableData(bool status, int frameNumber) : status(status), frameNumber(frameNumber) {}
 
-ProcessPageTableData::ProcessPageTableData()
-{
+ProcessPageTableData::ProcessPageTableData() {
 	this->status = false;
 	this->frameNumber = -1;
 }
 
-MemoryManager::Page::Page() : Page("")
-{
-}
+MemoryManager::Page::Page() :Page("") {}
 
-MemoryManager::Page::Page(std::string pageData)
-{
-	/*Uzupe�nianie argumentu spacjami, je�eli jest za ma�y*/
+MemoryManager::Page::Page(std::string pageData) {
+	/*Uzupełnianie argumentu spacjami, jeżeli jest za mały*/
 	while (pageData.length() < 16) { pageData += " "; }
 
 	/*Przepisywanie argumentu do strony*/
@@ -25,10 +19,8 @@ MemoryManager::Page::Page(std::string pageData)
 		this->pageData[i] = pageData[i];
 }
 
-void MemoryManager::Page::print() const
-{
-	for (auto& i : pageData)
-	{
+void MemoryManager::Page::print() const {
+	for (auto& i : pageData) {
 		if (i == ' ') std::cout << "_";
 		else std::cout << i;
 	}
@@ -36,17 +28,12 @@ void MemoryManager::Page::print() const
 }
 
 /*Lista ramek - konstruktor*/
-MemoryManager::FrameListData::FrameListData(bool isFree, int processID, int pageID,
-                                            std::vector<ProcessPageTableData>* processPageList)
-	: isFree(isFree), processID(processID), pageID(pageID), processPageList(processPageList)
-{
-};
+MemoryManager::FrameListData::FrameListData(bool isFree, int processID, int pageID, std::vector<ProcessPageTableData>* processPageList)
+	: isFree(isFree), processID(processID), pageID(pageID), processPageList(processPageList) {};
 
 /*Konstruktor - RAM*/
-MemoryManager::MemoryManager() : RAM{}
-{
-	for (auto i = 0; i < 32; i++)
-	{
+MemoryManager::MemoryManager() : RAM {} {
+	for (auto i = 0; i < 32; i++) {
 		this->Frames.emplace_back(FrameListData(true, -1, -1, nullptr));
 	}
 }
@@ -54,76 +41,70 @@ MemoryManager::MemoryManager() : RAM{}
 /*Dekonstruktor MemoryMenager'a*/
 MemoryManager::~MemoryManager() = default;
 
-/*Pokazuje obecn� zawarto�� pami�ci operacyjnej RAM*/
-void MemoryManager::showMemory()
-{
-	std::cout << "RAM - CONTENT IN PHYSICAL MEMORY\n";
-	for (int i = 0; i < 512; i++)
-	{
-		if (i % 16 == 0 && i != 0) std::cout << "\nFrame number " << i / 16 << ": \t";
-		else if (i % 16 == 0) std::cout << "Frame number " << i / 16 << ": \t";
-		if (RAM[i] == ' ' || RAM[i] == '\0') std::cout << '_';
-		else if (RAM[i] == '\n' || RAM[i] == '\r') std::cout << '_';
-		else std::cout << RAM[i];
+/*Pokazuje obecną zawartość pamięci operacyjnej RAM*/
+std::string MemoryManager::showMemory() {
+	std::ostringstream stream;
+	stream << "RAM - CONTENT IN PHYSICAL MEMORY\n";
+	for (auto i = 0; i < 512; i++) {
+		if (i % 16 == 0 && i != 0) stream << "\nFrame number " << i / 16 << ": \t";
+		else if (i % 16 == 0) stream << "Frame number " << i / 16 << ": \t";
+		if (RAM[i] == ' ' || RAM[i] == '\0') stream << '_';
+		else if (RAM[i] == '\n' || RAM[i] == '\r') stream << '_';
+		else stream << RAM[i];
 	}
+	return stream.str();
 }
 
-/*Pokazuje dany fragment pami�ci operacyjnej RAM*/
-void MemoryManager::showMemory(int begin, int end)
-{
-	if (begin + end > 512)
-	{
-		std::cout << "Error: The number of bytes of memory to be analyzed is outside the memory range \n";
+/*Pokazuje dany fragment pamięci operacyjnej RAM*/
+std::string MemoryManager::showMemory(int begin, int end) {
+	std::ostringstream stream;
+	if (begin + end > 512) {
+		stream << "Error: The number of bytes of memory to be analyzed is outside the memory range \n";
 	}
-	else
-	{
-		std::cout << "Displaying physical memory from cell " << begin << " to " << begin + end << ":\n";
-		for (int i = begin; i < begin + end; i++)
-		{
-			if (i != 0 && i % 16 == 0) { std::cout << "\n"; }
-			if (RAM[i] == ' ' || RAM[i] == '\0' || RAM[i] == '\n' || RAM[i] == '\r') std::cout << '-';
-			else if (RAM[i] != ' ') std::cout << "test" << RAM[i];
+	else {
+		stream << "Displaying physical memory from cell " << begin << " to " << begin + end << ":\n";
+		for (int i = begin; i < begin + end; i++) {
+			if (i != 0 && i % 16 == 0) { stream << "\n"; }
+			if (RAM[i] == ' ' || RAM[i] == '\0' || RAM[i] == '\n' || RAM[i] == '\r') stream << '-';
+			else if (RAM[i] != ' ') stream << "test" << RAM[i];
 		}
-		std::cout << std::endl;
+		stream << std::endl;
 	}
+	return stream.str();
 }
 
-/*Pokazuje obecn� zawarto�� stosu*/
-void MemoryManager::showStack()
-{
-	std::cout << "First in first out Stack: ";
-	for (auto frame : lastUsedFramesStack)
-	{
-		std::cout << frame << " ";
+/*Pokazuje obecną zawartość stosu*/
+std::string MemoryManager::showStack() {
+	std::ostringstream stream;
+	stream << "First in first out Stack: ";
+	for (auto frame : lastUsedFramesStack) {
+		stream << frame << " ";
 	}
-	std::cout << std::endl;
+	stream << std::endl;
+	return stream.str();
 }
 
-/*Pokazuje zawarto�� ramki*/
-void MemoryManager::showFrame()
-{
-	std::cout << "FRAMES INFO: \n";
-	std::cout << "\t\tFREE \tPAGE \tPID " << std::endl;
+/*Pokazuje zawartość ramki*/
+std::string MemoryManager::showFrame() {
+	std::ostringstream stream;
+	stream << "FRAMES INFO: \n";
+	stream << "\t\tFREE \tPAGE \tPID " << std::endl;
 	int i = 0;
-	for (auto& frame : Frames)
-	{
-		std::cout << "Frame no." << i++ << ":\t" << frame.isFree << "\t" << frame.pageID << "\t" << frame.processID <<
-			"\n";
+	for (auto& frame : Frames) {
+		stream << "Frame no." << i++ << ":\t" << frame.isFree << "\t" << frame.pageID << "\t" << frame.processID << "\n";
 	}
+	return stream.str();
 }
 
 
-/*Funkcje u�ytkowe RAM*/
+/*Funkcje użytkowe RAM*/
 
 /*Akutalizacja stosu*/
-void MemoryManager::updateStack(int frameNumber)
-{
+void MemoryManager::updateStack(int frameNumber) {
 	if (frameNumber > 31) return;
 
-	for (auto it = lastUsedFramesStack.begin(); it != lastUsedFramesStack.end(); ++it)
-	{
-		if (*it == frameNumber)
-		{
+	for (auto it = lastUsedFramesStack.begin(); it != lastUsedFramesStack.end(); ++it) {
+		if (*it == frameNumber) {
 			lastUsedFramesStack.erase(it);
 			break;
 		}
@@ -133,35 +114,29 @@ void MemoryManager::updateStack(int frameNumber)
 }
 
 
-/*Process bezczynno�ci umieszczany w RAMie przy starcie systemu*/
-void MemoryManager::processOfInaction()
-{
-	for (auto& cell : RAM)
-	{
+/*Process bezczynności umieszczany w RAMie przy starcie systemu*/
+void MemoryManager::processOfInaction() {
+	for (auto& cell : RAM) {
 		cell = ' ';
 	}
 	PageFile.emplace(1, std::vector<Page>{Page("JMP [0];")}); /*Wykonanie skoku do adresu 0*/
 }
 
 
-int MemoryManager::loadProgram(const std::string& filePath, int PID)
-{
-	std::fstream file(filePath); /*Plik na dysku*/
-	std::string helpVariable; /*Zmienna pomocnicza*/
-	std::string program; /*Program w jednej linii*/
-	std::vector<Page> pageVector; /*wektor stron do dodania*/
+int MemoryManager::loadProgram(const std::string & filePath, int PID) {
+	std::fstream file(filePath);	/*Plik na dysku*/
+	std::string helpVariable;		/*Zmienna pomocnicza*/
+	std::string program;			/*Program w jednej linii*/
+	std::vector<Page> pageVector;	/*wektor stron do dodania*/
 
-	if (!file.is_open())
-	{
+	if (!file.is_open()) {
 		std::cout << "Nie mozna odtworzyc pliku!\n";
 		return -1;
 	}
 
-	while (std::getline(file, helpVariable))
-	{
-		/*Dodanie na ko�cu znacznika ko�ca linii*/
-		if (!helpVariable.empty())
-		{
+	while (std::getline(file, helpVariable)) {
+		/*Dodanie na końcu znacznika końca linii*/
+		if (!helpVariable.empty()) {
 			helpVariable += ';';
 			program += helpVariable;
 		}
@@ -171,28 +146,25 @@ int MemoryManager::loadProgram(const std::string& filePath, int PID)
 	helpVariable.clear();
 
 	/*Dzielenie programu na stronnice*/
-	for (char i : program)
-	{
+	for (char i : program) {
 		helpVariable += i;
-		if (helpVariable.size() == 16)
-		{
+		if (helpVariable.size() == 16) {
 			pageVector.emplace_back(Page(helpVariable));
 			helpVariable.clear();
 		}
 	}
 
-	/*Sprawdzanie czy zmienna przechowuje jeszcze jakie� instrukcje*/
+	/*Sprawdzanie czy zmienna przechowuje jeszcze jakieś instrukcje*/
 	if (!helpVariable.empty()) { pageVector.emplace_back(Page(helpVariable)); }
 	helpVariable.clear();
 
-	if (pageSize * 16 < 16 * pageVector.size())
-	{
+	if (pageSize * 16 < 16 * pageVector.size()) {
 		std::cout << "Error: proces ma przypisane zbyt malo pamieci!\n";
 		return -1;
 	}
 
 
-	//Sprawdzanie, czy program nie potrzebuje wiecej stronic w pami�ci
+	//Sprawdzanie, czy program nie potrzebuje wiecej stronic w pamięci
 	for (int i = pageVector.size(); i < pageSize; i++)
 		pageVector.emplace_back(helpVariable);
 
@@ -203,12 +175,9 @@ int MemoryManager::loadProgram(const std::string& filePath, int PID)
 }
 
 /*Usuwanie programu z pamieci*/
-void MemoryManager::deleteProgram(int PID)
-{
-	for (size_t i = 0; i < Frames.size(); i++)
-	{
-		if (Frames[i].processID == PID)
-		{
+void MemoryManager::deleteProgram(int PID) {
+	for (size_t i = 0; i < Frames.size(); i++) {
+		if (Frames[i].processID == PID) {
 			for (size_t j = i * 16; j < i * 16 + 16; j++)
 				RAM[j] = ' ';
 			updateStack(i);
@@ -220,16 +189,13 @@ void MemoryManager::deleteProgram(int PID)
 	}
 }
 
-/*Znajduje pierwsz� woln� ramke w pami�ci RAM*/
-int MemoryManager::searchFreeFrame()
-{
+/*Znajduje pierwszą wolną ramke w pamięci RAM*/
+int MemoryManager::searchFreeFrame() {
 	int seekedFrame = -1;
 
 
-	for (size_t i = 0; i < Frames.size(); i++)
-	{
-		if (Frames[i].isFree)
-		{
+	for (size_t i = 0; i < Frames.size(); i++) {
+		if (Frames[i].isFree) {
 			seekedFrame = i;
 			break;
 		}
@@ -238,13 +204,11 @@ int MemoryManager::searchFreeFrame()
 }
 
 /*Zamienia stronnice zgodnie z algorytmem LRU*/
-int MemoryManager::swapPage(int pageID, int PID)
-{
-	/*Numer ramki, kt�ra b�dzie zamieniana*/
+int MemoryManager::swapPage(int pageID, int PID) {
+	/*Numer ramki, która będzie zamieniana*/
 	const int Frame = *lastUsedFramesStack.begin();
-	/*Przepisuje ramk� do pliku wymiany*/
-	for (int i = Frame * 16; i < Frame * 16 + 16; i++)
-	{
+	/*Przepisuje ramkę do pliku wymiany*/
+	for (int i = Frame * 16; i < Frame * 16 + 16; i++) {
 		PageFile[Frames[Frame].processID][Frames[Frame].pageID].pageData[i - (Frame * 16)] = RAM[i];
 	}
 
@@ -256,15 +220,13 @@ int MemoryManager::swapPage(int pageID, int PID)
 }
 
 
-/*�aduje stronnice do pamieci RAM*/
-int MemoryManager::loadPagesToMemory(Page page, int pageID, int PID,
-                                     const std::shared_ptr<std::vector<ProcessPageTableData>>& pageList)
-{
+/*Ładuje stronnice do pamieci RAM*/
+int MemoryManager::loadPagesToMemory(Page page, int pageID, int PID, const std::shared_ptr<std::vector<ProcessPageTableData>> & pageList) {
 	int frame = searchFreeFrame();
 
 	if (frame == -1) { frame = swapPage(pageID, PID); }
 
-	//Przepisywanie stronicy do pami�ci RAM
+	//Przepisywanie stronicy do pamięci RAM
 	int it = 0;
 	const int end = frame * 16 + 16;
 	for (int i = frame * 16; i < end; i++)
@@ -274,7 +236,7 @@ int MemoryManager::loadPagesToMemory(Page page, int pageID, int PID,
 	pageList->at(pageID).status = true;
 	pageList->at(pageID).frameNumber = frame;
 
-	//Aktualizacja stosu u�ywalno�ci
+	//Aktualizacja stosu używalności
 	updateStack(frame);
 
 	//Aktualizacja informacji o ramce
@@ -287,20 +249,48 @@ int MemoryManager::loadPagesToMemory(Page page, int pageID, int PID,
 }
 
 
-/*Tworzy wska�nik do tablicy stronic procesu - wywo�ywane w momencie tworzenia procesu*/
-std::shared_ptr<std::vector<ProcessPageTableData>> MemoryManager::createProcessPageList(int memoryNeeded, int PID)
-{
+/*Tworzy wskaźnik do tablicy stronic procesu - wywoływane w momencie tworzenia procesu*/
+std::shared_ptr<std::vector<ProcessPageTableData>> MemoryManager::createProcessPageList(int memoryNeeded, int PID) {
 	const double pages = ceil(static_cast<double>(memoryNeeded) / 16);
 	std::shared_ptr<std::vector<ProcessPageTableData>> pageList = std::make_shared<std::vector<ProcessPageTableData>>();
 
-	for (int i = 0; i < pages; i++)
-	{
+	for (int i = 0; i < pages; i++) {
 		pageList->push_back(ProcessPageTableData(false, 0));
 	}
 
 
-	//Za�adowanie pierszej stronicy naszego programu do Pami�ci RAM
+	//Załadowanie pierszej stronicy naszego programu do Pamięci RAM
 	loadPagesToMemory(PageFile[PID].at(0), 0, PID, pageList);
 
 	return pageList;
 }
+
+void MemoryManager::setByte(std::shared_ptr<PCB> pcb, uint8_t data, int target) {
+	/*czekam na natchnienie*/
+}
+
+/*NIE WIEM CZY O TO CHODZIŁO - NIE WIEM CZY DZIAŁA*/
+/*Pobranie instrukcji procesu od danego momentu*/
+uint8_t MemoryManager::getByte(std::shared_ptr<PCB> pcb, int target) {
+	uint8_t temp;
+	unsigned int PageID = target / 16;
+
+	/*przekroczenie zakres dla tego procesu !!!*/
+
+	/*Numer stronicy w pamięci*/
+	PageID = target / 16;
+
+	/*sprawdzenie czy znajduje się w pamieci operacyjnej*/
+	//if (!pcb->pageList.at(PageID).bit)
+	//	loadPagesToMemory(PageFile[pcb->PID][PageID], PageID, pcb->PID, pcb->pageList);
+
+	//if (pcb->pageList.at(PageID).bit) {
+	//	const int Frame = pcb->pageList.at(PageID).frame;//Bieżąco używana ramka
+
+	//	temp += RAM[Frame * 16 + target - 16 * PageID];
+	//}
+	return temp;
+}
+
+
+

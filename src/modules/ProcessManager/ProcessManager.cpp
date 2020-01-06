@@ -209,15 +209,11 @@ PCB_ptr ProcessManager::getProcessFromList(std::string processName)
 
 void ProcessManager::changeStatusChosenProcess(int pid, PCBStatus sts)
 {
-	for (auto& pcb : processList)
+	auto it = std::find_if(std::begin(processList), std::end(processList), [pid](PCB_ptr& pcb) { return pcb->getPID() == pid; });
+	if (it == std::end(processList))
 	{
-		if (pcb->processID == pid)
-		{
-			pcb->changeStatus(sts);
-		}
-		else
-		{
-			throw std::invalid_argument("The process does not exist.");
-		}
+		throw std::invalid_argument("The process does not exist.");
 	}
+
+	(*it)->changeStatus(sts);
 }

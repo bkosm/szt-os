@@ -3,10 +3,13 @@
 #include <vector>
 #include <list>
 #include <map>
+#include <sstream>
+#include <fstream>
+#include <math.h>
 #include <iostream>
+#include "../ProcessManager/PCB.hpp"
 
-struct ProcessPageTableData
-{
+struct ProcessPageTableData {
 	bool status; /*True - ramka znajduje siê w pamieæi ram, False - ramka nie znajduje siê w pamiêci ram*/
 	int frameNumber; /*Numer ramki w której znajduje siê stronica*/
 
@@ -14,15 +17,13 @@ struct ProcessPageTableData
 	ProcessPageTableData(bool status, int frameNumber);
 };
 
-class MemoryManager
-{
+class MemoryManager {
 public:
-	char RAM[512]; /*Pamiêæ fizyczna komputera*/
-	/*private:*/
+	unsigned char RAM[512]; /*Pamiêæ fizyczna komputera*/
+/*private:*/
 	/*Struktura pojedyñczej strony*/
-	struct Page
-	{
-		char pageData[16] = {' '};
+	struct Page {
+		char pageData[16] = { ' ' };
 
 		Page();
 		explicit Page(std::string pageData);
@@ -32,13 +33,11 @@ public:
 
 	/*Lista ramek*/
 
-	struct FrameListData
-	{
+	struct FrameListData {
 		bool isFree; /*pokazuje czy ramka jest wolna*/
 		int processID; /*numer procesu*/
 		int pageID; /*numer strony*/
-		std::shared_ptr<std::vector<ProcessPageTableData>> processPageList;
-		/*tablica stronic procesu znajduj¹cego siê w PCB*/
+		std::shared_ptr<std::vector<ProcessPageTableData>> processPageList; /*tablica stronic procesu znajduj¹cego siê w PCB*/
 
 		FrameListData(bool isFree, int processID, int pageID, std::vector<ProcessPageTableData>* processPageList);
 	};
@@ -49,10 +48,7 @@ public:
 
 	/*Stos ramek u¿ywanych w osttanim czasie*/
 
-	std::list<int> lastUsedFramesStack{
-		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
-		30, 31, 32
-	};
+	std::list<int> lastUsedFramesStack { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32 };
 
 	/*Plik stronicowania*/
 
@@ -61,12 +57,12 @@ public:
 	MemoryManager();
 	~MemoryManager();
 
-	void showMemory() /*const*/; /*Pokazuje obecn¹ zawartoœæ pamiêci operacyjnej RAM*/
-	void showMemory(int begin, int end)/*const*/; /*Pokazuje dany fragment pamiêci operacyjnej RAM*/
-	void showStack(); /*Pokazuje obecn¹ zawartoœæ stosu*/
-	void showFrame(); /*Pokazuje zawartoœæ ramki*/
+	std::string showMemory() /*const*/; /*Pokazuje obecn¹ zawartoœæ pamiêci operacyjnej RAM*/
+	std::string showMemory(int begin, int end)/*const*/; /*Pokazuje dany fragment pamiêci operacyjnej RAM*/
+	std::string showStack(); /*Pokazuje obecn¹ zawartoœæ stosu*/
+	std::string showFrame(); /*Pokazuje zawartoœæ ramki*/
 
-	/*Funkcje u¿ytkowe RAM*/
+/*Funkcje u¿ytkowe RAM*/
 
 	/*Aktualizacja stosu*/
 	void updateStack(int frameNumber);
@@ -81,8 +77,7 @@ public:
 	int searchFreeFrame();
 
 	/*£aduje stronnice do pamieci RAM*/
-	int loadPagesToMemory(Page page, int pageID, int PID,
-	                      const std::shared_ptr<std::vector<ProcessPageTableData>>& pageList);
+	int loadPagesToMemory(Page page, int pageID, int PID, const std::shared_ptr<std::vector<ProcessPageTableData>>& pageList);
 
 	/*Usuwanie programu z pamieci*/
 	void deleteProgram(int PID);
@@ -92,4 +87,11 @@ public:
 
 	/*Zamienia stronnice zgodnie z algorytmem LRU*/
 	int swapPage(int pageID, int PID);
+
+	/*Edycja instrukcji procesu*/
+	void setByte(std::shared_ptr<PCB> pcb, uint8_t data, int target);
+
+	/*Pobranie instrukcji procesu od danego momentu*/
+	uint8_t getByte(std::shared_ptr<PCB> pcb, int where);
+
 };

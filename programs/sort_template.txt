@@ -1,0 +1,17 @@
+.text
+LO AX <data1>
+startJ:LO BX AX
+INC BX
+JAE [AX] [BX] <endJ>
+LO CX [AX]
+LO [AX] [BX]
+LO [BX] CX
+endJ:INC BX
+JBE BX <data3> <startJ>
+INC AX
+JBE AX <data2> <startJ>
+HLT
+.data
+data1:100
+data2:125
+data3:90

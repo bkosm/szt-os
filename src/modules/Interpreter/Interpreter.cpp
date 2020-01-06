@@ -3,6 +3,7 @@
 #include <string>
 #include <cstdint>
 #include <stdexcept>
+#include <fstream>
 #include "../../modules/ProcessManager/PCB.hpp"
 
 // instantiate pair <string, method ptr> for each instruction available
@@ -90,6 +91,45 @@ void Interpreter::handleInsn(PCB &process) {
 			return;
 		}
 	}
+}
+
+std::string Interpreter::loadProgram(const std::string name) {
+	std::ifstream in("programs/" + name);
+	if (!in.is_open()) {
+		throw std::invalid_argument("Nie ma takiego pliku.");
+	}
+
+	std::string prog = "";
+	std::string temp;
+	int mode = 0;
+	while (std::getline(in, temp)) {
+		if (temp == ".text") {
+			mode = 0;
+			continue;
+		}
+		else if (temp == ".data") {
+			mode = 1;
+			if (prog.empty()) {
+				throw std::invalid_argument("Blad struktury programu.");
+			}
+			prog = prog.substr(0, prog.length() - 1);
+			continue;
+		}
+
+		if (mode == 0) {
+			prog += temp;
+			prog += ' ';
+		}
+		else if (mode == 1) {
+			try {
+				prog += static_cast<char>(std::stoull(temp));
+			} catch (std::invalid_argument &e) {
+				throw std::invalid_argument("Blad konwersji liczb w programie.");
+			}
+		}
+	}
+
+	return prog;
 }
 
 uint8_t Interpreter::getValue(PCB &process, std::string dest) {

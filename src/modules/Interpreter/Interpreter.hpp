@@ -38,4 +38,5 @@ public:
 	~Interpreter();
 
 	void handleInsn(PCB &process);
+	std::string loadProgram(const std::string name);
 };

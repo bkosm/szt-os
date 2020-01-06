@@ -7,5 +7,6 @@ JA DX 122 96
 SUB DX 32
 FW DX "file1.txt"
 JP 15
+FC "file1.txt"
 HLT
 .data

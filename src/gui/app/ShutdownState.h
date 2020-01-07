@@ -15,5 +15,5 @@ private:
 	std::shared_ptr<AppData> data_;
 
 	sf::RectangleShape fade_;
-	bool firstDraw_{true};
+	bool firstDraw_;
 };

@@ -1,10 +1,11 @@
 #include "ShutdownState.h"
 
 ShutdownState::ShutdownState(std::shared_ptr<AppData> data) :
-	data_(std::move(data))
+	data_(std::move(data)),
+	firstDraw_(true)
 {
 	fade_ = sf::RectangleShape(sf::Vector2f(RESOLUTION.width, RESOLUTION.height));
-	fade_.setFillColor(sf::Color(0, 0, 0, 4));
+	fade_.setFillColor(sf::Color(0, 0, 0, 50));
 
 	data_->resources.sounds.shutdown.play();
 }
@@ -33,7 +34,7 @@ void ShutdownState::draw()
 {
 	if (firstDraw_)
 	{
-		data_->window.clear();
+		data_->window.clear(sf::Color::Black);
 		data_->resources.wallpaper.draw();
 
 		firstDraw_ = false;

@@ -4,7 +4,8 @@ Shell::Shell() :
 	interpreter(this),
 	scheduler(this),
 	processManager(this),
-	lockManager(this)
+	lockManager(this),
+	memoryManager(this)
 {
 }
 

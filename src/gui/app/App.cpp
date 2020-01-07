@@ -11,6 +11,9 @@ Resources::Resources(const sf::String& fontPath, sf::RenderWindow& window) :
 
 App::App(const sf::VideoMode& videoMode, const sf::String& title)
 {
+	auto dummy = data_->shell.getProcessManager().createDummyProcess();
+	data_->shell.getScheduler().setRunningPcb(dummy);
+
 	data_->window.create(videoMode, title, sf::Style::Close);
 	data_->window.setFramerateLimit(60);
 

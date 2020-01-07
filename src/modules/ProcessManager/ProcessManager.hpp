@@ -15,7 +15,9 @@ public:
 	ProcessManager(Shell *shell);
 	~ProcessManager();
 
-	void createProcess(std::string name, std::string fileName);
+	PCB_ptr createProcess(std::string name, std::string fileName);
+	PCB_ptr createDummyProcess();
+	
 	int getNextPID();
 	Shell *shell;
 

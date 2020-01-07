@@ -7,7 +7,9 @@
 #include <fstream>
 #include <math.h>
 #include <iostream>
-#include "../ProcessManager/PCB.hpp"
+
+class PCB;
+class Shell;
 
 struct ProcessPageTableData {
 	bool status; /*True - ramka znajduje siê w pamieæi ram, False - ramka nie znajduje siê w pamiêci ram*/
@@ -19,6 +21,8 @@ struct ProcessPageTableData {
 
 class MemoryManager {
 public:
+	Shell* shell;
+	
 	unsigned char RAM[512]; /*Pamiêæ fizyczna komputera*/
 /*private:*/
 	/*Struktura pojedyñczej strony*/
@@ -54,7 +58,7 @@ public:
 
 	std::map<int, std::vector<Page>> PageFile;
 	/*public:*/
-	MemoryManager();
+	MemoryManager(Shell *shell);
 	~MemoryManager();
 
 	std::string showMemory() /*const*/; /*Pokazuje obecn¹ zawartoœæ pamiêci operacyjnej RAM*/
@@ -89,9 +93,9 @@ public:
 	int swapPage(int pageID, int PID);
 
 	/*Edycja instrukcji procesu*/
-	void setByte(std::shared_ptr<PCB> pcb, uint8_t data, int target);
+	void setByte(PCB &pcb, uint8_t data, int target);
 
 	/*Pobranie instrukcji procesu od danego momentu*/
-	uint8_t getByte(std::shared_ptr<PCB> pcb, int where);
+	uint8_t getByte(std::shared_ptr<PCB> &pcb, int target);
 
 };

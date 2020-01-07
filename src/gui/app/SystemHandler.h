@@ -26,7 +26,6 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 		/* if (sprawdzenie poprawnosci argumentow) */
 		if (arguments[1].empty() or arguments[2].empty()) return;
 
-
 		try
 		{
 			shell.getProcessManager().createProcess(arguments[1], arguments[2]);
@@ -57,7 +56,7 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 
 		shell.getScheduler().schedulePcb();
 
-		const auto pcb = shell.getScheduler().getRunningProcess();
+		const auto pcb = shell.getScheduler().getRunningPcb();
 		try
 		{
 			shell.getInterpreter().handleInsn(*pcb);

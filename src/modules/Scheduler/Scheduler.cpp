@@ -10,13 +10,11 @@ Scheduler::Scheduler(Shell *shell) : shell(shell) {
 }
 
 void Scheduler::onReadyPcb(PCB_ptr readyPcb) {
-    if (runningPcb == nullptr)
-        throw std::runtime_error("runningProcess should never be nullptr");
-    
     if (runningPcb->getStatus() != PCBStatus::Dummy)
         updateEstimatedTime(runningPcb);
 
-    updateEstimatedTime(readyPcb);
+	if (readyPcb->getStatus() != PCBStatus::Dummy)
+		updateEstimatedTime(readyPcb);
 }
 
 std::shared_ptr<PCB> Scheduler::getRunningPcb() {
@@ -50,6 +48,7 @@ void Scheduler::schedulePcb() {
                      });
 
 	runningPcb = readyProcesses.front();
-    runningPcb->changeStatus(PCBStatus::Running);
+	if (runningPcb->getStatus() == PCBStatus::Ready)
+		runningPcb->changeStatus(PCBStatus::Running);
 }
 

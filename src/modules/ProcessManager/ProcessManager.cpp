@@ -17,7 +17,7 @@ ProcessManager::~ProcessManager()
 {
 }
 
-void ProcessManager::createProcess(std::string name, std::string fileName)
+PCB_ptr ProcessManager::createProcess(std::string name, std::string fileName)
 {
 	auto pcb = std::make_shared<PCB>(std::move(name), getNextPID(), PCBStatus::New);
 	processList.push_back(pcb);
@@ -35,6 +35,30 @@ void ProcessManager::createProcess(std::string name, std::string fileName)
 	pcb->changeStatus(PCBStatus::Ready);
 	shell->getProcessManager().addProcessToQueue(pcb);
 	shell->getScheduler().onReadyPcb(pcb);
+	return pcb;
+}
+
+PCB_ptr ProcessManager::createDummyProcess()
+{
+	auto pcb = std::make_shared<PCB>("dummy", getNextPID(), PCBStatus::New);
+	processList.push_back(pcb);
+
+	try {
+		/* zaladowac program do pamieci */
+	}
+	catch (std::overflow_error & e) {
+		deleteProcessFromList(pcb->getPID());
+		throw e;
+	}
+	catch (std::invalid_argument & e) {
+		deleteProcessFromList(pcb->getPID());
+		throw e;
+	}
+
+	pcb->changeStatus(PCBStatus::Ready);
+	pcb->changeStatus(PCBStatus::Dummy);
+	shell->getProcessManager().addProcessToQueue(pcb);
+	return pcb;
 }
 
 std::string ProcessManager::showChosenProcess(PCB_ptr process)

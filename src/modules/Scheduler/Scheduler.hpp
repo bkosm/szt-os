@@ -22,7 +22,7 @@ private:
 	const uint8_t DefaultEstimatedTime{5};
 
 	Shell *shell;
-	PCB_ptr runningPcb;
+	PCB_ptr runningPcb = nullptr;
 
 	void updateEstimatedTime(PCB_ptr pcb);
 };

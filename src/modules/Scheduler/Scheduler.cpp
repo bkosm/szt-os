@@ -4,22 +4,27 @@
 #include <exception>
 #include <system_error>
 #include "../../Shell.hpp"
+#include "../ProcessManager/PCB.hpp"
 
 Scheduler::Scheduler(Shell *shell) : shell(shell) {
 }
 
 void Scheduler::onReadyPcb(PCB_ptr readyPcb) {
-    if (runningProcess == nullptr)
+    if (runningPcb == nullptr)
         throw std::runtime_error("runningProcess should never be nullptr");
     
-    if (runningProcess->getStatus() != PCBStatus::Dummy)
-        updateEstimatedTime(runningProcess);
+    if (runningPcb->getStatus() != PCBStatus::Dummy)
+        updateEstimatedTime(runningPcb);
 
     updateEstimatedTime(readyPcb);
 }
 
-std::shared_ptr<PCB> Scheduler::getRunningProcess() {
-    return runningProcess;
+std::shared_ptr<PCB> Scheduler::getRunningPcb() {
+    return runningPcb;
+}
+
+void Scheduler::setRunningPcb(PCB_ptr pcbPtr) {
+    runningPcb = pcbPtr;
 }
 
 void Scheduler::updateEstimatedTime(PCB_ptr pcb) {
@@ -44,7 +49,7 @@ void Scheduler::schedulePcb() {
                          return lhs->estimatedTime < rhs->estimatedTime;
                      });
 
-	runningProcess = readyProcesses.front();
-    runningProcess->changeStatus(PCBStatus::Running);
+	runningPcb = readyProcesses.front();
+    runningPcb->changeStatus(PCBStatus::Running);
 }
 

@@ -1,9 +1,9 @@
 #pragma once
 #include <vector>
 #include <memory>
-#include "../ProcessManager/PCB.hpp"
 
 class Shell;
+class PCB;
 
 class Scheduler
 {
@@ -13,7 +13,8 @@ public:
 
 	void onReadyPcb(PCB_ptr readyPCB);
 	void schedulePcb();
-	PCB_ptr getRunningProcess();
+	PCB_ptr getRunningPcb();
+    void setRunningPcb(PCB_ptr pcbPtr);
 
 private:
 
@@ -21,7 +22,7 @@ private:
 	const uint8_t DefaultEstimatedTime{5};
 
 	Shell *shell;
-	PCB_ptr runningProcess;
+	PCB_ptr runningPcb;
 
 	void updateEstimatedTime(PCB_ptr pcb);
 };

@@ -49,7 +49,7 @@ void StartState::handleLeftClick_(const sf::Vector2f& mousePos, bool released)
 				if (command.containsRunButton(mousePos) and command.draw)
 				{
 					command.markRunButtonPressed();
-					std::vector<std::string> input = {command.getInstruction()};
+					std::vector<std::string> input = { command.getInstruction() };
 
 					for (auto& field : command.inputFields)
 					{
@@ -82,7 +82,7 @@ void StartState::handleLeftClick_(const sf::Vector2f& mousePos, bool released)
 	{
 		data_->states.addState(std::make_unique<ShutdownState>(data_), true);
 	}
-		/* Ikona terminala */
+	/* Ikona terminala */
 	else if (taskbar_.containsTermButton(mousePos))
 	{
 		drawConsole_ = taskbar_.toggleTermButton();
@@ -99,25 +99,27 @@ void StartState::handleRightClick_(const sf::Vector2f& mousePos, bool released)
 
 void StartState::consoleSetup_()
 {
-	consoleScreen_.setTextureTileSize({8, 12});
+	consoleScreen_.setTextureTileSize({ 8, 12 });
 	consoleScreen_.setNumberOfTextureTilesPerRow(16);
 	consoleScreen_.setSize(consoleScreen_.getPerfectSize());
 
 	consoleScreen_.setPosition(float(RESOLUTION.width / 2),
-	                           float(RESOLUTION.height / 2 - consoleScreen_.getGlobalBounds().height / 2));
+		float(RESOLUTION.height / 2 - consoleScreen_.getGlobalBounds().height / 2));
 }
 
 void StartState::configureButtons_()
 {
 	buttons_ = {
-		Button(float(RESOLUTION.width) / 8.0, float(RESOLUTION.height) / 5.0,
-		       START_STATE_BUTTON_SIZE, "Processor Status"),
-		Button(float(RESOLUTION.width) / 8.0, float(RESOLUTION.height) / 5.0 * 2.0,
-		       START_STATE_BUTTON_SIZE, "Process Manager"),
-		Button(float(RESOLUTION.width) / 8.0, float(RESOLUTION.height) / 5.0 * 3.0,
-		       START_STATE_BUTTON_SIZE, "Memory Manager"),
-		Button(float(RESOLUTION.width) / 8.0, float(RESOLUTION.height) / 5.0 * 4.0,
-		       START_STATE_BUTTON_SIZE, "File Manager"),
+		Button(float(RESOLUTION.width) / 8.0, float(RESOLUTION.height) / 100.0 * 10.0,
+			   START_STATE_BUTTON_SIZE, "Processor Status"),
+		Button(float(RESOLUTION.width) / 8.0, float(RESOLUTION.height) / 100.0 * 28.0,
+			   START_STATE_BUTTON_SIZE, "Process Manager 1"),
+		Button(float(RESOLUTION.width) / 8.0, float(RESOLUTION.height) / 100.0 * 46.0,
+			   START_STATE_BUTTON_SIZE, "Process Manager 2"),
+		Button(float(RESOLUTION.width) / 8.0, float(RESOLUTION.height) / 100.0 * 64.0,
+			   START_STATE_BUTTON_SIZE, "Memory Manager"),
+		Button(float(RESOLUTION.width) / 8.0, float(RESOLUTION.height) / 100.0 * 82.0,
+			   START_STATE_BUTTON_SIZE, "File Manager"),
 	};
 
 	for (auto& button : buttons_) button.setLabelFont(data_->resources.appFont);
@@ -131,12 +133,12 @@ void StartState::configureButtons_()
 	buttons_[0].commands.emplace_back("Show Priority", 1, data_->resources.appFont, data_->resources.runButtonTexture);
 	buttons_[0].commands[1].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 20 / 100));
 	buttons_[0].commands[1].inputFields[0].setLabelAndFont("Process ID:", data_->resources.appFont);
-	/* Process Manager command buttons */
+	/* Process Manager 1 command buttons */
 	/* CREATE PROCESS */
 	buttons_[1].commands.emplace_back("Create Process", 2, data_->resources.appFont, data_->resources.runButtonTexture);
 	buttons_[1].commands[0].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 3 / 100));
 	buttons_[1].commands[0].inputFields[0].setLabelAndFont("Process name:", data_->resources.appFont);
-	buttons_[1].commands[0].inputFields[1].setLabelAndFont("File containing program:", data_->resources.appFont);
+	buttons_[1].commands[0].inputFields[1].setLabelAndFont("Filepath of the program:", data_->resources.appFont);
 	/* KILL PROCESS */
 	buttons_[1].commands.emplace_back("Kill Process", 1, data_->resources.appFont, data_->resources.runButtonTexture);
 	buttons_[1].commands[1].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 28 / 100));
@@ -147,28 +149,27 @@ void StartState::configureButtons_()
 	buttons_[1].commands[2].inputFields[0].setLabelAndFont("Process ID:", data_->resources.appFont);
 	buttons_[1].commands[2].inputFields[1].setLabelAndFont("Status:", data_->resources.appFont);
 	/* SHOW PROCESSES */
-	buttons_[1].commands.emplace_back("Show Processes", 1, data_->resources.appFont, data_->resources.runButtonTexture);
-	buttons_[1].commands[3].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 75 / 100));
-	buttons_[1].commands[3].inputFields[0].setLabelAndFont("Nie bedzie tego:", data_->resources.appFont);
-	
+	buttons_[1].commands.emplace_back("Show Processes", 0, data_->resources.appFont, data_->resources.runButtonTexture);
+	buttons_[1].commands[3].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 71 / 100));
+	/* Process Manager 1 command buttons */
+	//TODO reszta komend
 	/* Memory Manager command buttons */
 	/* SHOW MEMORY */
-	buttons_[2].commands.emplace_back("Show Memory", 1, data_->resources.appFont, data_->resources.runButtonTexture);
-	buttons_[2].commands[0].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 3 / 100));
-	buttons_[2].commands[0].inputFields[0].setLabelAndFont("Process ID:", data_->resources.appFont);
+	buttons_[3].commands.emplace_back("Show Memory", 0, data_->resources.appFont, data_->resources.runButtonTexture);
+	buttons_[3].commands[0].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 3 / 100));
 	/* File Manager command buttons */
 	/* SHOW LOCK */
-	buttons_[3].commands.emplace_back("Show Lock", 1, data_->resources.appFont, data_->resources.runButtonTexture);
-	buttons_[3].commands[0].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 3 / 100));
-	buttons_[3].commands[0].inputFields[0].setLabelAndFont("File name:", data_->resources.appFont);
+	buttons_[4].commands.emplace_back("Show Lock", 1, data_->resources.appFont, data_->resources.runButtonTexture);
+	buttons_[4].commands[0].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 3 / 100));
+	buttons_[4].commands[0].inputFields[0].setLabelAndFont("File name:", data_->resources.appFont);
 	/* LONG FILE */
-	buttons_[3].commands.emplace_back("Long File", 1, data_->resources.appFont, data_->resources.runButtonTexture);
-	buttons_[3].commands[1].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 30 / 100));
-	buttons_[3].commands[1].inputFields[0].setLabelAndFont("File name:", data_->resources.appFont);
+	buttons_[4].commands.emplace_back("Long File", 1, data_->resources.appFont, data_->resources.runButtonTexture);
+	buttons_[4].commands[1].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 30 / 100));
+	buttons_[4].commands[1].inputFields[0].setLabelAndFont("File name:", data_->resources.appFont);
 	/* SHOW I-NODE */
-	buttons_[3].commands.emplace_back("Show i-node", 1, data_->resources.appFont, data_->resources.runButtonTexture);
-	buttons_[3].commands[2].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 57 / 100));
-	buttons_[3].commands[2].inputFields[0].setLabelAndFont("File name:", data_->resources.appFont);
+	buttons_[4].commands.emplace_back("Show i-node", 1, data_->resources.appFont, data_->resources.runButtonTexture);
+	buttons_[4].commands[2].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 57 / 100));
+	buttons_[4].commands[2].inputFields[0].setLabelAndFont("File name:", data_->resources.appFont);
 }
 
 void StartState::update()
@@ -180,59 +181,59 @@ void StartState::update()
 		switch (event.type)
 		{
 		case sf::Event::Closed:
-			{
-				data_->states.addState(std::make_unique<ShutdownState>(data_), true);
-				return;
-			}
+		{
+			data_->states.addState(std::make_unique<ShutdownState>(data_), true);
+			return;
+		}
 
 		case sf::Event::MouseButtonPressed:
+		{
+			if (event.mouseButton.button == sf::Mouse::Left)
 			{
-				if (event.mouseButton.button == sf::Mouse::Left)
-				{
-					/* Unfocus all input fields before picking one */
-					for (auto& button : buttons_)
-					{
-						for (auto& command : button.commands)
-						{
-							command.disableFocus();
-						}
-					}
-
-					const auto position = sf::Mouse::getPosition(data_->window);
-					handleLeftClick_(sf::Vector2f(position.x, position.y));
-				}
-				else if (event.mouseButton.button == sf::Mouse::Right)
-				{
-					const auto position = sf::Mouse::getPosition(data_->window);
-					handleRightClick_(sf::Vector2f(position.x, position.y));
-				}
-				break;
-			}
-		case sf::Event::MouseButtonReleased:
-			{
-				if (event.mouseButton.button == sf::Mouse::Left)
-				{
-					const auto position = sf::Mouse::getPosition(data_->window);
-					handleLeftClick_(sf::Vector2f(position.x, position.y), true);
-				}
-				else if (event.mouseButton.button == sf::Mouse::Right)
-				{
-					const auto position = sf::Mouse::getPosition(data_->window);
-					handleRightClick_(sf::Vector2f(position.x, position.y), true);
-				}
-				break;
-			}
-		case sf::Event::TextEntered:
-			{
+				/* Unfocus all input fields before picking one */
 				for (auto& button : buttons_)
 				{
 					for (auto& command : button.commands)
 					{
-						command.writeCommand(event.text.unicode);
+						command.disableFocus();
 					}
 				}
-				break;
+
+				const auto position = sf::Mouse::getPosition(data_->window);
+				handleLeftClick_(sf::Vector2f(position.x, position.y));
 			}
+			else if (event.mouseButton.button == sf::Mouse::Right)
+			{
+				const auto position = sf::Mouse::getPosition(data_->window);
+				handleRightClick_(sf::Vector2f(position.x, position.y));
+			}
+			break;
+		}
+		case sf::Event::MouseButtonReleased:
+		{
+			if (event.mouseButton.button == sf::Mouse::Left)
+			{
+				const auto position = sf::Mouse::getPosition(data_->window);
+				handleLeftClick_(sf::Vector2f(position.x, position.y), true);
+			}
+			else if (event.mouseButton.button == sf::Mouse::Right)
+			{
+				const auto position = sf::Mouse::getPosition(data_->window);
+				handleRightClick_(sf::Vector2f(position.x, position.y), true);
+			}
+			break;
+		}
+		case sf::Event::TextEntered:
+		{
+			for (auto& button : buttons_)
+			{
+				for (auto& command : button.commands)
+				{
+					command.writeCommand(event.text.unicode);
+				}
+			}
+			break;
+		}
 
 		default: break;
 		}

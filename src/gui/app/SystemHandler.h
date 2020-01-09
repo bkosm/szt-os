@@ -5,22 +5,27 @@
 
 inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::string>& arguments)
 {
+	const auto cmd = arguments[0];
+
 	for (int i = 0; i < arguments.size(); i++)
 	{
 		/* Przyklad korzystania z konsoli */
 		if (i == 0)
 		{
-			console.logln("Command: " + arguments[0]);
+			console.log(arguments[0] + " ");
 		}
 		else
 		{
-			console.println("\tArg " + std::to_string(i) + ": " + arguments[i]);
+			if (cmd == "Go" and arguments[i].empty()) {
+				arguments[i] = "1";
+			}
+			console.print(arguments[i] + " ");
 		}
 	}
+	console.println({});
 
 	if (arguments.empty()) return;
 
-	const auto cmd = arguments[0];
 
 	if (cmd == "Create Process")
 	{
@@ -52,12 +57,8 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 	}
 	else if (cmd == "Go")
 	{
-		if (arguments[1].empty())
-		{
-			console.println("Nie podano liczby wykonan.");
-			return;
-		}
 		int numOfGo;
+
 		try
 		{
 			numOfGo = std::stoi(arguments[1]);
@@ -74,7 +75,6 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 			return;
 		}
 
-		/* ilosc razy jest w arguments[1] */
 
 		for (int i = 0; i < numOfGo; ++i)
 		{

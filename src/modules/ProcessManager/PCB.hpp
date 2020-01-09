@@ -38,7 +38,7 @@ public:
 	PCB();
 	PCB(std::string name, int ID, PCBStatus processStatus);
 
-	~PCB();
+	~PCB() = default;
 
 	std::string showProcess() const;
 	int getPID() const;

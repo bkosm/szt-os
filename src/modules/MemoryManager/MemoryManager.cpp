@@ -3,13 +3,14 @@
 #include "../../Shell.hpp"
 #include <stdexcept>
 #include <sstream>
+#include <iomanip>
 
 constexpr uint8_t FRAME_SIZE = 16;
 constexpr uint8_t MAX_FRAMES = 32;
 
 MemoryManager::MemoryManager(Shell* shell) : shell(shell) {}
 
-void MemoryManager::loadProgram(PCB& pcb, std::string programName)
+void MemoryManager::loadProgram(PCB& pcb, const std::string& programName)
 {
 	std::string programCode;
 	try
@@ -99,33 +100,47 @@ std::string MemoryManager::showMemory() const
 {
 	std::ostringstream output;
 
-	int frameIndex = 0;
-	bool secondColumn = 0;
+	unsigned frameIndex = 0, pageNumber = 1, column = 0;
 
 	output << "RAM CONTENT:" << std::endl;
 	for (auto ch : RAM)
 	{
-		if (frameIndex == 0 and !secondColumn)
-		{
-			output << "[" << ch;
+		if (column == 2) {
+			if (frameIndex == 0)
+			{
+				output << std::setfill('0') << std::setw(2) << pageNumber << ": {" << ch;
+				++pageNumber;
+			}
+			else if (frameIndex == 15)
+			{
+				output << ch << "}" << std::endl;
+				frameIndex = -1;
+				column = 0;
+			}
+			else
+			{
+				output << ch;
+			}
+			++frameIndex;
 		}
-		else if (frameIndex == 15 and !secondColumn)
-		{
-			output << ch << "] ";
-			frameIndex = -1;
-			secondColumn = true;
+		else {
+			if (frameIndex == 0)
+			{
+				output << std::setfill('0') << std::setw(2) << pageNumber << ": {" << ch;
+				++pageNumber;
+			}
+			else if (frameIndex == 15)
+			{
+				output << ch << "} ";
+				frameIndex = -1;
+				++column;
+			}
+			else
+			{
+				output << ch;
+			}
+			++frameIndex;
 		}
-		else if (frameIndex == 15 and secondColumn)
-		{
-			output << ch << "]" << std::endl;
-			frameIndex = -1;
-			secondColumn = false;
-		}
-		else
-		{
-			output << ch;
-		}
-		++frameIndex;
 	}
 
 	return output.str();

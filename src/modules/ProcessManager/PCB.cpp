@@ -15,11 +15,6 @@ PCB::PCB(std::string name, int ID, PCBStatus processStatus)
 	: processName(std::move(name)), processID(ID), status(processStatus) {
 }
 
-PCB::~PCB()
-{
-	//std::cout << "Process was terminated!\n";
-}
-
 std::string PCB::showProcess() const
 {
 	std::string word;

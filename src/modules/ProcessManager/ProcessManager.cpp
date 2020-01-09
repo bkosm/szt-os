@@ -4,6 +4,7 @@
 #include <random>
 #include <algorithm>
 #include <utility>
+#include <iomanip>
 #include <sstream>
 
 using PCB_ptr = std::shared_ptr<PCB>;
@@ -89,36 +90,46 @@ std::string ProcessManager::showChosenProcess(PCB_ptr process)
 std::string ProcessManager::showProcessList()
 {
 	std::ostringstream output;
-	output << "| PROCESS LIST |\n";
+	unsigned number = 1;
+
+	output << "PROCESS LIST:" << std::endl;
 	for (auto const& element : processList)
 	{
-		output << "| " + element->processName + " | " + std::to_string(element->processID) + " | ";
+		output << std::setfill('0') << std::setw(2) << number
+			<< " N : " << element->processName << "\tID: " << element->processID
+			<< "\tAX: " << int(element->AX) << " BX: " << int(element->BX)
+			<< " CX: " << int(element->CX) << " DX: " << int(element->DX) << std::endl
+			<< "~~ ET: " << int(element->estimatedTime) << "\t\tIC: " << int(element->insnCounter) << "\tST: ";
 		switch (element->status)
 		{
 		case PCBStatus::New:
-			output << "NEW |\n";
+			output << "NEW\n";
 			break;
 		case PCBStatus::Ready:
-			output << "READY |\n";
+			output << "READY\n";
 			break;
 		case PCBStatus::Running:
-			output << "RUNNING |\n";
+			output << "RUNNING\n";
 			break;
 		case PCBStatus::Waiting:
-			output << "WAITING |\n";
+			output << "WAITING\n";
 			break;
 		case PCBStatus::Terminated:
-			output << "TERMINATED |\n"; //useless
+			output << "TERMINATED\n";
 			break;
 		case PCBStatus::Dummy:
-			output << "DUMMY |\n"; 
+			output << "DUMMY\n";
 			break;
 		case PCBStatus::Error:
-			output << "ERROR |\n";
+			output << "ERROR\n";
 			break;
 		default: break;
 		}
+		++number;
+
+		output << std::endl;
 	}
+
 	return output.str();
 }
 

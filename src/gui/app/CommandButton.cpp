@@ -2,7 +2,7 @@
 #include "Definitions.h"
 
 CommandButton::CommandButton(const sf::String& instruction, unsigned numberOfInputs, const sf::Font& font,
-                             const sf::Texture& texture) :
+	const sf::Texture& texture) :
 	inputFields(numberOfInputs)
 {
 	runButton_.setTexture(texture);
@@ -59,7 +59,8 @@ void CommandButton::setPosition(const sf::Vector2f& position)
 		position.x + background_.getGlobalBounds().width / 2 - buttonLabel_.getGlobalBounds().width / 2,
 		position.y + BUTTON_LABEL_TOP_INDENT);
 
-	const auto len = inputFields.begin()->getLength();
+	float len = buttonLabel_.getGlobalBounds().height * 3.0;
+	if (!inputFields.empty()) len = inputFields.begin()->getLength();
 
 	for (int i = 0; i < inputFields.size(); i++)
 	{
@@ -70,12 +71,20 @@ void CommandButton::setPosition(const sf::Vector2f& position)
 		));
 	}
 
-	runButton_.setPosition(sf::Vector2f(
-		background_.getPosition().x + background_.getGlobalBounds().width
-		- 40 - runButton_.getGlobalBounds().width / 2.0,
-		background_.getPosition().y + background_.getGlobalBounds().height / 2
-		- runButton_.getGlobalBounds().height / 2
-	));
+	if (inputFields.empty()) {
+		runButton_.setPosition(sf::Vector2f(
+			background_.getPosition().x + background_.getGlobalBounds().width / 2.0 - runButton_.getGlobalBounds().width / 2.0,
+			background_.getPosition().y + background_.getGlobalBounds().height / 2 - runButton_.getGlobalBounds().height / 5.0
+		));
+	}
+	else {
+		runButton_.setPosition(sf::Vector2f(
+			background_.getPosition().x + background_.getGlobalBounds().width
+			- 40 - runButton_.getGlobalBounds().width / 2.0,
+			background_.getPosition().y + background_.getGlobalBounds().height / 2
+			- runButton_.getGlobalBounds().height / 2.0
+		));
+	}
 }
 
 void CommandButton::drawTo(sf::RenderWindow& window) const
@@ -115,11 +124,18 @@ void CommandButton::markRunButtonPressed()
 
 void CommandButton::adjustBackgroundSize_()
 {
-	const auto len = inputFields.begin()->getLength();
-
-	background_.setSize(sf::Vector2f(
-		300,
-		BUTTON_LABEL_TOP_INDENT * 2.0 + buttonLabel_.getGlobalBounds().height * 2.0
-		+ (BUTTON_LABEL_TOP_INDENT + len) * inputFields.size()
-	));
+	if (!inputFields.empty()) {
+		background_.setSize(sf::Vector2f(
+			300,
+			BUTTON_LABEL_TOP_INDENT * 2.0 + buttonLabel_.getGlobalBounds().height * 2.0
+			+ (BUTTON_LABEL_TOP_INDENT + inputFields.begin()->getLength()) * inputFields.size()
+		));
+	}
+	else {
+		background_.setSize(sf::Vector2f(
+			300,
+			BUTTON_LABEL_TOP_INDENT * 2.0 + buttonLabel_.getGlobalBounds().height * 2.0
+			+ (BUTTON_LABEL_TOP_INDENT + buttonLabel_.getGlobalBounds().height * 2.0)
+		));
+	}
 }

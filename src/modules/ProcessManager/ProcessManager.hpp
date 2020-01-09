@@ -15,7 +15,7 @@ public:
 	ProcessManager(Shell *shell);
 	~ProcessManager();
 
-	PCB_ptr createProcess(std::string name, std::string fileName);
+	PCB_ptr createProcess(std::string name, std::string programName);
 	PCB_ptr createDummyProcess();
 	
 	int getNextPID();
@@ -35,6 +35,8 @@ public:
 	void addProcessToQueue(PCB_ptr process);
 
 	PCB_ptr getProcessFromList(std::string processName);
+	PCB_ptr getProcessFromList(int PID);
+
 
 	void changeStatusChosenProcess(int pid, PCBStatus sts);
 	/*

@@ -1,6 +1,7 @@
 #pragma once
 #include "SelbaWard/ConsoleScreen.h"
 #include "../../Shell.hpp"
+#include <string>
 
 inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::string>& arguments)
 {
@@ -24,7 +25,13 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 	if (cmd == "Create Process")
 	{
 		/* if (sprawdzenie poprawnosci argumentow) */
-		if (arguments[1].empty() or arguments[2].empty()) return;
+		if (arguments[1].empty() or arguments[2].empty())
+		{
+			console.println("Argumenty nie moga byc puste.");
+			return;
+		}
+
+		/* TODO: usunac nieprawidlowe znaki */
 
 		try
 		{
@@ -32,11 +39,11 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 		}
 		catch (std::invalid_argument& e)
 		{
-			/* wypisac blad: nie ma takiego programu */
+			console.println("Blad przy wczytywaniu programu: " + std::string(e.what()));
 			return;
 		} catch (std::overflow_error& e)
 		{
-			/* wypisac blad: nie ma miejsca w pamieci */
+			console.println("Blad przy wczytywaniu programu: " + std::string(e.what()));
 			return;
 		}
 
@@ -44,11 +51,24 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 	}
 	else if (cmd == "Go")
 	{
-		/* robi flipa gdy nie ma gotowych procesow do odpalenia wiec nara */
-		if (shell.getProcessManager().getReadyQueue().empty()
-			or std::stoi(arguments[1]) < 1
-			or arguments[1].empty())
+		if (arguments[1].empty())
 		{
+			console.println("Nie podano liczby wykonan.");
+			return;
+		}
+		int numOfGo;
+		try
+		{
+			numOfGo = std::stoi(arguments[1]);
+		} catch (std::invalid_argument &e)
+		{
+			console.println("Argument nie jest liczba.");
+			return;
+		}
+		/* robi flipa gdy nie ma gotowych procesow do odpalenia wiec nara */
+		if (numOfGo < 1)
+		{
+			console.println("Ilosc wykonan musi byc wieksza od zera");
 			return;
 		}
 
@@ -63,14 +83,15 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 		}
 		catch (std::exception& e)
 		{
-			/* TODO: obsluga bledow (jak moduly beda skonczone) */
+			console.println("Napotkano blad: " + std::string(e.what()));
+			return;
 		}
 
 
 		if (pcb->status == PCBStatus::Terminated)
 		{
 			shell.getProcessManager().deleteProcessFromQueue(pcb->getPID());
-			/* TODO: usunac proces z listy procesow i kolejki */
+			shell.getProcessManager().deleteProcessFromList(pcb->getPID());
 		}
 	}
 	else if (cmd == "Kill Process")

@@ -3,10 +3,7 @@
 #include <vector>
 #include <list>
 #include <map>
-#include <sstream>
 #include <fstream>
-#include <math.h>
-#include <iostream>
 
 class PCB;
 class Shell;
@@ -57,6 +54,7 @@ public:
 	/*Plik stronicowania*/
 
 	std::map<int, std::vector<Page>> PageFile;
+	
 	/*public:*/
 	MemoryManager(Shell *shell);
 	~MemoryManager();
@@ -75,7 +73,7 @@ public:
 	void processOfInaction();
 
 	/*Funkcja ³aduj¹ca program do pliku wymiany*/
-	int loadProgram(const std::string& filePath, int PID);
+	int loadProgram(const std::string& name, int PID);
 
 	/*Znajduje pierwsz¹ woln¹ ramke w pamiêci RAM*/
 	int searchFreeFrame();
@@ -93,7 +91,7 @@ public:
 	int swapPage(int pageID, int PID);
 
 	/*Edycja instrukcji procesu*/
-	void setByte(PCB &pcb, uint8_t data, int target);
+	void setByte(std::shared_ptr<PCB>& pcb, std::string data, int target);
 
 	/*Pobranie instrukcji procesu od danego momentu*/
 	uint8_t getByte(std::shared_ptr<PCB> &pcb, int target);

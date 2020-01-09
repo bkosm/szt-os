@@ -81,6 +81,9 @@
     <ClCompile Include="..\..\modules\Interpreter\Interpreter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\modules\FileManager\FileManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SelbaWard\Common.h">
@@ -153,6 +156,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\modules\Interpreter\Interpreter.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\modules\FileManager\FileManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

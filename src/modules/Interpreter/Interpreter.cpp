@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <stdexcept>
 #include <fstream>
+#include <memory>
+#include "../../Shell.hpp"
 #include "../../modules/ProcessManager/PCB.hpp"
 
 // instantiate pair <string, method ptr> for each instruction available
@@ -36,7 +38,8 @@ std::string Interpreter::readNextParam(PCB &process) {
 	bool loadsFileName = false;
 	for (std::string buffer = "";; buffer += c) {
 		try {
-			c = ' ';// TODO read byte from RAM using IC
+			auto pcbPtr = std::make_shared<PCB>(process);
+			c = static_cast<char>(shell->getMemoryManager().getByte(pcbPtr, process.insnIndex));
 		} catch (std::out_of_range &e) {
 			throw e;
 		}
@@ -54,7 +57,8 @@ void Interpreter::handleInsn(PCB &process) {
 	char c;
 	for (std::string buffer = "";;) {
 		try {
-			c = ' ';// TODO read byte from RAM using IC
+			auto pcbPtr = std::make_shared<PCB>(process);
+			c = static_cast<char>(shell->getMemoryManager().getByte(pcbPtr, process.insnIndex));
 		} catch (std::out_of_range &e) {
 			process.insnIndex = prevInsnIndex;
 			process.changeStatus(PCBStatus::Error);
@@ -156,7 +160,8 @@ uint8_t Interpreter::getValue(PCB &process, std::string dest) {
 
 	if (isAddr) {
 		try {
-			value = 0;// TODO read byte from RAM by value
+			auto pcbPtr = std::make_shared<PCB>(process);
+			value = shell->getMemoryManager().getByte(pcbPtr, value);
 		} catch (std::out_of_range &e) {
 			throw e;
 		}
@@ -179,12 +184,16 @@ void Interpreter::setValue(PCB &process, std::string dest, uint8_t value) {
 			else if (dest == "CX") { target = process.CX; }
 			else if (dest == "DX") { target = process.DX; }
 			else target = static_cast<uint8_t>(std::stoul(dest));
-		} catch (...) {
+		} catch (std::invalid_argument &e) {
 			throw std::invalid_argument("Nie udalo sie przekonwertowac parametru instrukcji na liczbe.");
 		}
 
 		try {
-			target = 0;// TODO set byte in RAM using target
+			std::string data = "";
+			data += static_cast<char>(value);
+			
+			auto pcbPtr = std::make_shared<PCB>(process);
+			shell->getMemoryManager().setByte(pcbPtr, data, target);
 		} catch (std::out_of_range &e) {
 			throw e;
 		}

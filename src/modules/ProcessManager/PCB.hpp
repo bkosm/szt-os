@@ -25,12 +25,12 @@ public:
 	int t;
 	int tau;
 	//===== INTEPRETER =====
-	uint8_t AX, BX, CX, DX;
-	uint8_t insnIndex;
-	uint8_t insnCounter;
-	uint8_t estimatedTime;
+	uint8_t AX = 0, BX = 0, CX = 0, DX = 0;
+	uint8_t insnIndex = 0;
+	uint8_t insnCounter = 0;
+	uint8_t estimatedTime = 0;
 	//===== MEMORY CONTROL =====
-	std::shared_ptr<std::vector<ProcessPageTableData>> processPageList=nullptr; /*tablica stronic procesu znajdującego się w PCB*/
+	std::shared_ptr<std::vector<ProcessPageTableData>> processPageList; /*tablica stronic procesu znajdującego się w PCB*/
 	unsigned int sizePageProcess = 16; /*rozmiar strony*/
 	//===== FILE CONTROL =====
 

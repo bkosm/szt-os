@@ -17,13 +17,13 @@ ProcessManager::~ProcessManager()
 {
 }
 
-PCB_ptr ProcessManager::createProcess(std::string name, std::string fileName)
+PCB_ptr ProcessManager::createProcess(std::string name, std::string programName)
 {
 	auto pcb = std::make_shared<PCB>(std::move(name), getNextPID(), PCBStatus::New);
 	processList.push_back(pcb);
 
 	try {
-		/* zaladowac program do pamieci */
+		shell->getMemoryManager().loadProgram(programName, pcb->getPID());
 	} catch (std::overflow_error &e) {
 		deleteProcessFromList(pcb->getPID());
 		throw e;
@@ -44,7 +44,7 @@ PCB_ptr ProcessManager::createDummyProcess()
 	processList.push_back(pcb);
 
 	try {
-		/* zaladowac program do pamieci */
+		shell->getMemoryManager().loadProgram("dummy.txt", pcb->getPID());
 	}
 	catch (std::overflow_error & e) {
 		deleteProcessFromList(pcb->getPID());
@@ -57,6 +57,7 @@ PCB_ptr ProcessManager::createDummyProcess()
 
 	pcb->changeStatus(PCBStatus::Ready);
 	pcb->changeStatus(PCBStatus::Dummy);
+	pcb->estimatedTime = UINT8_MAX;
 	shell->getProcessManager().addProcessToQueue(pcb);
 	return pcb;
 }
@@ -221,6 +222,26 @@ PCB_ptr ProcessManager::getProcessFromList(std::string processName)
 	for (int i = 0; i < this->processList.size(); i++)
 	{
 		if (this->processList[i]->processName == processName)
+		{
+			return this->processList.at(i);
+		}
+		else
+		{
+			throw std::invalid_argument("The process does not exist.");
+		}
+	}
+}
+
+PCB_ptr ProcessManager::getProcessFromList(int PID)
+{
+	if (processList.empty())
+	{
+		throw std::length_error("ProcessList is empty.");
+	}
+
+	for (int i = 0; i < this->processList.size(); i++)
+	{
+		if (this->processList[i]->getPID() == PID)
 		{
 			return this->processList.at(i);
 		}

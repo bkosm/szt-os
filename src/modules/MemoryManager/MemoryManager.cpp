@@ -1,6 +1,8 @@
 #include "MemoryManager.h"
 #include "../ProcessManager/PCB.hpp"
 #include "../../Shell.hpp"
+#include <iostream>
+#include <sstream>
 
 ProcessPageTableData::ProcessPageTableData(bool status, int frameNumber) : status(status), frameNumber(frameNumber) {}
 
@@ -124,29 +126,17 @@ void MemoryManager::processOfInaction() {
 }
 
 
-int MemoryManager::loadProgram(const std::string & filePath, int PID) {
+int MemoryManager::loadProgram(const std::string &name, int PID) {
 	std::string helpVariable;		/*Zmienna pomocnicza*/
 	std::string program;			/*Program w jednej linii*/
 	std::vector<Page> pageVector;	/*wektor stron do dodania*/
 
-	/*if (!file.is_open()) {
-		std::cout << "Nie mozna odtworzyc pliku!\n";
-		return -1;
-	}
-
-	while (std::getline(file, helpVariable)) {
-		/*Dodanie na końcu znacznika końca linii*//*
-		if (!helpVariable.empty()) {
-			helpVariable += ';';
-			program += helpVariable;
-		}
-	}*/
 	try
 	{
-		program = shell->getInterpreter().loadProgram(filePath);
-	} catch (std::exception &e)
+		program = shell->getInterpreter().loadProgram(name);
+	} catch ()
 	{
-		/* TODO obsluga bledow */
+		throw;
 	}
 	
 	const double pageSize = ceil(program.length() / 16.0);
@@ -176,6 +166,8 @@ int MemoryManager::loadProgram(const std::string & filePath, int PID) {
 
 	//Dodanie stronic do pliku wymiany
 	PageFile.insert(make_pair(PID, pageVector));
+
+	// shell->getProcessManager().getProcessFromList(PID)->processPageList->
 
 	return program.length();
 }
@@ -271,28 +263,42 @@ std::shared_ptr<std::vector<ProcessPageTableData>> MemoryManager::createProcessP
 	return pageList;
 }
 
-void MemoryManager::setByte(PCB &pcb, uint8_t data, int target) {
-	/*czekam na natchnienie*/
+void MemoryManager::setByte(std::shared_ptr<PCB> &pcb, std::string data, int address) {
+	if (!data.empty()) {
+		if (address + data.length() - 1 <= pcb->processPageList->size() * 16 && address >= 0) {
+			for (int i = 0; i < data.length(); i++) {
+				int pageID = int(floor((address + 1) / 16.0));
+				if (pcb->processPageList->at(pageID).status == 0) {
+					loadPagesToMemory(PageFile[pcb->processID][pageID], pageID, pcb->processID, pcb->processPageList);
+				}
+				RAM[pcb->processPageList->at(pageID).frameNumber * 16 + address + i - (16 * pageID)] = data[i];
+
+			}
+		}
+		else {
+			throw std::out_of_range("Bledne odwolanie do pamieci.");
+		}
+	}
 }
 
 /*NIE WIEM CZY O TO CHODZIŁO - NIE WIEM CZY DZIAŁA*/
 /*Pobranie instrukcji procesu od danego momentu*/
 uint8_t MemoryManager::getByte(std::shared_ptr<PCB> &pcb, int target) {
 	uint8_t temp = 0;
-	unsigned int PageID = target / 16;
+	unsigned int page_id = target / 16;
 
 	/*przekroczenie zakres dla tego procesu !!!*/
 
 	/*Numer stronicy w pamięci*/
-	PageID = target / 16;
+	page_id = target / 16;
 	/*sprawdzenie czy znajduje się w pamieci operacyjnej*/
-	if (!pcb->processPageList->at(PageID).status)
-		loadPagesToMemory(PageFile[pcb->processID][PageID], PageID, pcb->processID, pcb->processPageList);
+	if (!pcb->processPageList->at(page_id).status)
+		loadPagesToMemory(PageFile[pcb->processID][page_id], page_id, pcb->processID, pcb->processPageList);
 
-	if (pcb->processPageList->at(PageID).status) {
-		const int Frame = pcb->processPageList->at(PageID).frameNumber;//Bieżąco używana ramka
+	if (pcb->processPageList->at(page_id).status) {
+		const int Frame = pcb->processPageList->at(page_id).frameNumber;//Bieżąco używana ramka
 
-		temp += RAM[Frame * 16 + target - 16 * PageID];
+		temp += RAM[Frame * 16 + target - 16 * page_id];
 	}
 	return temp;
 }

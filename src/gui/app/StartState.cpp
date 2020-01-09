@@ -146,9 +146,14 @@ void StartState::configureButtons_()
 	buttons_[1].commands[2].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 45 / 100));
 	buttons_[1].commands[2].inputFields[0].setLabelAndFont("Process ID:", data_->resources.appFont);
 	buttons_[1].commands[2].inputFields[1].setLabelAndFont("Status:", data_->resources.appFont);
+	/* SHOW PROCESSES */
+	buttons_[1].commands.emplace_back("Show Processes", 1, data_->resources.appFont, data_->resources.runButtonTexture);
+	buttons_[1].commands[3].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 75 / 100));
+	buttons_[1].commands[3].inputFields[0].setLabelAndFont("Nie bedzie tego:", data_->resources.appFont);
+	
 	/* Memory Manager command buttons */
-	/* SHOW PAGES */
-	buttons_[2].commands.emplace_back("Show Pages", 1, data_->resources.appFont, data_->resources.runButtonTexture);
+	/* SHOW MEMORY */
+	buttons_[2].commands.emplace_back("Show Memory", 1, data_->resources.appFont, data_->resources.runButtonTexture);
 	buttons_[2].commands[0].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 3 / 100));
 	buttons_[2].commands[0].inputFields[0].setLabelAndFont("Process ID:", data_->resources.appFont);
 	/* File Manager command buttons */

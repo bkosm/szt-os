@@ -2,12 +2,12 @@
 LO AX <data1>
 startJ:LO BX AX
 INC BX
-JAE [AX] [BX] <endJ>
+compareFunc:JBE [AX] [BX] <endJ>
 LO CX [AX]
 LO [AX] [BX]
 LO [BX] CX
 endJ:INC BX
-JBE BX <data3> <startJ>
+JBE BX <data3> <compareFunc>
 INC AX
 JBE AX <data2> <startJ>
 HLT

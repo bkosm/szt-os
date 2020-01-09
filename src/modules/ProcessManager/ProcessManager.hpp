@@ -13,7 +13,7 @@ class ProcessManager {
 	std::vector<PCB_ptr> readyQueue;
 public:
 	ProcessManager(Shell *shell);
-	~ProcessManager();
+	~ProcessManager() = default;
 
 	PCB_ptr createProcess(std::string name, std::string programName);
 	PCB_ptr createDummyProcess();
@@ -25,8 +25,8 @@ public:
 	std::vector<PCB_ptr>& getProcessList();
 
 	static std::string showChosenProcess(PCB_ptr process);
-	static std::string showProcessList(std::vector<PCB_ptr> list);
-	static std::string showReadyQueue(std::vector<PCB_ptr> queue);
+	std::string showProcessList();
+	std::string showReadyQueue();
 
 	void deleteProcessFromList(int pid);
 	void deleteProcessFromQueue(int pid);

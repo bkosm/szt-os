@@ -37,11 +37,12 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 		{
 			shell.getProcessManager().createProcess(arguments[1], arguments[2]);
 		}
-		catch (std::invalid_argument& e)
+		catch (std::invalid_argument & e)
 		{
 			console.println("Blad przy wczytywaniu programu: " + std::string(e.what()));
 			return;
-		} catch (std::overflow_error& e)
+		}
+		catch (std::overflow_error & e)
 		{
 			console.println("Blad przy wczytywaniu programu: " + std::string(e.what()));
 			return;
@@ -60,7 +61,8 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 		try
 		{
 			numOfGo = std::stoi(arguments[1]);
-		} catch (std::invalid_argument &e)
+		}
+		catch (std::invalid_argument & e)
 		{
 			console.println("Argument nie jest liczba.");
 			return;
@@ -74,24 +76,26 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 
 		/* ilosc razy jest w arguments[1] */
 
-		shell.getScheduler().schedulePcb();
-
-		const auto pcb = shell.getScheduler().getRunningPcb();
-		try
+		for (int i = 0; i < numOfGo; ++i)
 		{
-			shell.getInterpreter().handleInsn(*pcb);
-		}
-		catch (std::exception& e)
-		{
-			console.println("Napotkano blad: " + std::string(e.what()));
-			return;
-		}
+			shell.getScheduler().schedulePcb();
 
+			const auto pcb = shell.getScheduler().getRunningPcb();
+			try
+			{
+				shell.getInterpreter().handleInsn(*pcb);
+			}
+			catch (std::exception & e)
+			{
+				console.println("Napotkano blad: " + std::string(e.what()));
+				continue;
+			}
 
-		if (pcb->status == PCBStatus::Terminated)
-		{
-			shell.getProcessManager().deleteProcessFromQueue(pcb->getPID());
-			shell.getProcessManager().deleteProcessFromList(pcb->getPID());
+			if (pcb->status == PCBStatus::Terminated)
+			{
+				shell.getProcessManager().deleteProcessFromQueue(pcb->getPID());
+				shell.getProcessManager().deleteProcessFromList(pcb->getPID());
+			}
 		}
 	}
 	else if (cmd == "Kill Process")
@@ -100,8 +104,9 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 	else if (cmd == "Change Status")
 	{
 	}
-	else if (cmd == "Show Pages")
+	else if (cmd == "Show Memory")
 	{
+		console.println(shell.getMemoryManager().showMemory());
 	}
 	else if (cmd == "Show Lock")
 	{
@@ -114,7 +119,7 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 		auto test = shell.getLockManager().createLock();
 
 		console.println(test.getProcessQueueString());
-		
+
 		test.getProcessQueue().push_back(std::make_shared<PCB>(PCB("Siema", 123, PCBStatus::New)));
 		test.getProcessQueue().push_back(std::make_shared<PCB>(PCB("Byku", 321, PCBStatus::Running)));
 
@@ -122,5 +127,9 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 	}
 	else if (cmd == "Show Priority")
 	{
+	}
+	else if (cmd == "Show Processes")
+	{
+		console.println(shell.getProcessManager().showProcessList());
 	}
 }

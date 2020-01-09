@@ -38,8 +38,7 @@ std::string Interpreter::readNextParam(PCB &process) {
 	bool loadsFileName = false;
 	for (std::string buffer = "";; buffer += c) {
 		try {
-			auto pcbPtr = std::make_shared<PCB>(process);
-			c = static_cast<char>(shell->getMemoryManager().getByte(pcbPtr, process.insnIndex));
+			c = static_cast<char>(shell->getMemoryManager().getByte(process, process.insnIndex));
 		} catch (std::out_of_range &e) {
 			throw e;
 		}
@@ -57,8 +56,7 @@ void Interpreter::handleInsn(PCB &process) {
 	char c;
 	for (std::string buffer = "";;) {
 		try {
-			auto pcbPtr = std::make_shared<PCB>(process);
-			c = static_cast<char>(shell->getMemoryManager().getByte(pcbPtr, process.insnIndex));
+			c = static_cast<char>(shell->getMemoryManager().getByte(process, process.insnIndex));
 		} catch (std::out_of_range &e) {
 			process.insnIndex = prevInsnIndex;
 			process.changeStatus(PCBStatus::Error);
@@ -160,8 +158,7 @@ uint8_t Interpreter::getValue(PCB &process, std::string dest) {
 
 	if (isAddr) {
 		try {
-			auto pcbPtr = std::make_shared<PCB>(process);
-			value = shell->getMemoryManager().getByte(pcbPtr, value);
+			value = shell->getMemoryManager().getByte(process, value);
 		} catch (std::out_of_range &e) {
 			throw e;
 		}
@@ -189,11 +186,7 @@ void Interpreter::setValue(PCB &process, std::string dest, uint8_t value) {
 		}
 
 		try {
-			std::string data = "";
-			data += static_cast<char>(value);
-			
-			auto pcbPtr = std::make_shared<PCB>(process);
-			shell->getMemoryManager().setByte(pcbPtr, data, target);
+			shell->getMemoryManager().setByte(process, target, value);
 		} catch (std::out_of_range &e) {
 			throw e;
 		}

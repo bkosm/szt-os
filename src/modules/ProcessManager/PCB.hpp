@@ -1,8 +1,6 @@
 ﻿#pragma once
-#include "../MemoryManager/MemoryManager.h"
 #include <string>
 #include <random>
-#include <memory>
 
 enum class PCBStatus
 {
@@ -30,7 +28,7 @@ public:
 	uint8_t insnCounter = 0;
 	uint8_t estimatedTime = 0;
 	//===== MEMORY CONTROL =====
-	std::shared_ptr<std::vector<ProcessPageTableData>> processPageList; /*tablica stronic procesu znajdującego się w PCB*/
+	std::vector<uint8_t> pages;/*tablica stronic procesu znajdującego się w PCB*/
 	unsigned int sizePageProcess = 16; /*rozmiar strony*/
 	//===== FILE CONTROL =====
 

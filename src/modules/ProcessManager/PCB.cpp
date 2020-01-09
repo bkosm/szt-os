@@ -9,12 +9,10 @@ PCB::PCB()
 	this->processName = "error";
 	this->processID = -1;
 	this->status = PCBStatus::Error;
-	this->processPageList = std::make_shared<std::vector<ProcessPageTableData>>();
 }
 
 PCB::PCB(std::string name, int ID, PCBStatus processStatus)
 	: processName(std::move(name)), processID(ID), status(processStatus) {
-	this->processPageList = std::make_shared<std::vector<ProcessPageTableData>>();
 }
 
 PCB::~PCB()

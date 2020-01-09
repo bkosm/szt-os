@@ -3,19 +3,15 @@
 #include "../../Shell.hpp"
 #include <random>
 #include <algorithm>
-#include <exception>
-#include <iostream>
 #include <utility>
+#include <sstream>
 
 using PCB_ptr = std::shared_ptr<PCB>;
 
-ProcessManager::ProcessManager(Shell *shell) : shell(shell)
+ProcessManager::ProcessManager(Shell* shell) : shell(shell)
 {
 }
 
-ProcessManager::~ProcessManager()
-{
-}
 
 PCB_ptr ProcessManager::createProcess(std::string name, std::string programName)
 {
@@ -23,11 +19,13 @@ PCB_ptr ProcessManager::createProcess(std::string name, std::string programName)
 	processList.push_back(pcb);
 
 	try {
-		shell->getMemoryManager().loadProgram(programName, pcb->getPID());
-	} catch (std::overflow_error &e) {
+		shell->getMemoryManager().loadProgram(*pcb, programName);
+	}
+	catch (std::overflow_error & e) {
 		deleteProcessFromList(pcb->getPID());
 		throw e;
-	} catch (std::invalid_argument &e) {
+	}
+	catch (std::invalid_argument & e) {
 		deleteProcessFromList(pcb->getPID());
 		throw e;
 	}
@@ -44,7 +42,7 @@ PCB_ptr ProcessManager::createDummyProcess()
 	processList.push_back(pcb);
 
 	try {
-		shell->getMemoryManager().loadProgram("dummy.txt", pcb->getPID());
+		shell->getMemoryManager().loadProgram(*pcb, "dummy.txt");
 	}
 	catch (std::overflow_error & e) {
 		deleteProcessFromList(pcb->getPID());
@@ -88,64 +86,69 @@ std::string ProcessManager::showChosenProcess(PCB_ptr process)
 	return word;
 }
 
-std::string ProcessManager::showProcessList(std::vector<PCB_ptr> list)
+std::string ProcessManager::showProcessList()
 {
-	std::string word;
-	word = "| PROCESS LIST |\n";
-	for (auto const element : list)
+	std::ostringstream output;
+	output << "| PROCESS LIST |\n";
+	for (auto const& element : processList)
 	{
-		word = word + "| " + element->processName + " | " + std::to_string(element->processID) + " | ";
+		output << "| " + element->processName + " | " + std::to_string(element->processID) + " | ";
 		switch (element->status)
 		{
 		case PCBStatus::New:
-			word = word + "NEW |\n";
+			output << "NEW |\n";
 			break;
 		case PCBStatus::Ready:
-			word = word + "READY |\n";
+			output << "READY |\n";
 			break;
 		case PCBStatus::Running:
-			word = word + "RUNNING |\n";
+			output << "RUNNING |\n";
 			break;
 		case PCBStatus::Waiting:
-			word = word + "WAITING |\n";
+			output << "WAITING |\n";
 			break;
 		case PCBStatus::Terminated:
-			word = word + "TERMINATED |\n"; //useless
+			output << "TERMINATED |\n"; //useless
 			break;
+		case PCBStatus::Dummy:
+			output << "DUMMY |\n"; 
+			break;
+		case PCBStatus::Error:
+			output << "ERROR |\n";
+			break;
+		default: break;
 		}
 	}
-	std::cout << word;
-	return word;
+	return output.str();
 }
 
-std::string ProcessManager::showReadyQueue(std::vector<PCB_ptr> queue)
+std::string ProcessManager::showReadyQueue()
 {
-	std::string word;
-	word = "| READY QUEUE |\n";
-	for (auto const element : queue)
+	std::ostringstream output;
+	output << "| READY QUEUE |\n";
+	for (auto const element : readyQueue)
 	{
-		word = word + "| " + element->processName + " | " + std::to_string(element->processID) + " | ";
+		output << "| " + element->processName + " | " + std::to_string(element->processID) + " | ";
 		switch (element->status)
 		{
 		case PCBStatus::New:
-			word = word + "NEW |\n";
+			output << "NEW |\n";
 			break;
 		case PCBStatus::Ready:
-			word = word + "READY |\n";
+			output << "READY |\n";
 			break;
 		case PCBStatus::Running:
-			word = word + "RUNNING |\n";
+			output << "RUNNING |\n";
 			break;
 		case PCBStatus::Waiting:
-			word = word + "WAITING |\n";
+			output << "WAITING |\n";
 			break;
 		case PCBStatus::Terminated:
-			word = word + "TERMINATED |\n"; //useless
+			output << "TERMINATED |\n"; //useless
 			break;
 		}
 	}
-	std::cout << word;
-	return word;
+	return output.str();
 }
 
 std::vector<PCB_ptr>& ProcessManager::getReadyQueue()
@@ -186,8 +189,8 @@ void ProcessManager::deleteProcessFromList(int pid)
 		throw std::length_error("ProcessList is empty. You cannot delete a process.");
 	}
 	processList.erase(std::remove_if(std::begin(processList), std::end(processList),
-	                                 [&pid](auto& pcb) { return pcb->processID == pid; }),
-	                  std::end(processList));
+		[&pid](auto& pcb) { return pcb->processID == pid; }),
+		std::end(processList));
 }
 
 void ProcessManager::deleteProcessFromQueue(int pid)
@@ -197,8 +200,8 @@ void ProcessManager::deleteProcessFromQueue(int pid)
 		throw std::length_error("ReadyQueue is empty. You cannot delete a process.");
 	}
 	readyQueue.erase(std::remove_if(std::begin(readyQueue), std::end(readyQueue),
-	                                 [&pid](auto& pcb) { return pcb->processID == pid; }),
-	                  std::end(readyQueue));
+		[&pid](auto& pcb) { return pcb->processID == pid; }),
+		std::end(readyQueue));
 }
 
 void ProcessManager::addProcessToList(std::shared_ptr<PCB> process)
@@ -214,11 +217,11 @@ void ProcessManager::addProcessToQueue(std::shared_ptr<PCB> process)
 
 PCB_ptr ProcessManager::getProcessFromList(std::string processName)
 {
-	if(processList.empty())
+	if (processList.empty())
 	{
 		throw std::length_error("ProcessList is empty.");
 	}
-	
+
 	for (int i = 0; i < this->processList.size(); i++)
 	{
 		if (this->processList[i]->processName == processName)

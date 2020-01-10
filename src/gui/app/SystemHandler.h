@@ -2,6 +2,7 @@
 #include "SelbaWard/ConsoleScreen.h"
 #include "../../Shell.hpp"
 #include <string>
+#include <stdexcept>
 
 inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::string>& arguments)
 {
@@ -91,10 +92,12 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 				continue;
 			}
 
-			if (pcb->status == PCBStatus::Terminated)
+			if (pcb->status == PCBStatus::Terminated
+				|| pcb->status == PCBStatus::Error)
 			{
 				shell.getProcessManager().deleteProcessFromQueue(pcb->getPID());
 				shell.getProcessManager().deleteProcessFromList(pcb->getPID());
+				shell.getMemoryManager().deleteProgram(*pcb);
 			}
 		}
 	}

@@ -43,7 +43,7 @@ PCB_ptr ProcessManager::createDummyProcess()
 	processList.push_back(pcb);
 
 	try {
-		shell->getMemoryManager().loadProgram(*pcb, "dummy.txt");
+		shell->getMemoryManager().loadDummy(*pcb);
 	}
 	catch (std::overflow_error & e) {
 		deleteProcessFromList(pcb->getPID());

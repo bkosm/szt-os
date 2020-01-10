@@ -95,6 +95,10 @@ void Interpreter::handleInsn(PCB &process) {
 	}
 }
 
+std::string Interpreter::loadDummyProgram() {
+	return "JP 0";
+}
+
 std::string Interpreter::loadProgram(const std::string name) {
 	std::ifstream in("programs/" + name);
 	if (!in.is_open()) {

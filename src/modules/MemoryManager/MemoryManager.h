@@ -9,6 +9,7 @@ class MemoryManager
 public:
 	MemoryManager(Shell* shell);
 
+	void loadDummy(PCB& pcb);
 	void loadProgram(PCB& pcb, const std::string& programName);
 	void deleteProgram(PCB& pcb);
 

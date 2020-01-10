@@ -10,6 +10,30 @@ constexpr uint8_t MAX_FRAMES = 32;
 
 MemoryManager::MemoryManager(Shell* shell) : shell(shell) {}
 
+void MemoryManager::loadDummy(PCB& pcb) {
+	std::string programCode = shell->getInterpreter().loadDummyProgram();
+
+	uint8_t neededPages = 1 + ((programCode.length() - 1) / FRAME_SIZE);
+	std::vector<uint8_t> freeFrames = getFreeFrames();
+
+	if (neededPages > freeFrames.size()) {
+		throw std::overflow_error("Program nie miesci sie w pamieci.");
+	}
+
+	int programIndex = 0;
+	for (int i = 0; i < neededPages; ++i) {
+		usedFrames[freeFrames[i]] = true;
+		pcb.pages.push_back(freeFrames[i]);
+
+		for (int index = 0; index < FRAME_SIZE; ++index) {
+			if (programIndex >= programCode.length()) return;
+
+			RAM[freeFrames[i] * FRAME_SIZE + index] = programCode[programIndex];
+			++programIndex;
+		}
+	}
+}
+
 void MemoryManager::loadProgram(PCB& pcb, const std::string& programName)
 {
 	std::string programCode;
@@ -57,6 +81,7 @@ void MemoryManager::deleteProgram(PCB& pcb)
 			RAM[frame * FRAME_SIZE + i] = 0;
 		}
 	}
+	pcb.pages.clear();
 }
 
 uint8_t MemoryManager::getByte(PCB& pcb, uint16_t target)

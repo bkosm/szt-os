@@ -1,6 +1,7 @@
 #pragma once
 #include "SelbaWard/ConsoleScreen.h"
 #include "../../Shell.hpp"
+#include "../../SztosException.hpp"
 #include <string>
 #include <stdexcept>
 
@@ -43,14 +44,13 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 		{
 			shell.getProcessManager().createProcess(arguments[1], arguments[2]);
 		}
-		catch (std::invalid_argument & e)
+		catch (SztosException &e)
 		{
-			console.println("Blad przy wczytywaniu programu: " + std::string(e.what()));
+			console.println("Blad: " + std::string(e.what()));
 			return;
 		}
-		catch (std::overflow_error & e)
-		{
-			console.println("Blad przy wczytywaniu programu: " + std::string(e.what()));
+		catch (std::exception &e) {
+			console.println("Nieznany blad: " + std::string(e.what()));
 			return;
 		}
 
@@ -64,7 +64,7 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 		{
 			numOfGo = std::stoi(arguments[1]);
 		}
-		catch (std::invalid_argument & e)
+		catch (std::exception &e)
 		{
 			console.println("Argument nie jest liczba.");
 			return;
@@ -86,10 +86,12 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 			{
 				shell.getInterpreter().handleInsn(*pcb);
 			}
-			catch (std::exception & e)
-			{
-				console.println("Napotkano blad: " + std::string(e.what()));
-				continue;
+			catch (SztosException &e) {
+				console.println("Blad: " + std::string(e.what()));
+				return;
+			} catch (std::exception &e) {
+				console.println("Nieznany blad: " + std::string(e.what()));
+				return;
 			}
 
 			if (pcb->status == PCBStatus::Terminated

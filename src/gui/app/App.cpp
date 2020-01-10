@@ -2,6 +2,7 @@
 #include "StartState.h"
 #include "Definitions.h"
 #include <iostream>
+#include "../../SztosException.hpp"
 
 Resources::Resources(const sf::String& fontPath, sf::RenderWindow& window) :
 	wallpaper(window)
@@ -17,14 +18,11 @@ App::App(const sf::VideoMode& videoMode, const sf::String& title)
 		auto dummy = data_->shell.getProcessManager().createDummyProcess();
 		data_->shell.getScheduler().setRunningPcb(dummy);
 	}
-	catch (std::invalid_argument & e)
-	{
-		std::cout << "Nie udalo sie zaladowac programu dummy.txt." << std::endl;
+	catch (SztosException &e) {
+		std::cout << "Blad: " << e.what() << std::endl;
 		return;
-	}
-	catch (std::overflow_error & e)
-	{
-		std::cout << "Nie ma miejsca w pamieci na program dummy.txt." << std::endl;
+	} catch (std::exception &e) {
+		std::cout << "Nieznany blad: " << e.what() << std::endl;
 		return;
 	}
 

@@ -6,6 +6,7 @@
 #include <fstream>
 #include <memory>
 #include "../../Shell.hpp"
+#include "../../SztosException.hpp"
 #include "../../modules/ProcessManager/PCB.hpp"
 
 // instantiate pair <string, method ptr> for each instruction available
@@ -39,7 +40,7 @@ std::string Interpreter::readNextParam(PCB &process) {
 	for (std::string buffer = "";; buffer += c) {
 		try {
 			c = static_cast<char>(shell->getMemoryManager().getByte(process, process.insnIndex));
-		} catch (std::out_of_range &e) {
+		} catch (SztosException &e) {
 			throw e;
 		}
 
@@ -57,7 +58,7 @@ void Interpreter::handleInsn(PCB &process) {
 	for (std::string buffer = "";;) {
 		try {
 			c = static_cast<char>(shell->getMemoryManager().getByte(process, process.insnIndex));
-		} catch (std::out_of_range &e) {
+		} catch (SztosException &e) {
 			process.insnIndex = prevInsnIndex;
 			process.changeStatus(PCBStatus::Error);
 			throw e;
@@ -73,13 +74,13 @@ void Interpreter::handleInsn(PCB &process) {
 			} catch (std::out_of_range &e) {
 				process.changeStatus(PCBStatus::Error);
 				process.insnIndex = prevInsnIndex;
-				throw std::out_of_range("Nieznana instrukcja: " + buffer);
+				throw SztosException("Nieznana instrukcja: " + buffer);
 			}
 
 			try {
 				(this->*insn)(process);
 				++process.insnCounter;
-			} catch (std::exception &e) {
+			} catch (SztosException &e) {
 				process.changeStatus(PCBStatus::Error);
 				process.insnIndex = prevInsnIndex;
 				throw e;
@@ -102,7 +103,7 @@ std::string Interpreter::loadDummyProgram() {
 std::string Interpreter::loadProgram(const std::string name) {
 	std::ifstream in("programs/" + name);
 	if (!in.is_open()) {
-		throw std::invalid_argument("Nie ma takiego pliku.");
+		throw SztosException("Nie ma takiego pliku.");
 	}
 
 	std::string prog = "";
@@ -116,7 +117,7 @@ std::string Interpreter::loadProgram(const std::string name) {
 		else if (temp == ".data") {
 			mode = 1;
 			if (prog.empty()) {
-				throw std::invalid_argument("Blad struktury programu.");
+				throw SztosException("Blad struktury programu.");
 			}
 			prog = prog.substr(0, prog.length() - 1);
 			continue;
@@ -128,9 +129,9 @@ std::string Interpreter::loadProgram(const std::string name) {
 		}
 		else if (mode == 1) {
 			try {
-				prog += static_cast<char>(std::stoull(temp));
-			} catch (std::invalid_argument &e) {
-				throw std::invalid_argument("Blad konwersji liczb w programie.");
+				prog += static_cast<char>(std::stoul(temp));
+			} catch (std::exception &e) {
+				throw SztosException("Blad konwersji liczb w programie.");
 			}
 		}
 	}
@@ -139,7 +140,7 @@ std::string Interpreter::loadProgram(const std::string name) {
 }
 
 uint8_t Interpreter::getValue(PCB &process, std::string dest) {
-	if (dest.length() == 0) throw std::invalid_argument("Parametr instrukcji jest pusty.");
+	if (dest.length() == 0) throw SztosException("Parametr instrukcji jest pusty.");
 
 	bool isAddr;
 	if (dest.front() == '[' && dest.back() == ']') {
@@ -157,13 +158,13 @@ uint8_t Interpreter::getValue(PCB &process, std::string dest) {
 		else if (dest == "DX") { value = process.DX; }
 		else value = static_cast<uint8_t>(std::stoul(dest));
 	} catch (std::exception &e) {
-		throw std::invalid_argument("Nie udalo sie przekonwertowac parametru instrukcji na liczbe.");
+		throw SztosException("Nie udalo sie przekonwertowac parametru instrukcji na liczbe.");
 	}
 
 	if (isAddr) {
 		try {
 			value = shell->getMemoryManager().getByte(process, value);
-		} catch (std::out_of_range &e) {
+		} catch (SztosException &e) {
 			throw e;
 		}
 		
@@ -173,7 +174,7 @@ uint8_t Interpreter::getValue(PCB &process, std::string dest) {
 }
 
 void Interpreter::setValue(PCB &process, std::string dest, uint8_t value) {
-	if (dest.length() == 0) throw std::invalid_argument("Parametr instrukcji jest pusty.");
+	if (dest.length() == 0) throw SztosException("Parametr instrukcji jest pusty.");
 
 	if (dest.front() == '[' && dest.back() == ']') {
 		dest = dest.substr(1, dest.length() - 2);
@@ -185,13 +186,13 @@ void Interpreter::setValue(PCB &process, std::string dest, uint8_t value) {
 			else if (dest == "CX") { target = process.CX; }
 			else if (dest == "DX") { target = process.DX; }
 			else target = static_cast<uint8_t>(std::stoul(dest));
-		} catch (std::invalid_argument &e) {
-			throw std::invalid_argument("Nie udalo sie przekonwertowac parametru instrukcji na liczbe.");
+		} catch (std::exception &e) {
+			throw SztosException("Nie udalo sie przekonwertowac parametru instrukcji na liczbe.");
 		}
 
 		try {
 			shell->getMemoryManager().setByte(process, target, value);
-		} catch (std::out_of_range &e) {
+		} catch (SztosException &e) {
 			throw e;
 		}
 	}

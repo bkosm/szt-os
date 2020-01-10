@@ -1,6 +1,7 @@
 #include "PCB.hpp"
 #include "ProcessManager.hpp"
 #include "../../Shell.hpp"
+#include "../../SztosException.hpp"
 #include <random>
 #include <algorithm>
 #include <utility>
@@ -22,11 +23,7 @@ PCB_ptr ProcessManager::createProcess(std::string name, std::string programName)
 	try {
 		shell->getMemoryManager().loadProgram(*pcb, programName);
 	}
-	catch (std::overflow_error & e) {
-		deleteProcessFromList(pcb->getPID());
-		throw e;
-	}
-	catch (std::invalid_argument & e) {
+	catch (SztosException & e) {
 		deleteProcessFromList(pcb->getPID());
 		throw e;
 	}
@@ -45,11 +42,7 @@ PCB_ptr ProcessManager::createDummyProcess()
 	try {
 		shell->getMemoryManager().loadDummy(*pcb);
 	}
-	catch (std::overflow_error & e) {
-		deleteProcessFromList(pcb->getPID());
-		throw e;
-	}
-	catch (std::invalid_argument & e) {
+	catch (SztosException & e) {
 		deleteProcessFromList(pcb->getPID());
 		throw e;
 	}

@@ -1,6 +1,7 @@
 #include "MemoryManager.h"
 #include "../ProcessManager/PCB.hpp"
 #include "../../Shell.hpp"
+#include "../../SztosException.hpp"
 #include <stdexcept>
 #include <sstream>
 #include <iomanip>
@@ -13,11 +14,11 @@ MemoryManager::MemoryManager(Shell* shell) : shell(shell) {}
 void MemoryManager::loadDummy(PCB& pcb) {
 	std::string programCode = shell->getInterpreter().loadDummyProgram();
 
-	uint8_t neededPages = 1 + ((programCode.length() - 1) / FRAME_SIZE);
+	size_t neededPages = 1 + ((programCode.length() - 1) / FRAME_SIZE);
 	std::vector<uint8_t> freeFrames = getFreeFrames();
 
 	if (neededPages > freeFrames.size()) {
-		throw std::overflow_error("Program nie miesci sie w pamieci.");
+		throw SztosException("Program nie miesci sie w pamieci.");
 	}
 
 	int programIndex = 0;
@@ -41,17 +42,17 @@ void MemoryManager::loadProgram(PCB& pcb, const std::string& programName)
 	{
 		programCode = shell->getInterpreter().loadProgram(programName);
 	}
-	catch (std::invalid_argument & e)
+	catch (SztosException &e)
 	{
 		throw e;
 	}
 
-	uint8_t neededPages = 1 + ((programCode.length() - 1) / FRAME_SIZE);
+	size_t neededPages = 1 + ((programCode.length() - 1) / FRAME_SIZE);
 	std::vector<uint8_t> freeFrames = getFreeFrames();
 
 	if (neededPages > freeFrames.size())
 	{
-		throw std::overflow_error("Program nie miesci sie w pamieci.");
+		throw SztosException("Program nie miesci sie w pamieci.");
 	}
 
 	int programIndex = 0;
@@ -89,14 +90,14 @@ uint8_t MemoryManager::getByte(PCB& pcb, uint16_t target)
 	uint8_t pageNum = target / FRAME_SIZE;
 	if (pageNum >= pcb.pages.size())
 	{
-		throw std::out_of_range("Proces odwolal sie do blednej stronicy.");
+		throw SztosException("Proces odwolal sie do blednej stronicy.");
 	}
 
 	uint8_t frameNum = pcb.pages[pageNum];
 
 	if (frameNum >= MAX_FRAMES)
 	{
-		throw std::out_of_range("Proces odwolal sie do blednej ramki.");
+		throw SztosException("Proces odwolal sie do blednej ramki.");
 	}
 
 	uint8_t byteNum = (frameNum * FRAME_SIZE) + (target % FRAME_SIZE);
@@ -108,14 +109,14 @@ void MemoryManager::setByte(PCB& pcb, uint16_t target, uint8_t data)
 	uint8_t pageNum = target / FRAME_SIZE;
 	if (pageNum >= pcb.pages.size())
 	{
-		throw std::out_of_range("Proces odwolal sie do blednej stronicy.");
+		throw SztosException("Proces odwolal sie do blednej stronicy.");
 	}
 
 	uint8_t frameNum = pcb.pages[pageNum];
 
 	if (frameNum >= MAX_FRAMES)
 	{
-		throw std::out_of_range("Proces odwolal sie do blednej ramki.");
+		throw SztosException("Proces odwolal sie do blednej ramki.");
 	}
 
 	RAM[(frameNum * FRAME_SIZE) + (target % FRAME_SIZE)] = data;;

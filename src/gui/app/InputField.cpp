@@ -45,7 +45,7 @@ void InputField::writeText(const sf::String& string)
 			inputString_.erase(inputString_.getSize() - 1);
 		}
 			/* handle backspace and newline chars */
-		else if (string.getData()[0] != 8 and string.getData()[0] != 13)
+		else if (string.getData()[0] != 8 and string.getData()[0] != 13 and string.getData()[0] != '\t')
 		{
 			inputString_ += string;
 		}

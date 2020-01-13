@@ -4,8 +4,9 @@ Shell::Shell() :
 	interpreter(this),
 	scheduler(this),
 	processManager(this),
-	lockManager(this),
-	memoryManager(this)
+	memoryManager(this),
+	fileManager(this),
+	lockManager(this)
 {
 }
 
@@ -32,4 +33,9 @@ MemoryManager& Shell::getMemoryManager()
 LockManager& Shell::getLockManager()
 {
 	return lockManager;
+}
+
+FileManager& Shell::getFileManager()
+{
+	return fileManager;
 }

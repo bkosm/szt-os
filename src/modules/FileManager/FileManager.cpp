@@ -3,8 +3,7 @@
 #include <string>
 #include <sstream>  
 #include "FileManager.h"
-
-FileManager fm;
+#include "../../SztosException.hpp"
 
 //Aliasy
 using u_int = unsigned int;
@@ -22,21 +21,26 @@ int FileManager::searchFreeBlock() {
 	return -1;
 }
 
-int FileManager::searchIndexBlock(int i) {
-	int block;
-	int block2;
-	for (int j = 0; j < 8; j++) {
-		if (disk[mainCatalog[i].indexBlockNumber * BLOCK_SIZE + j] == 0) {
-			block2 = searchFreeBlock();
-			indexBlockFillZero(block2);
-		}
+int FileManager::searchIndexBlock(int fileIndex) {
+	const auto& fileIndexBlock = mainCatalog[fileIndex].indexBlockNumber;
 
-		if (disk[mainCatalog[i].indexBlockNumber * BLOCK_SIZE + j] * BLOCK_SIZE == 0) {
-			block = mainCatalog[i].indexBlockNumber * BLOCK_SIZE + j;
-			return block;
+	for (int j = 0; j < 16; j++) {
+		auto& indexBlockElem = disk[fileIndexBlock * BLOCK_SIZE + j];
+
+		if (indexBlockElem != 0)
+		{
+			for (int b = 0; b < 16; b++) {
+				if (disk[indexBlockElem * BLOCK_SIZE + b] == 0) {
+					return indexBlockElem;
+				}
+			}
+		}
+		else {
+			indexBlockElem = searchFreeBlock();
+			return indexBlockElem;
 		}
 	}
-
+	throw SztosException("Plik przekroczyl maksymalna wielkosc.");
 }
 
 bool FileManager::isNameUsed(std::string name) {
@@ -48,7 +52,7 @@ bool FileManager::isNameUsed(std::string name) {
 }
 
 int FileManager::indexBlockFillZero(int ind) {
-	for (int i = 0; i < 8; i++) {
+	for (int i = 0; i < 16; i++) {
 		disk[ind * BLOCK_SIZE + i] = 0;
 	}
 
@@ -74,7 +78,6 @@ int FileManager::createFile(std::string name) {
 	//Czesc dzialajaca
 	File newFile(name);
 	newFile.indexBlockNumber = searchFreeBlock();
-	indexBlockFillZero(newFile.indexBlockNumber);
 	mainCatalog.push_back(newFile);
 
 	return 0;
@@ -110,19 +113,25 @@ int FileManager::closeFile(std::string name) {
 }
 
 int FileManager::writeToFile(std::string name, std::string data) {
-	int block;
+	for (auto fileIndex : openFiles) {
 
-	for (auto i : openFiles) {
+		if (mainCatalog[fileIndex].name == name) {
 
-		if (mainCatalog[i].name == name) {
-			mainCatalog[i].size += data.size();
-			for (int j = 0; j < data.size(); j++) {
+			mainCatalog[fileIndex].size += data.size();
 
-				block = searchIndexBlock(i);
-				disk[block * BLOCK_SIZE + mainCatalog[i].writePointer] = data[j];
-				mainCatalog[i].writePointer++;
+			for (auto letter : data)
+			{
+				auto blockToWrite = searchIndexBlock(fileIndex);
+
+				disk[blockToWrite * BLOCK_SIZE + mainCatalog[fileIndex].writePointer] = letter;
+				mainCatalog[fileIndex].writePointer++;
+				if (mainCatalog[fileIndex].writePointer > 15)
+				{
+					mainCatalog[fileIndex].writePointer = 0;
+				}
 			}
 			return 0;
+
 		}
 	}
 	return 0;
@@ -159,9 +168,8 @@ int FileManager::readFileByte(std::string name, int howMuch) {
 			for (int j = mainCatalog[i].readPointer; j < howMuch;) {
 				readFileByte(name, howMuch);
 			}
+			return 0;
 		}
-
-		return 0;
 	}
 }
 
@@ -229,18 +237,58 @@ std::string FileManager::displayFileInfo(const std::string& name) {
 }
 
 std::string FileManager::displayDiskContentChar() {
-	std::stringstream ss;
+	std::ostringstream output;
 
-	for (u_int i = 0; i < DISK_CAPACITY / BLOCK_SIZE; i++) {
-		ss << std::setfill('0') << std::setw(2) << i << ".  ";
-		for (u_int j = 0; j < BLOCK_SIZE; j++) {
-			if (disk[i * BLOCK_SIZE + j] >= 0 && disk[i * BLOCK_SIZE + j] <= 16) { ss << "."; }
-			else { ss << disk[i * BLOCK_SIZE + j]; }
+	unsigned frameIndex = 0, pageNumber = 0, column = 0;
+
+	output << "DISK CONTENT:" << std::endl;
+	for (auto ch : disk)
+	{
+		if (ch == '\t' or ch == '\n') ch = ' ';
+		
+		if (column == 2) {
+			if (frameIndex == 0)
+			{
+				output << std::setfill('0') << std::setw(2) << pageNumber << ": {" << ch;
+				++pageNumber;
+			}
+			else if (frameIndex == 15)
+			{
+				output << ch << "}" << std::endl;
+				frameIndex = -1;
+				column = 0;
+			}
+			else
+			{
+				output << ch;
+			}
+			++frameIndex;
 		}
-		if (i % 2 == 1) { ss << '\n'; }
-		else { ss << "  "; }
+		else {
+			if (frameIndex == 0)
+			{
+				output << std::setfill('0') << std::setw(2) << pageNumber << ": {" << ch;
+				++pageNumber;
+			}
+			else if (frameIndex == 15)
+			{
+				output << ch << "} ";
+				frameIndex = -1;
+				++column;
+			}
+			else
+			{
+				output << ch;
+			}
+			++frameIndex;
+		}
 	}
-	ss << '\n';
 
-	return ss.str();
+	return output.str();
+}
+
+FileManager::FileManager(Shell* shell) : shell(shell)
+{
+	openFiles = { -1 };
+	disk = { 0 };
 }

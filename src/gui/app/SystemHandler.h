@@ -44,12 +44,12 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 		{
 			shell.getProcessManager().createProcess(arguments[1], arguments[2]);
 		}
-		catch (SztosException &e)
+		catch (SztosException & e)
 		{
 			console.println("Blad: " + std::string(e.what()));
 			return;
 		}
-		catch (std::exception &e) {
+		catch (std::exception & e) {
 			console.println("Nieznany blad: " + std::string(e.what()));
 			return;
 		}
@@ -64,7 +64,7 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 		{
 			numOfGo = std::stoi(arguments[1]);
 		}
-		catch (std::exception &e)
+		catch (std::exception & e)
 		{
 			console.println("Argument nie jest liczba.");
 			return;
@@ -86,10 +86,11 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 			{
 				shell.getInterpreter().handleInsn(*pcb);
 			}
-			catch (SztosException &e) {
+			catch (SztosException & e) {
 				console.println("Blad: " + std::string(e.what()));
 				return;
-			} catch (std::exception &e) {
+			}
+			catch (std::exception & e) {
 				console.println("Nieznany blad: " + std::string(e.what()));
 				return;
 			}
@@ -136,5 +137,25 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 	else if (cmd == "Show Processes")
 	{
 		console.println(shell.getProcessManager().showProcessList());
+	}
+	else if (cmd == "Create File")
+	{
+		shell.getFileManager().createFile(arguments[1]);
+	}
+	else if (cmd == "Show File Info")
+	{
+		const auto info = shell.getFileManager().displayFileInfo(arguments[1]);
+		console.println(info);
+	}
+	else if (cmd == "Show Disk")
+	{
+		const auto disk = shell.getFileManager().displayDiskContentChar();
+		console.println(disk);
+	}
+	else if (cmd == "Write To File")
+	{
+		shell.getFileManager().openFile(arguments[1]);
+		shell.getFileManager().writeToFile(arguments[1], arguments[2]);
+		shell.getFileManager().closeFile(arguments[1]);
 	}
 }

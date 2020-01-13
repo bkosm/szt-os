@@ -3,10 +3,14 @@
 #include <vector>
 #include <array>
 
+class Shell;
+
 class FileManager {
-	public:
+public:
 	using u_int = unsigned int;
 	using u_short_int = unsigned short int;
+
+	FileManager(Shell* shell);
 
 	static const uint8_t BLOCK_SIZE = 16;
 	static const uint8_t FILE_LIMIT = 16;
@@ -14,7 +18,7 @@ class FileManager {
 
 	struct File {
 		std::string name;
-		int indexBlockNumber{};
+		int indexBlockNumber;
 		int size = 0;
 		int readPointer;
 		int writePointer;
@@ -31,17 +35,6 @@ class FileManager {
 		}
 	};
 
-	std::array<char, DISK_CAPACITY> disk{};
-	std::vector<File> mainCatalog;
-	std::array<int, DISK_CAPACITY / BLOCK_SIZE> openFiles{};
-	std::array<bool, DISK_CAPACITY / BLOCK_SIZE> freeIndexes{};
-
-	bool isNameUsed(std::string name);
-
-	int searchFreeBlock();
-	int searchFileId(std::string name);
-	int indexBlockFillZero(int ind);
-	int searchIndexBlock(int i);
 	int createFile(std::string name);
 	int deleteFile(std::string name);
 	int openFile(std::string name);
@@ -56,6 +49,18 @@ class FileManager {
 	std::string readFileAll(std::string name);
 	std::string displayFileInfo(const std::string& name);
 	std::string displayDiskContentChar();
-	
-	FileManager() = default;
+
+private:
+	Shell* shell;
+
+	std::array<char, DISK_CAPACITY> disk{};
+	std::vector<File> mainCatalog;
+	std::array<int, DISK_CAPACITY / BLOCK_SIZE> openFiles{};
+	std::array<bool, DISK_CAPACITY / BLOCK_SIZE> freeIndexes{};
+
+	bool isNameUsed(std::string name);
+	int searchFreeBlock();
+	int searchFileId(std::string name);
+	int indexBlockFillZero(int ind);
+	int searchIndexBlock(int fileIndex);
 };

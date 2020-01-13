@@ -108,6 +108,7 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 	{
 		shell.getProcessManager().deleteProcessFromQueue(std::stoi(arguments[1]));
 		shell.getProcessManager().deleteProcessFromList(std::stoi(arguments[1]));
+		// TODO free RAM
 		console.println("Killed process.");
 	}
 	else if (cmd == "Change Status")

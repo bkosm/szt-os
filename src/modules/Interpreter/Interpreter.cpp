@@ -27,7 +27,7 @@ Interpreter::Interpreter(Shell *shell) : insnMap {
 	INSN(JP),	INSN(JZ),	INSN(JNZ),
 	INSN(JE),	INSN(JNE),	INSN(JA),	INSN(JAE),	INSN(JB),	INSN(JBE),
 	INSN(LO),	INSN(CP),	INSN(FO),	INSN(FC),	INSN(FR),	INSN(FW)
-}, shell(shell)
+}, shell(shell), lastInsn()
 {
 }
 #undef INSN
@@ -47,12 +47,16 @@ std::string Interpreter::readNextParam(PCB &process) {
 		++process.insnIndex;
 
 		if (c == '\"') loadsFileName = !loadsFileName;
-		if (!loadsFileName && c == ' ') return buffer;
+		if (!loadsFileName && c == ' ') {
+			lastInsn += ' ' + buffer;
+			return buffer;
+		}
 	}
 }
 
 void Interpreter::handleInsn(PCB &process) {
 	uint8_t prevInsnIndex = process.insnIndex;
+	lastInsn = "";
 
 	char c;
 	for (std::string buffer = "";;) {
@@ -77,6 +81,7 @@ void Interpreter::handleInsn(PCB &process) {
 				throw SztosException("Nieznana instrukcja: " + buffer);
 			}
 
+			lastInsn = buffer;
 			try {
 				(this->*insn)(process);
 				++process.insnCounter;
@@ -97,7 +102,7 @@ void Interpreter::handleInsn(PCB &process) {
 }
 
 std::string Interpreter::loadDummyProgram() {
-	return "JP 0";
+	return "JP 0 ";
 }
 
 std::string Interpreter::loadProgram(const std::string name) {
@@ -116,10 +121,10 @@ std::string Interpreter::loadProgram(const std::string name) {
 		}
 		else if (temp == ".data") {
 			mode = 1;
-			if (prog.empty()) {
-				throw SztosException("Blad struktury programu.");
-			}
-			prog = prog.substr(0, prog.length() - 1);
+			//if (prog.empty()) {
+			//	throw SztosException("Blad struktury programu.");
+			//}
+			//prog = prog.substr(0, prog.length() - 1);
 			continue;
 		}
 
@@ -158,7 +163,7 @@ uint8_t Interpreter::getValue(PCB &process, std::string dest) {
 		else if (dest == "DX") { value = process.DX; }
 		else value = static_cast<uint8_t>(std::stoul(dest));
 	} catch (std::exception &e) {
-		throw SztosException("Nie udalo sie przekonwertowac parametru instrukcji na liczbe.");
+		throw SztosException("Nie udalo sie przekonwertowac parametru instrukcji na liczbe (w poleceniu: \"" + lastInsn + "\").");
 	}
 
 	if (isAddr) {
@@ -187,7 +192,7 @@ void Interpreter::setValue(PCB &process, std::string dest, uint8_t value) {
 			else if (dest == "DX") { target = process.DX; }
 			else target = static_cast<uint8_t>(std::stoul(dest));
 		} catch (std::exception &e) {
-			throw SztosException("Nie udalo sie przekonwertowac parametru instrukcji na liczbe.");
+			throw SztosException("Nie udalo sie przekonwertowac parametru instrukcji na liczbe (w poleceniu: \"" + lastInsn + "\").");
 		}
 
 		try {

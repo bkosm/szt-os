@@ -10,6 +10,8 @@ class Interpreter {
 	std::unordered_map<std::string, void(Interpreter::*)(PCB &)> insnMap;
 	Shell *shell;
 
+	std::string lastInsn;
+
 	void handleArithm(PCB &process, uint8_t(*op)(uint8_t, uint8_t));
 	void insnADD(PCB &process); void insnSUB(PCB &process); void insnMUL(PCB &process);
 	void insnDIV(PCB &process); void insnINC(PCB &process); void insnDSC(PCB &process);

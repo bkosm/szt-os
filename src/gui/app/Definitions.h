@@ -20,7 +20,7 @@ const sf::String BOOT_SOUND_PATH{"./resources/boot.wav"};
 const sf::String ERROR_SOUND_PATH{"./resources/error.wav"};
 const sf::String EXIT_SOUND_PATH{"./resources/shutdown.wav"};
 
-const sf::Vector2f START_STATE_BUTTON_SIZE{250, 100};
+const sf::Vector2f START_STATE_BUTTON_SIZE{250, 80};
 
 const float BUTTON_LABEL_TOP_INDENT{10.0};
 const float INPUT_FIELD_LABEL_HEIGHT{12.0};

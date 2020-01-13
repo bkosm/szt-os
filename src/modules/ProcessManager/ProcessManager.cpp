@@ -161,7 +161,9 @@ std::string ProcessManager::showPriority()
 	stream << "PRIORITY OF PROCESSES:\n";
 	for (const auto& element : processList)
 	{
-		stream << element->processID << "\t| " << element->processName << "\t| " << element->estimatedTime << "\n";
+		stream
+			<< element->processID << "\tN: " << element->processName
+			<< "\tET: " << int(element->estimatedTime) << "\n";
 	}
 	return stream.str();
 }

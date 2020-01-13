@@ -112,14 +112,16 @@ void StartState::configureButtons_()
 	buttons_ = {
 		Button(float(RESOLUTION.width) / 8.0, float(RESOLUTION.height) / 100.0 * 10.0,
 			   START_STATE_BUTTON_SIZE, "Processor Status"),
-		Button(float(RESOLUTION.width) / 8.0, float(RESOLUTION.height) / 100.0 * 28.0,
+		Button(float(RESOLUTION.width) / 8.0, float(RESOLUTION.height) / 100.0 * 25.0,
 			   START_STATE_BUTTON_SIZE, "Process Manager 1"),
-		Button(float(RESOLUTION.width) / 8.0, float(RESOLUTION.height) / 100.0 * 46.0,
+		Button(float(RESOLUTION.width) / 8.0, float(RESOLUTION.height) / 100.0 * 40.0,
 			   START_STATE_BUTTON_SIZE, "Process Manager 2"),
-		Button(float(RESOLUTION.width) / 8.0, float(RESOLUTION.height) / 100.0 * 64.0,
+		Button(float(RESOLUTION.width) / 8.0, float(RESOLUTION.height) / 100.0 * 55.0,
 			   START_STATE_BUTTON_SIZE, "Memory Manager"),
-		Button(float(RESOLUTION.width) / 8.0, float(RESOLUTION.height) / 100.0 * 82.0,
-			   START_STATE_BUTTON_SIZE, "File Manager"),
+		Button(float(RESOLUTION.width) / 8.0, float(RESOLUTION.height) / 100.0 * 70.0,
+			   START_STATE_BUTTON_SIZE, "File Manager 1"),
+		Button(float(RESOLUTION.width) / 8.0, float(RESOLUTION.height) / 100.0 * 85.0,
+			   START_STATE_BUTTON_SIZE, "File Manager 2")
 	};
 
 	for (auto& button : buttons_) button.setLabelFont(data_->resources.appFont);
@@ -150,13 +152,16 @@ void StartState::configureButtons_()
 	/* SHOW PROCESSES */
 	buttons_[1].commands.emplace_back("Show Processes", 0, data_->resources.appFont, data_->resources.runButtonTexture);
 	buttons_[1].commands[3].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 71 / 100));
-	/* Process Manager 1 command buttons */
-	//TODO reszta komend
+	/* Process Manager 2 command buttons */
+	/* TEST */
+	buttons_[2].commands.emplace_back("TEST", 1, data_->resources.appFont, data_->resources.runButtonTexture);
+	buttons_[2].commands[0].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 3 / 100));
+	buttons_[2].commands[0].inputFields[0].setLabelAndFont("File name:", data_->resources.appFont);
 	/* Memory Manager command buttons */
 	/* SHOW MEMORY */
 	buttons_[3].commands.emplace_back("Show Memory", 0, data_->resources.appFont, data_->resources.runButtonTexture);
 	buttons_[3].commands[0].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 3 / 100));
-	/* File Manager command buttons */
+	/* File Manager 1 command buttons */
 	/* CREATE FILE */
 	buttons_[4].commands.emplace_back("Create File", 1, data_->resources.appFont, data_->resources.runButtonTexture);
 	buttons_[4].commands[0].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 3 / 100));
@@ -167,16 +172,21 @@ void StartState::configureButtons_()
 	buttons_[4].commands[1].inputFields[0].setLabelAndFont("File name:", data_->resources.appFont);
 	/* WRITE TO FILE */
 	buttons_[4].commands.emplace_back("Write To File", 2, data_->resources.appFont, data_->resources.runButtonTexture);
-	buttons_[4].commands[2].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 38 / 100));
+	buttons_[4].commands[2].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 37 / 100));
 	buttons_[4].commands[2].inputFields[0].setLabelAndFont("File name:", data_->resources.appFont);
 	buttons_[4].commands[2].inputFields[1].setLabelAndFont("Data:", data_->resources.appFont);
 	/* SHOW DISK */
 	buttons_[4].commands.emplace_back("Show Disk", 0, data_->resources.appFont, data_->resources.runButtonTexture);
-	buttons_[4].commands[3].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 63 / 100));
+	buttons_[4].commands[3].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 62 / 100));
 	/* SHOW File */
 	buttons_[4].commands.emplace_back("Show File", 1, data_->resources.appFont, data_->resources.runButtonTexture);
-	buttons_[4].commands[4].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 74 / 100));
+	buttons_[4].commands[4].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 78 / 100));
 	buttons_[4].commands[4].inputFields[0].setLabelAndFont("File name:", data_->resources.appFont);
+	/* File Manager 2 command buttons */
+	/* TEST */
+	buttons_[5].commands.emplace_back("TEST", 1, data_->resources.appFont, data_->resources.runButtonTexture);
+	buttons_[5].commands[0].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 3 / 100));
+	buttons_[5].commands[0].inputFields[0].setLabelAndFont("File name:", data_->resources.appFont);
 }
 
 void StartState::update()

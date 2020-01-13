@@ -180,6 +180,18 @@ std::string FileManager::readFileAll(std::string name) {
 	for (auto i : openFiles) {
 		if (mainCatalog[i].name == name) {
 			mainCatalog[i].readPointer = 0;
+			/*
+			for (auto index = 0; index < 16; index++) {
+				auto blockIndex = disk[mainCatalog[i].indexBlockNumber * BLOCK_SIZE + index];
+				if (blockIndex != 0) {
+					for (auto i = 0; i < 16; i++) {
+						auto aByte = disk[blockIndex * BLOCK_SIZE + i];
+						if (aByte == 0) return result;
+
+						result += disk[blockIndex * BLOCK_SIZE + i];
+					}
+				}
+			}*/
 
 			for (int j = 0; j < mainCatalog[i].size; j++) {
 				int k = 0;
@@ -228,10 +240,10 @@ std::string FileManager::displayFileSystemParams() {
 std::string FileManager::displayFileInfo(const std::string& name) {
 	std::stringstream ss;
 
-	ss << " |       Nazwa Pliku : " << name << "\n";
+	ss << "File name:\t" << name << "\n";
 	int i = searchFileId(name);
-	ss << " |         Rozmiar pliku : " << mainCatalog[i].size << " B\n";
-	ss << " |     Numer bloku indeksowego : " << mainCatalog[i].indexBlockNumber << " \n";
+	ss << "File size:\t" << mainCatalog[i].size << " [B]\n";
+	ss << "Index block:\t" << mainCatalog[i].indexBlockNumber << " \n";
 
 	return ss.str();
 }

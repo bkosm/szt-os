@@ -1,11 +1,12 @@
 .text
-FO "file1.txt"
-startRead:FR DX "file1.txt"
-JZ DX end
+FO "file1"
+FO "file1_out"
+startRead:FR DX "file1"
+JZ DX <end>
 JB DX 97 <endRead>
 JA DX 122 <endRead>
 SUB DX 32
-FW DX "file1.txt"
+FW DX "file1_out"
 endRead:JP <startRead>
 end:HLT
 .data

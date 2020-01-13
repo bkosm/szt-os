@@ -130,9 +130,8 @@ void StartState::configureButtons_()
 	buttons_[0].commands[0].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 3 / 100));
 	buttons_[0].commands[0].inputFields[0].setLabelAndFont("Number of runs:", data_->resources.appFont);
 	/* SHOW PRIORITY */
-	buttons_[0].commands.emplace_back("Show Priority", 1, data_->resources.appFont, data_->resources.runButtonTexture);
+	buttons_[0].commands.emplace_back("Show Priority", 0, data_->resources.appFont, data_->resources.runButtonTexture);
 	buttons_[0].commands[1].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 20 / 100));
-	buttons_[0].commands[1].inputFields[0].setLabelAndFont("Process ID:", data_->resources.appFont);
 	/* Process Manager 1 command buttons */
 	/* CREATE PROCESS */
 	buttons_[1].commands.emplace_back("Create Process", 2, data_->resources.appFont, data_->resources.runButtonTexture);
@@ -174,6 +173,10 @@ void StartState::configureButtons_()
 	/* SHOW DISK */
 	buttons_[4].commands.emplace_back("Show Disk", 0, data_->resources.appFont, data_->resources.runButtonTexture);
 	buttons_[4].commands[3].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 63 / 100));
+	/* SHOW File */
+	buttons_[4].commands.emplace_back("Show File", 1, data_->resources.appFont, data_->resources.runButtonTexture);
+	buttons_[4].commands[4].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 74 / 100));
+	buttons_[4].commands[4].inputFields[0].setLabelAndFont("File name:", data_->resources.appFont);
 }
 
 void StartState::update()

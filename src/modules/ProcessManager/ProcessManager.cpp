@@ -155,6 +155,17 @@ std::string ProcessManager::showReadyQueue()
 	return output.str();
 }
 
+std::string ProcessManager::showPriority()
+{
+	std::ostringstream stream;
+	stream << "PRIORITY OF PROCESSES:\n";
+	for (const auto& element : processList)
+	{
+		stream << element->processID << "\t| " << element->processName << "\t| " << element->estimatedTime << "\n";
+	}
+	return stream.str();
+}
+
 std::vector<PCB_ptr>& ProcessManager::getReadyQueue()
 {
 	return readyQueue;
@@ -256,6 +267,22 @@ PCB_ptr ProcessManager::getProcessFromList(int PID)
 		{
 			throw std::invalid_argument("The process does not exist.");
 		}
+	}
+}
+
+PCBStatus ProcessManager::convertStringToPCBStatus(std::string& processStatusName) const
+{
+	std::transform(processStatusName.begin(), processStatusName.end(), processStatusName.begin(),
+		[](unsigned char c) { return std::tolower(c); });
+
+	if (processStatusName == "ready") {
+		return PCBStatus::Ready;
+	}
+	if (processStatusName == "waiting") {
+		return PCBStatus::Waiting;
+	}
+	if (processStatusName == "terminated") {
+		return PCBStatus::Terminated;
 	}
 }
 

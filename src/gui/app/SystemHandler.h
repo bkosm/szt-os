@@ -54,7 +54,7 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 			return;
 		}
 
-		console.println("Process " + arguments[1] + " created.");
+		console.println("Process " + arguments[1] + " was created.");
 	}
 	else if (cmd == "Go")
 	{
@@ -106,19 +106,18 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 	}
 	else if (cmd == "Kill Process")
 	{
+		shell.getProcessManager().deleteProcessFromQueue(std::stoi(arguments[1]));
+		shell.getProcessManager().deleteProcessFromList(std::stoi(arguments[1]));
+		console.println("Killed process.");
 	}
 	else if (cmd == "Change Status")
 	{
+		shell.getProcessManager().changeStatusChosenProcess(std::stoi(arguments[1]), shell.getProcessManager().convertStringToPCBStatus(arguments[2]));
+		console.println("Changed status for process.");
 	}
 	else if (cmd == "Show Memory")
 	{
 		console.println(shell.getMemoryManager().showMemory());
-	}
-	else if (cmd == "Show Lock")
-	{
-	}
-	else if (cmd == "Long File")
-	{
 	}
 	else if (cmd == "Show i-node") //chyba nie mamy tego xd
 	{
@@ -133,6 +132,7 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 	}
 	else if (cmd == "Show Priority")
 	{
+		console.println(shell.getProcessManager().showPriority());
 	}
 	else if (cmd == "Show Processes")
 	{
@@ -157,5 +157,9 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 		shell.getFileManager().openFile(arguments[1]);
 		shell.getFileManager().writeToFile(arguments[1], arguments[2]);
 		shell.getFileManager().closeFile(arguments[1]);
+	}
+	else if (cmd == "Show File")
+	{
+		console.println(shell.getFileManager().readFileAll(arguments[1]));
 	}
 }

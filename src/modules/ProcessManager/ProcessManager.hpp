@@ -27,6 +27,7 @@ public:
 	static std::string showChosenProcess(PCB_ptr process);
 	std::string showProcessList();
 	std::string showReadyQueue();
+	std::string showPriority();
 
 	void deleteProcessFromList(int pid);
 	void deleteProcessFromQueue(int pid);
@@ -36,6 +37,8 @@ public:
 
 	PCB_ptr getProcessFromList(std::string processName);
 	PCB_ptr getProcessFromList(int PID);
+
+	PCBStatus convertStringToPCBStatus(std::string& processStatusName) const;
 
 
 	void changeStatusChosenProcess(int pid, PCBStatus sts);

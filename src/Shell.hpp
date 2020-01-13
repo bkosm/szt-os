@@ -3,6 +3,7 @@
 #include "modules/Interpreter/Interpreter.hpp"
 #include "modules/ProcessManager/ProcessManager.hpp"
 #include "modules/MemoryManager/MemoryManager.h"
+#include "modules/FileManager/FileManager.h"
 #include "modules/LockManager/LockManager.hpp"
 
 class Shell
@@ -11,6 +12,7 @@ class Shell
 	Scheduler scheduler;
 	ProcessManager processManager;
 	MemoryManager memoryManager;
+	FileManager fileManager;
 	LockManager lockManager;
 
 public:
@@ -22,4 +24,5 @@ public:
 	ProcessManager& getProcessManager();
 	MemoryManager& getMemoryManager();
 	LockManager& getLockManager();
+	FileManager& getFileManager();
 };

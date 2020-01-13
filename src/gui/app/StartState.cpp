@@ -158,18 +158,22 @@ void StartState::configureButtons_()
 	buttons_[3].commands.emplace_back("Show Memory", 0, data_->resources.appFont, data_->resources.runButtonTexture);
 	buttons_[3].commands[0].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 3 / 100));
 	/* File Manager command buttons */
-	/* SHOW LOCK */
-	buttons_[4].commands.emplace_back("Show Lock", 1, data_->resources.appFont, data_->resources.runButtonTexture);
+	/* CREATE FILE */
+	buttons_[4].commands.emplace_back("Create File", 1, data_->resources.appFont, data_->resources.runButtonTexture);
 	buttons_[4].commands[0].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 3 / 100));
 	buttons_[4].commands[0].inputFields[0].setLabelAndFont("File name:", data_->resources.appFont);
-	/* LONG FILE */
-	buttons_[4].commands.emplace_back("Long File", 1, data_->resources.appFont, data_->resources.runButtonTexture);
-	buttons_[4].commands[1].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 30 / 100));
+	/* SHOW FILE INFO */
+	buttons_[4].commands.emplace_back("Show File Info", 1, data_->resources.appFont, data_->resources.runButtonTexture);
+	buttons_[4].commands[1].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 20 / 100));
 	buttons_[4].commands[1].inputFields[0].setLabelAndFont("File name:", data_->resources.appFont);
-	/* SHOW I-NODE */
-	buttons_[4].commands.emplace_back("Show i-node", 1, data_->resources.appFont, data_->resources.runButtonTexture);
-	buttons_[4].commands[2].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 57 / 100));
+	/* WRITE TO FILE */
+	buttons_[4].commands.emplace_back("Write To File", 2, data_->resources.appFont, data_->resources.runButtonTexture);
+	buttons_[4].commands[2].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 38 / 100));
 	buttons_[4].commands[2].inputFields[0].setLabelAndFont("File name:", data_->resources.appFont);
+	buttons_[4].commands[2].inputFields[1].setLabelAndFont("Data:", data_->resources.appFont);
+	/* SHOW DISK */
+	buttons_[4].commands.emplace_back("Show Disk", 0, data_->resources.appFont, data_->resources.runButtonTexture);
+	buttons_[4].commands[3].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 63 / 100));
 }
 
 void StartState::update()

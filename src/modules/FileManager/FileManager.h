@@ -2,19 +2,17 @@
 #include <string>
 #include <vector>
 #include <array>
+#include "../LockManager/Lock.hpp"
 
 class Shell;
 
+constexpr uint8_t BLOCK_SIZE = 16;
+constexpr uint8_t FILE_LIMIT = 16;
+constexpr unsigned short DISK_CAPACITY = 1024;
+
 class FileManager {
 public:
-	using u_int = unsigned int;
-	using u_short_int = unsigned short int;
-
 	FileManager(Shell* shell);
-
-	static const uint8_t BLOCK_SIZE = 16;
-	static const uint8_t FILE_LIMIT = 16;
-	static const u_short_int DISK_CAPACITY = 1024;
 
 	struct File {
 		std::string name;
@@ -22,6 +20,7 @@ public:
 		int size = 0;
 		int readPointer;
 		int writePointer;
+		Lock lock;
 
 		File() {
 			this->readPointer = 0;
@@ -61,6 +60,5 @@ private:
 	bool isNameUsed(std::string name);
 	int searchFreeBlock();
 	int searchFileId(std::string name);
-	int indexBlockFillZero(int ind);
 	int searchIndexBlock(int fileIndex);
 };

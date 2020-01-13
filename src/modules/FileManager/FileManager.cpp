@@ -5,11 +5,6 @@
 #include "FileManager.h"
 #include "../../SztosException.hpp"
 
-//Aliasy
-using u_int = unsigned int;
-using u_short_int = unsigned short int;
-using u_char = unsigned char;
-
 int FileManager::searchFreeBlock() {
 
 	for (int i = 0; i < freeIndexes.size(); i++) {
@@ -49,14 +44,6 @@ bool FileManager::isNameUsed(std::string name) {
 	}
 
 	return false;
-}
-
-int FileManager::indexBlockFillZero(int ind) {
-	for (int i = 0; i < 16; i++) {
-		disk[ind * BLOCK_SIZE + i] = 0;
-	}
-
-	return 0;
 }
 
 int FileManager::searchFileId(std::string name) {

@@ -27,7 +27,12 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 	console.println({});
 
 	if (arguments.empty()) return;
-
+	for (auto arg : arguments) {
+		if (arg.empty()) {
+			console.println("Niepoprawne argumenty.");
+			return;
+		}
+	}
 
 	if (cmd == "Create Process")
 	{
@@ -37,8 +42,6 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 			console.println("Argumenty nie moga byc puste.");
 			return;
 		}
-
-		/* TODO: usunac nieprawidlowe znaki */
 
 		try
 		{
@@ -69,7 +72,6 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 			console.println("Argument nie jest liczba.");
 			return;
 		}
-		/* robi flipa gdy nie ma gotowych procesow do odpalenia wiec nara */
 		if (numOfGo < 1)
 		{
 			console.println("Ilosc wykonan musi byc wieksza od zera");
@@ -106,9 +108,11 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 	}
 	else if (cmd == "Kill Process")
 	{
-		shell.getProcessManager().deleteProcessFromQueue(std::stoi(arguments[1]));
-		shell.getProcessManager().deleteProcessFromList(std::stoi(arguments[1]));
-		// TODO free RAM
+		const auto pcb = shell.getProcessManager().getProcessFromList(std::stoi(arguments[1]));
+
+		shell.getProcessManager().deleteProcessFromQueue(pcb->getPID());
+		shell.getProcessManager().deleteProcessFromList(pcb->getPID());
+		shell.getMemoryManager().deleteProgram(*pcb);
 		console.println("Killed process.");
 	}
 	else if (cmd == "Change Status")
@@ -119,17 +123,6 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 	else if (cmd == "Show Memory")
 	{
 		console.println(shell.getMemoryManager().showMemory());
-	}
-	else if (cmd == "Show i-node") //chyba nie mamy tego xd
-	{
-		auto test = shell.getLockManager().createLock();
-
-		console.println(test.getProcessQueueString());
-
-		test.getProcessQueue().push_back(std::make_shared<PCB>(PCB("Siema", 123, PCBStatus::New)));
-		test.getProcessQueue().push_back(std::make_shared<PCB>(PCB("Byku", 321, PCBStatus::Running)));
-
-		console.println(test.getProcessQueueString());
 	}
 	else if (cmd == "Show Priority")
 	{

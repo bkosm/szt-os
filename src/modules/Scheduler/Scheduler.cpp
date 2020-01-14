@@ -1,5 +1,6 @@
 #include "Scheduler.hpp"
 #include <algorithm>
+#include <exception>
 #include <iterator>
 #include <exception>
 #include <system_error>

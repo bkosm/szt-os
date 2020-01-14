@@ -10,7 +10,7 @@ enum class PCBStatus
 	Ready = 2,
 	Running = 3,
 	Terminated = 4,
-	Dummy = 5
+	//Dummy = 5
 };
 
 class PCB

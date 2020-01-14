@@ -28,9 +28,9 @@ PCB_ptr ProcessManager::createProcess(std::string name, std::string programName)
 		throw e;
 	}
 
+	pcb->estimatedTime = shell->getScheduler().getDefaultEstimatedTime();
 	pcb->changeStatus(PCBStatus::Ready);
 	shell->getProcessManager().addProcessToQueue(pcb);
-	shell->getScheduler().onReadyPcb(pcb);
 	return pcb;
 }
 
@@ -47,9 +47,8 @@ PCB_ptr ProcessManager::createDummyProcess()
 		throw e;
 	}
 
-	pcb->changeStatus(PCBStatus::Ready);
-	pcb->changeStatus(PCBStatus::Dummy);
 	pcb->estimatedTime = UINT8_MAX;
+	pcb->changeStatus(PCBStatus::Ready);
 	shell->getProcessManager().addProcessToQueue(pcb);
 	return pcb;
 }
@@ -110,9 +109,6 @@ std::string ProcessManager::showProcessList()
 			break;
 		case PCBStatus::Terminated:
 			output << "TERMINATED\n";
-			break;
-		case PCBStatus::Dummy:
-			output << "DUMMY\n";
 			break;
 		case PCBStatus::Error:
 			output << "ERROR\n";
@@ -220,6 +216,8 @@ void ProcessManager::deleteProcessFromQueue(int pid)
 	readyQueue.erase(std::remove_if(std::begin(readyQueue), std::end(readyQueue),
 		[&pid](auto& pcb) { return pcb->processID == pid; }),
 		std::end(readyQueue));
+
+	shell->getScheduler().onReadyQueueChange();
 }
 
 void ProcessManager::addProcessToList(std::shared_ptr<PCB> process)
@@ -230,6 +228,7 @@ void ProcessManager::addProcessToList(std::shared_ptr<PCB> process)
 void ProcessManager::addProcessToQueue(std::shared_ptr<PCB> process)
 {
 	readyQueue.push_back(process);
+	shell->getScheduler().onReadyQueueChange();
 }
 
 

@@ -12,9 +12,9 @@ class Scheduler
 public:
 	Scheduler(Shell* shell);
 
-	void onReadyPcb(PCB_ptr readyPCB);
-	void schedulePcb();
-	PCB_ptr getRunningPcb();
+	void onReadyQueueChange();
+	uint8_t getDefaultEstimatedTime() const;
+	PCB_ptr getRunningPcb() const;
 	void setRunningPcb(PCB_ptr pcbPtr);
 
 private:
@@ -24,6 +24,8 @@ private:
 	Shell* shell;
 	PCB_ptr runningPcb = nullptr;
 
-	void updateEstimatedTime(PCB_ptr pcb);
+	void updateEstimatedTime(const PCB_ptr& pcb) const;
+	void updateAllEstimatedTimes() const;
+	void schedulePcb();
 };
 

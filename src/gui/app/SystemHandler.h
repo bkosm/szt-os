@@ -86,8 +86,6 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 
 		for (int i = 0; i < numOfGo; ++i)
 		{
-			shell.getScheduler().schedulePcb();
-
 			const auto pcb = shell.getScheduler().getRunningPcb();
 			try {
 				shell.getInterpreter().handleInsn(pcb);
@@ -115,6 +113,7 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 	{
 		const auto pcb = shell.getProcessManager().getProcessFromList(std::stoi(arguments[1]));
 
+		//TODO: check if process was ready or running (if so delete from queue)
 		shell.getProcessManager().deleteProcessFromQueue(pcb->getPID());
 		shell.getProcessManager().deleteProcessFromList(pcb->getPID());
 		shell.getMemoryManager().deleteProgram(*pcb);

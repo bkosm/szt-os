@@ -205,7 +205,15 @@ void ProcessManager::deleteProcessFromList(int pid)
 	if (processList.empty())
 	{
 		throw std::length_error("ProcessList is empty. You cannot delete a process.");
+		return;
 	}
+
+	if(processList.size() < pid)
+	{
+		throw std::invalid_argument("The process with the given ID does not exist.");
+		return;
+	}
+
 	processList.erase(std::remove_if(std::begin(processList), std::end(processList),
 		[&pid](auto& pcb) { return pcb->processID == pid; }),
 		std::end(processList));
@@ -216,7 +224,14 @@ void ProcessManager::deleteProcessFromQueue(int pid)
 	if (readyQueue.empty())
 	{
 		throw std::length_error("ReadyQueue is empty. You cannot delete a process.");
+		return;
 	}
+	if (processList.size() < pid)
+	{
+		throw std::invalid_argument("The process with the given ID does not exist.");
+		return;
+	}
+
 	readyQueue.erase(std::remove_if(std::begin(readyQueue), std::end(readyQueue),
 		[&pid](auto& pcb) { return pcb->processID == pid; }),
 		std::end(readyQueue));
@@ -259,6 +274,11 @@ PCB_ptr ProcessManager::getProcessFromList(int PID)
 	{
 		throw std::length_error("ProcessList is empty.");
 	}
+	if (processList.size() <= PID)
+	{
+		throw SztosException("The process with the given ID does not exist.");
+		
+	}
 
 	auto pcb = std::find_if(std::begin(processList), std::end(processList), [PID](const auto& pcb)
 		{
@@ -290,6 +310,11 @@ PCBStatus ProcessManager::convertStringToPCBStatus(std::string& processStatusNam
 	std::transform(processStatusName.begin(), processStatusName.end(), processStatusName.begin(),
 		[](unsigned char c) { return std::tolower(c); });
 
+
+	if (processStatusName != "ready" && processStatusName != "waiting" && processStatusName != "terminated")
+	{
+		throw SztosException("The status provided is not available to the user.");
+	}
 	if (processStatusName == "ready") {
 		return PCBStatus::Ready;
 	}

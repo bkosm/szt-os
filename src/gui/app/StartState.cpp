@@ -163,6 +163,10 @@ void StartState::configureButtons_()
 	/* SHOW MEMORY */
 	buttons_[3].commands.emplace_back("Show Memory", 0, data_->resources.appFont, data_->resources.runButtonTexture);
 	buttons_[3].commands[0].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 3 / 100));
+	/* SHOW FRAME */
+	buttons_[3].commands.emplace_back("Show Frame", 1, data_->resources.appFont, data_->resources.runButtonTexture);
+	buttons_[3].commands[1].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 22 / 100));
+	buttons_[3].commands[1].inputFields[0].setLabelAndFont("Frame number:", data_->resources.appFont);
 	/* File Manager 1 command buttons */
 	/* CREATE FILE */
 	buttons_[4].commands.emplace_back("Create File", 1, data_->resources.appFont, data_->resources.runButtonTexture);

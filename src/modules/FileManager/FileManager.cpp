@@ -6,6 +6,10 @@
 #include "../../Shell.hpp"
 #include "../../SztosException.hpp"
 
+std::vector<File>& FileManager::getFiles() {
+	return mainCatalog;
+}
+
 int FileManager::searchFreeBlock() {
 
 	for (int i = 0; i < freeIndexes.size(); i++) {

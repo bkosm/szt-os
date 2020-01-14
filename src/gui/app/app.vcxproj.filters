@@ -87,6 +87,9 @@
     <ClCompile Include="..\..\SztosException.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\modules\Interpreter\LabelParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SelbaWard\Common.h">
@@ -165,6 +168,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\SztosException.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\modules\Interpreter\LabelParser.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

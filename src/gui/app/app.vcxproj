@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\modules\FileManager\FileManager.cpp" />
     <ClCompile Include="..\..\modules\Interpreter\Interpreter.cpp" />
+    <ClCompile Include="..\..\modules\Interpreter\LabelParser.cpp" />
     <ClCompile Include="..\..\modules\LockManager\Lock.cpp" />
     <ClCompile Include="..\..\modules\LockManager\LockManager.cpp" />
     <ClCompile Include="..\..\modules\MemoryManager\MemoryManager.cpp" />
@@ -47,6 +48,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\modules\FileManager\FileManager.h" />
     <ClInclude Include="..\..\modules\Interpreter\Interpreter.hpp" />
+    <ClInclude Include="..\..\modules\Interpreter\LabelParser.hpp" />
     <ClInclude Include="..\..\modules\LockManager\Lock.hpp" />
     <ClInclude Include="..\..\modules\LockManager\LockManager.hpp" />
     <ClInclude Include="..\..\modules\MemoryManager\MemoryManager.h" />

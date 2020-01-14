@@ -89,6 +89,15 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 
 		for (int i = 0; i < numOfGo; ++i)
 		{
+			for (auto pcbPtr : shell.getProcessManager().getProcessList()) {
+				if (pcbPtr->status == PCBStatus::Terminated
+					|| pcbPtr->status == PCBStatus::Error) {
+					shell.getProcessManager().deleteProcessFromQueue(pcbPtr->getPID());
+					shell.getProcessManager().deleteProcessFromList(pcbPtr->getPID());
+					shell.getMemoryManager().deleteProgram(*pcbPtr);
+				}
+			}
+
 			const auto pcb = shell.getScheduler().getRunningPcb();
 			try {
 				shell.getInterpreter().handleInsn(pcb);
@@ -106,10 +115,13 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 			if (pcb->status == PCBStatus::Terminated
 				|| pcb->status == PCBStatus::Error)
 			{
-				shell.getProcessManager().deleteProcessFromQueue(pcb->getPID());
+				/*shell.getProcessManager().deleteProcessFromQueue(pcb->getPID());
 				shell.getProcessManager().deleteProcessFromList(pcb->getPID());
-				shell.getMemoryManager().deleteProgram(*pcb);
-				console.println("Process was terminated.");
+				shell.getMemoryManager().deleteProgram(*pcb);*/
+
+				console.println("Process was terminated at " + std::to_string(i + 1)
+					+ " iteration. You can check process memory before next GO command.");
+				break;
 			}
 		}
 	}

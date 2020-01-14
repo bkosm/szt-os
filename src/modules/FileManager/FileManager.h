@@ -18,6 +18,7 @@ struct File {
 	int size = 0;
 	int readPointer;
 	int writePointer;
+	int byteReadPtr = 0;
 	Lock lock;
 
 	File() {
@@ -41,7 +42,7 @@ public:
 	int openFile(std::string name, std::shared_ptr<PCB> pcb);
 	int closeFile(std::string name);
 	int writeToFile(std::string name, std::string data);
-	int readFileByte(std::string name, int howMuch);
+	uint8_t readFileByte(std::string name);
 	int sendFileByte(std::string name, int howMuch);
 	int renameFile(std::string name, std::string newName);
 	int longFile(std::string name);
@@ -59,6 +60,8 @@ private:
 	std::array<int, DISK_CAPACITY / BLOCK_SIZE> openFiles{};
 	std::array<bool, DISK_CAPACITY / BLOCK_SIZE> freeIndexes{};
 
+	File* getFileByName(std::string const& name);
+	
 	bool isNameUsed(std::string name);
 	int searchFreeBlock();
 	int searchFileId(std::string name);

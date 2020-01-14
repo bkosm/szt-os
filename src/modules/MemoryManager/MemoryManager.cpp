@@ -122,6 +122,26 @@ void MemoryManager::setByte(PCB& pcb, uint16_t target, uint8_t data)
 	RAM[(frameNum * FRAME_SIZE) + (target % FRAME_SIZE)] = data;
 }
 
+std::string MemoryManager::showFrame(int frameNumber) const {
+	std::ostringstream output;
+
+	if (frameNumber >= 0 && frameNumber < 32)
+	{
+		output << "FRAME " << std::setfill('0') << std::setw(2) << frameNumber << " CONTENT:" << std::endl;
+		unsigned int inc = frameNumber * 16, end = inc + 16;
+
+		output << std::setfill('0') << std::setw(2) << frameNumber << ": {";
+		for (inc; inc < end; ++inc) {
+			output << RAM[inc];
+		}
+		output << "} ";
+	}
+	else {
+		throw SztosException("Podana ramka nie istnieje.");
+	}
+	return output.str();
+}
+
 std::string MemoryManager::showMemory() const
 {
 	std::ostringstream output;

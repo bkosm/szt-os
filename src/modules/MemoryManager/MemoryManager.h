@@ -17,6 +17,7 @@ public:
 	void setByte(PCB& pcb, uint16_t target, uint8_t data);
 
 	std::string showMemory() const;
+	std::string showFrame(int frameNumber) const;
 
 private:
 	uint8_t RAM[512] = { 0 };

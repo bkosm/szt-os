@@ -46,6 +46,7 @@ public:
 	int sendFileByte(std::string name, int howMuch);
 	int renameFile(std::string name, std::string newName);
 	int longFile(std::string name);
+	std::vector<File> &getFiles();
 
 	static std::string displayFileSystemParams();
 	std::string readFileAll(std::string name);

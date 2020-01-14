@@ -29,7 +29,7 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 	if (arguments.empty()) return;
 	for (auto arg : arguments) {
 		if (arg.empty()) {
-			console.println("Niepoprawne argumenty.");
+			console.println("Invalid arguments.");
 			return;
 		}
 	}
@@ -39,7 +39,7 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 		/* if (sprawdzenie poprawnosci argumentow) */
 		if (arguments[1].empty() or arguments[2].empty())
 		{
-			console.println("Argumenty nie moga byc puste.");
+			console.println("Arguments cannot be empty.");
 			return;
 		}
 
@@ -49,11 +49,11 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 		}
 		catch (SztosException & e)
 		{
-			console.println("Blad: " + std::string(e.what()));
+			console.println("Error: " + std::string(e.what()));
 			return;
 		}
 		catch (std::exception & e) {
-			console.println("Nieznany blad: " + std::string(e.what()));
+			console.println("Unknown error: " + std::string(e.what()));
 			return;
 		}
 
@@ -69,12 +69,12 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 		}
 		catch (std::exception & e)
 		{
-			console.println("Argument nie jest liczba.");
+			console.println("Argument is not a number.");
 			return;
 		}
 		if (numOfGo < 1)
 		{
-			console.println("Ilosc wykonan musi byc wieksza od zera");
+			console.println("The number of performances must be greater than zero.");
 			return;
 		}
 
@@ -88,11 +88,11 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 				shell.getInterpreter().handleInsn(pcb);
 			}
 			catch (SztosException & e) {
-				console.println("Blad: " + std::string(e.what()));
+				console.println("Error: " + std::string(e.what()));
 				return;
 			}
 			catch (std::exception & e) {
-				console.println("Nieznany blad: " + std::string(e.what()));
+				console.println("Unknown error: " + std::string(e.what()));
 				return;
 			}
 
@@ -102,23 +102,86 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 				shell.getProcessManager().deleteProcessFromQueue(pcb->getPID());
 				shell.getProcessManager().deleteProcessFromList(pcb->getPID());
 				shell.getMemoryManager().deleteProgram(*pcb);
-				console.println("Proces zakonczyl sie.");
+				console.println("Process was terminated.");
 			}
 		}
 	}
 	else if (cmd == "Kill Process")
 	{
-		const auto pcb = shell.getProcessManager().getProcessFromList(std::stoi(arguments[1]));
+		std::shared_ptr<PCB> pcb = nullptr;
+		try
+		{
+			pcb = shell.getProcessManager().getProcessFromList(std::stoi(arguments[1]));
+		}
+		catch (SztosException & e)
+		{
+			console.println("Error: " + std::string(e.what()));
+			return;
+		}
 
-		shell.getProcessManager().deleteProcessFromQueue(pcb->getPID());
-		shell.getProcessManager().deleteProcessFromList(pcb->getPID());
-		shell.getMemoryManager().deleteProgram(*pcb);
-		console.println("Killed process.");
+		if (pcb->getStatus() == PCBStatus::Dummy)
+		{
+			console.println("The DUMMY status process cannot be deleted.");
+			return;
+		}
+		if (pcb->getStatus() == PCBStatus::Running)
+		{
+			console.println("The Running status process cannot be deleted.");
+			return;
+		}
+
+		try
+		{
+			shell.getProcessManager().deleteProcessFromQueue(pcb->getPID());
+			shell.getProcessManager().deleteProcessFromList(pcb->getPID());
+			shell.getMemoryManager().deleteProgram(*pcb);
+			console.println("Killed process.");
+
+		}
+		catch (SztosException & e)
+		{
+			console.println(e.what());
+		}
+		catch (std::exception & e)
+		{
+
+		}
 	}
 	else if (cmd == "Change Status")
 	{
-		shell.getProcessManager().changeStatusChosenProcess(std::stoi(arguments[1]), shell.getProcessManager().convertStringToPCBStatus(arguments[2]));
-		console.println("Changed status for process.");
+		std::shared_ptr<PCB> pcb = nullptr;
+		try
+		{
+			pcb = shell.getProcessManager().getProcessFromList(std::stoi(arguments[1]));
+		}
+		catch (SztosException & e)
+		{
+			console.println("Error: " + std::string(e.what()));
+			return;
+		}
+
+
+		if (pcb->getPID() == 0 && pcb->getStatus() == PCBStatus::Dummy)
+		{
+			console.println("You cannot touch the DUMMY process.");
+			return;
+		}
+		if (shell.getProcessManager().getProcessList().size() <= std::stoi(arguments[1]))
+		{
+			console.println("There is no process with the given ID.");
+			return;
+		}
+
+		try
+		{
+			shell.getProcessManager().changeStatusChosenProcess(std::stoi(arguments[1]), shell.getProcessManager().convertStringToPCBStatus(arguments[2]));
+			console.println("Changed status for process.");
+		}
+		catch (SztosException & e)
+		{
+			console.println("Error: " + std::string(e.what()));
+			return;
+		}
 	}
 	else if (cmd == "Show Memory")
 	{
@@ -134,7 +197,26 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 	}
 	else if (cmd == "Create File")
 	{
+		if (arguments[1].empty())
+		{
+			console.println("No argument provided.");
+			return;
+		}
+
+		bool exist = false;
+		for (auto file : shell.getFileManager().getFiles()) {
+
+			if (file.name == arguments[1]) {
+				exist = true;
+			}
+			if (exist == true) {
+				console.println("A file with the given name already exists.");
+				return;
+			}
+		}
+
 		shell.getFileManager().createFile(arguments[1]);
+		console.println("File " + arguments[1] + " was created.");
 	}
 	else if (cmd == "Show File Info")
 	{
@@ -150,9 +232,27 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 	{
 		if (arguments[1].empty() or arguments[2].empty())
 		{
-			console.println("Nie podano argumentow.");
+			console.println("No argument provided.");
 			return;
 		}
+		if (shell.getFileManager().getFiles().empty())
+		{
+			console.println("File list is empty.");
+			return;
+		}
+
+		bool exist = false;
+		for (auto file : shell.getFileManager().getFiles()) {
+
+			if (file.name == arguments[1]) {
+				exist = true;
+			}
+			if (exist == false) {
+				console.println("File does not existed.");
+				return;
+			}
+		}
+
 
 		shell.getFileManager().openFile(arguments[1], nullptr);
 		shell.getFileManager().writeToFile(arguments[1], arguments[2]);
@@ -168,10 +268,39 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 	{
 		if (arguments[1].empty())
 		{
-			console.println("Nie podano argumentu.");
+			console.println("No argument provided.");
 			return;
 		}
 
 		shell.getFileManager().deleteFile(arguments[1]);
 	}
+	else if (cmd == "Show Frame") /* DODANE - EDYCJA */
+	{
+		int frameNumber;
+
+		try
+		{
+			frameNumber = std::stoi(arguments[1]);
+		}
+		catch (std::exception & e)
+		{
+			console.println("Error: " + std::string(e.what()));
+			return;
+		}
+
+		if (arguments[1].empty())
+		{
+			console.println("No argument provided.");
+			return;
+		}
+		if (frameNumber < 0 || frameNumber > 31)
+		{
+			console.println("The argument provided is out of range.");
+			return;
+		}
+
+		console.println(shell.getMemoryManager().showFrame(std::stoi(arguments[1])));
+
+	}
+
 }

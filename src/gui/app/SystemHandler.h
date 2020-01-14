@@ -90,7 +90,7 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 
 			const auto pcb = shell.getScheduler().getRunningPcb();
 			try {
-				shell.getInterpreter().handleInsn(*pcb);
+				shell.getInterpreter().handleInsn(pcb);
 			}
 			catch (SztosException & e) {
 				console.println("Blad: " + std::string(e.what()));

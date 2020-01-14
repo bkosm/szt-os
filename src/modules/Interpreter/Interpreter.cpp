@@ -8,6 +8,7 @@
 #include "../../Shell.hpp"
 #include "../../SztosException.hpp"
 #include "../../modules/ProcessManager/PCB.hpp"
+#include <iostream>
 
 // instantiate pair <string, method ptr> for each instruction available
 #define INSN(NAME) { #NAME, &Interpreter::insn##NAME }
@@ -34,17 +35,17 @@ Interpreter::Interpreter(Shell *shell) : insnMap {
 
 Interpreter::~Interpreter() {}
 
-std::string Interpreter::readNextParam(PCB &process) {
+std::string Interpreter::readNextParam(std::shared_ptr<PCB> process) {
 	char c;
 	bool loadsFileName = false;
 	for (std::string buffer = "";; buffer += c) {
 		try {
-			c = static_cast<char>(shell->getMemoryManager().getByte(process, process.insnIndex));
+			c = static_cast<char>(shell->getMemoryManager().getByte(*process, process->insnIndex));
 		} catch (SztosException &e) {
 			throw e;
 		}
 
-		++process.insnIndex;
+		++process->insnIndex;
 
 		if (c == '\"') loadsFileName = !loadsFileName;
 		if (!loadsFileName && c == ' ') {
@@ -54,40 +55,54 @@ std::string Interpreter::readNextParam(PCB &process) {
 	}
 }
 
-void Interpreter::handleInsn(PCB &process) {
-	uint8_t prevInsnIndex = process.insnIndex;
+void Interpreter::escapeQuote(std::string &s)
+{
+	if (s.length() < 2) {
+		throw SztosException("Argument nie jest w cudzyslowiach (" + s + ").");
+	}
+	
+	if (s.front() != '\"' || s.back() != '\"')
+	{
+		throw SztosException("Nie udalo sie usunac cudzyslowiow z argumentu (" + s + ").");
+	}
+	
+	s = s.substr(1, s.length() - 2);
+}
+
+void Interpreter::handleInsn(std::shared_ptr<PCB> process) {
+	uint8_t prevInsnIndex = process->insnIndex;
 	lastInsn = "";
 
 	char c;
 	for (std::string buffer = "";;) {
 		try {
-			c = static_cast<char>(shell->getMemoryManager().getByte(process, process.insnIndex));
+			c = static_cast<char>(shell->getMemoryManager().getByte(*process, process->insnIndex));
 		} catch (SztosException &e) {
-			process.insnIndex = prevInsnIndex;
-			process.changeStatus(PCBStatus::Error);
+			process->insnIndex = prevInsnIndex;
+			process->changeStatus(PCBStatus::Error);
 			throw e;
 		}
 		
-		++process.insnIndex;
+		++process->insnIndex;
 
 		if (c == ' ') {
-			void (Interpreter::*insn)(PCB&) = nullptr;
+			void (Interpreter::*insn)(std::shared_ptr<PCB>) = nullptr;
 
 			try {
 				insn = insnMap.at(buffer);
 			} catch (std::out_of_range &e) {
-				process.changeStatus(PCBStatus::Error);
-				process.insnIndex = prevInsnIndex;
+				process->changeStatus(PCBStatus::Error);
+				process->insnIndex = prevInsnIndex;
 				throw SztosException("Nieznana instrukcja: " + buffer);
 			}
 
 			lastInsn = buffer;
 			try {
 				(this->*insn)(process);
-				++process.insnCounter;
+				++process->insnCounter;
 			} catch (SztosException &e) {
-				process.changeStatus(PCBStatus::Error);
-				process.insnIndex = prevInsnIndex;
+				process->changeStatus(PCBStatus::Error);
+				process->insnIndex = prevInsnIndex;
 				throw e;
 			}
 			return;
@@ -95,7 +110,7 @@ void Interpreter::handleInsn(PCB &process) {
 
 		buffer += c;
 		if (buffer == "HLT") {
-			process.changeStatus(PCBStatus::Terminated);
+			process->changeStatus(PCBStatus::Terminated);
 			return;
 		}
 	}
@@ -149,7 +164,7 @@ std::string Interpreter::loadProgram(const std::string name) {
 	return prog;
 }
 
-uint8_t Interpreter::getValue(PCB &process, std::string dest) {
+uint8_t Interpreter::getValue(std::shared_ptr<PCB> process, std::string dest) {
 	if (dest.length() == 0) throw SztosException("Parametr instrukcji jest pusty.");
 
 	bool isAddr;
@@ -162,10 +177,10 @@ uint8_t Interpreter::getValue(PCB &process, std::string dest) {
 	uint8_t value;
 
 	try {
-		if (dest == "AX") { value = process.AX; }
-		else if (dest == "BX") { value = process.BX; }
-		else if (dest == "CX") { value = process.CX; }
-		else if (dest == "DX") { value = process.DX; }
+		if (dest == "AX") { value = process->AX; }
+		else if (dest == "BX") { value = process->BX; }
+		else if (dest == "CX") { value = process->CX; }
+		else if (dest == "DX") { value = process->DX; }
 		else value = static_cast<uint8_t>(std::stoul(dest));
 	} catch (std::exception &e) {
 		throw SztosException("Nie udalo sie przekonwertowac parametru instrukcji na liczbe (w poleceniu: \"" + lastInsn + "\").");
@@ -173,7 +188,7 @@ uint8_t Interpreter::getValue(PCB &process, std::string dest) {
 
 	if (isAddr) {
 		try {
-			value = shell->getMemoryManager().getByte(process, value);
+			value = shell->getMemoryManager().getByte(*process, value);
 		} catch (SztosException &e) {
 			throw e;
 		}
@@ -183,7 +198,7 @@ uint8_t Interpreter::getValue(PCB &process, std::string dest) {
 	return value;
 }
 
-void Interpreter::setValue(PCB &process, std::string dest, uint8_t value) {
+void Interpreter::setValue(std::shared_ptr<PCB> process, std::string dest, uint8_t value) {
 	if (dest.length() == 0) throw SztosException("Parametr instrukcji jest pusty.");
 
 	if (dest.front() == '[' && dest.back() == ']') {
@@ -191,103 +206,154 @@ void Interpreter::setValue(PCB &process, std::string dest, uint8_t value) {
 
 		uint8_t target;
 		try {
-			if (dest == "AX") { target = process.AX; }
-			else if (dest == "BX") { target = process.BX; }
-			else if (dest == "CX") { target = process.CX; }
-			else if (dest == "DX") { target = process.DX; }
+			if (dest == "AX") { target = process->AX; }
+			else if (dest == "BX") { target = process->BX; }
+			else if (dest == "CX") { target = process->CX; }
+			else if (dest == "DX") { target = process->DX; }
 			else target = static_cast<uint8_t>(std::stoul(dest));
 		} catch (std::exception &e) {
 			throw SztosException("Nie udalo sie przekonwertowac parametru instrukcji na liczbe (w poleceniu: \"" + lastInsn + "\").");
 		}
 
 		try {
-			shell->getMemoryManager().setByte(process, target, value);
+			shell->getMemoryManager().setByte(*process, target, value);
 		} catch (SztosException &e) {
 			throw e;
 		}
 	}
-	else if (dest == "AX") { process.AX = value; }
-	else if (dest == "BX") { process.BX = value; }
-	else if (dest == "CX") { process.CX = value; }
-	else if (dest == "DX") { process.DX = value; }
+	else if (dest == "AX") { process->AX = value; }
+	else if (dest == "BX") { process->BX = value; }
+	else if (dest == "CX") { process->CX = value; }
+	else if (dest == "DX") { process->DX = value; }
 }
 
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-void Interpreter::handleArithm(PCB &process, uint8_t(*op)(uint8_t, uint8_t)) {
+void Interpreter::handleArithm(std::shared_ptr<PCB> process, uint8_t(*op)(uint8_t, uint8_t)) {
 	LOAD(param1); LOAD(param2);
 	SET(param1, op(GET(param1), GET(param2)));
 }
 
-void Interpreter::insnADD(PCB &process) { handleArithm(process, MATH_LAMBDA(a + b)); }
-void Interpreter::insnSUB(PCB &process) { handleArithm(process, MATH_LAMBDA(a - b)); }
-void Interpreter::insnMUL(PCB &process) { handleArithm(process, MATH_LAMBDA(a * b)); }
-void Interpreter::insnDIV(PCB &process) { handleArithm(process, MATH_LAMBDA(a / b)); }
-void Interpreter::insnINC(PCB &process) { LOAD(param1); SET(param1, GET(param1) + 1); }
-void Interpreter::insnDSC(PCB &process) { LOAD(param1); SET(param1, GET(param1) - 1); }
+void Interpreter::insnADD(std::shared_ptr<PCB> process) { handleArithm(process, MATH_LAMBDA(a + b)); }
+void Interpreter::insnSUB(std::shared_ptr<PCB> process) { handleArithm(process, MATH_LAMBDA(a - b)); }
+void Interpreter::insnMUL(std::shared_ptr<PCB> process) { handleArithm(process, MATH_LAMBDA(a * b)); }
+void Interpreter::insnDIV(std::shared_ptr<PCB> process) { handleArithm(process, MATH_LAMBDA(a / b)); }
+void Interpreter::insnINC(std::shared_ptr<PCB> process) { LOAD(param1); SET(param1, GET(param1) + 1); }
+void Interpreter::insnDSC(std::shared_ptr<PCB> process) { LOAD(param1); SET(param1, GET(param1) - 1); }
 
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-void Interpreter::handleJump(PCB &process, bool(*op)(uint8_t, uint8_t)) {
+void Interpreter::handleJump(std::shared_ptr<PCB> process, bool(*op)(uint8_t, uint8_t)) {
 	LOAD(param1); LOAD(param2); LOAD(param3);
-	if (op(GET(param1), GET(param2))) process.insnIndex = GET(param3);
+	if (op(GET(param1), GET(param2))) process->insnIndex = GET(param3);
 }
 
-void Interpreter::insnJP(PCB &process) { LOAD(param1); process.insnIndex = GET(param1); }
+void Interpreter::insnJP(std::shared_ptr<PCB> process) { LOAD(param1); process->insnIndex = GET(param1); }
 
-void Interpreter::insnJZ(PCB &process) {
+void Interpreter::insnJZ(std::shared_ptr<PCB> process) {
 	LOAD(param1); LOAD(param2);
-	if (GET(param1) == 0) process.insnIndex = GET(param2);
+	if (GET(param1) == 0) process->insnIndex = GET(param2);
 }
 
-void Interpreter::insnJNZ(PCB &process) {
+void Interpreter::insnJNZ(std::shared_ptr<PCB> process) {
 	LOAD(param1); LOAD(param2);
-	if (GET(param1) != 0) process.insnIndex = GET(param2);
+	if (GET(param1) != 0) process->insnIndex = GET(param2);
 }
 
-void Interpreter::insnJE(PCB &process)	{ handleJump(process, JUMP_LAMBDA(a == b)); }
-void Interpreter::insnJNE(PCB &process)	{ handleJump(process, JUMP_LAMBDA(a != b)); }
-void Interpreter::insnJA(PCB &process)	{ handleJump(process, JUMP_LAMBDA(a >  b)); }
-void Interpreter::insnJAE(PCB &process)	{ handleJump(process, JUMP_LAMBDA(a >= b)); }
-void Interpreter::insnJB(PCB &process)	{ handleJump(process, JUMP_LAMBDA(a <  b)); }
-void Interpreter::insnJBE(PCB &process)	{ handleJump(process, JUMP_LAMBDA(a <= b)); }
+void Interpreter::insnJE(std::shared_ptr<PCB> process)	{ handleJump(process, JUMP_LAMBDA(a == b)); }
+void Interpreter::insnJNE(std::shared_ptr<PCB> process)	{ handleJump(process, JUMP_LAMBDA(a != b)); }
+void Interpreter::insnJA(std::shared_ptr<PCB> process)	{ handleJump(process, JUMP_LAMBDA(a >  b)); }
+void Interpreter::insnJAE(std::shared_ptr<PCB> process)	{ handleJump(process, JUMP_LAMBDA(a >= b)); }
+void Interpreter::insnJB(std::shared_ptr<PCB> process)	{ handleJump(process, JUMP_LAMBDA(a <  b)); }
+void Interpreter::insnJBE(std::shared_ptr<PCB> process)	{ handleJump(process, JUMP_LAMBDA(a <= b)); }
 
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-void Interpreter::insnLO(PCB &process) {
+void Interpreter::insnLO(std::shared_ptr<PCB> process) {
 	LOAD(param1); LOAD(param2);
 	SET(param1, GET(param2));
 }
 
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-void Interpreter::insnCP(PCB &process) {
+void Interpreter::insnCP(std::shared_ptr<PCB> process) {
 	LOAD(param1); LOAD(param2);
-	// TODO create process
+
+	try
+	{
+		escapeQuote(param1); escapeQuote(param2);
+		shell->getProcessManager().createProcess(param1, param2);
+	} catch (SztosException &e)
+	{
+		throw e;
+	}
 }
 
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-void Interpreter::insnFO(PCB &process) {
+void Interpreter::insnFO(std::shared_ptr<PCB> process) {
 	LOAD(param1);
-	// TODO open file by FileManager using process and param1
+	try
+	{
+		escapeQuote(param1);
+		shell->getFileManager().openFile(param1, process);
+
+		std::cout << "open " << param1 << std::endl;
+	}
+	catch (SztosException & e)
+	{
+		throw e;
+	}
 }
 
-void Interpreter::insnFC(PCB &process) {
+void Interpreter::insnFC(std::shared_ptr<PCB> process) {
 	LOAD(param1);
-	// TODO open file by FileManager using process and param1
+	try
+	{
+		escapeQuote(param1);
+		shell->getFileManager().closeFile(param1);
+		std::cout << "close " << param1 << std::endl;
+
+	}
+	catch (SztosException & e)
+	{
+		throw e;
+	}
 }
 
-void Interpreter::insnFR(PCB &process) {
+void Interpreter::insnFR(std::shared_ptr<PCB> process) {
 	LOAD(param1); LOAD(param2);
 
-	uint8_t value = 0;// TODO read byte by FileManager using process and param2
-	SET(param1, value);
+	try
+	{
+		escapeQuote(param2);
+		uint8_t value = shell->getFileManager().readFileByte(param2);
+		std::cout << "read " << static_cast<char>(value) << std::endl;
+		SET(param1, value);
+	}
+	catch (SztosException & e)
+	{
+		throw e;
+	}
 }
 
-void Interpreter::insnFW(PCB &process) {
+void Interpreter::insnFW(std::shared_ptr<PCB> process) {
 	LOAD(param1); LOAD(param2);
 
-	uint8_t value = getValue(process, param1);
-	// TODO write byte by FileManager using process and param2
+	uint8_t value = GET(param1);
+	try
+	{
+		escapeQuote(param2);
+		
+		std::string temp = "";
+		temp += static_cast<char>(value);
+
+		shell->getFileManager().writeToFile(param2, temp);
+
+		std::cout << "write to " << param2 << ": " << temp << std::endl;
+	}
+	catch (SztosException & e)
+	{
+		throw e;
+	}
 }

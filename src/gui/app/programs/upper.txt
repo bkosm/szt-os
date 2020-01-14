@@ -8,5 +8,7 @@ JA DX 122 105
 SUB DX 32
 FW DX "file1_out"
 JP 26
+FC "file1"
+FC "file1_out"
 HLT
 .data

@@ -32,7 +32,6 @@ uint8_t Scheduler::getDefaultEstimatedTime() const
 	return DefaultEstimatedTime;
 }
 
-
 void Scheduler::updateEstimatedTime(const PCB_ptr& pcb) const
 {
 	if (pcb->insnCounter == 0
@@ -64,7 +63,7 @@ void Scheduler::chooseRunningPcb()
 {
 	auto readyProcesses = shell->getProcessManager().getReadyQueue();
 
-	for (auto &pcb : readyProcesses)
+	for (auto& pcb : readyProcesses)
 	{
 		if (pcb->getStatus() == PCBStatus::Running)
 		{

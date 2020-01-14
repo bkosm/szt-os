@@ -2,7 +2,9 @@
 #include <string>
 #include <vector>
 #include <array>
+#include <memory>
 #include "../LockManager/Lock.hpp"
+
 
 class Shell;
 
@@ -10,33 +12,33 @@ constexpr uint8_t BLOCK_SIZE = 16;
 constexpr uint8_t FILE_LIMIT = 16;
 constexpr unsigned short DISK_CAPACITY = 1024;
 
+struct File {
+	std::string name;
+	int indexBlockNumber;
+	int size = 0;
+	int readPointer;
+	int writePointer;
+	Lock lock;
+
+	File() {
+		this->readPointer = 0;
+		this->writePointer = 0;
+	}
+
+	File(std::string name) {
+		this->name = name;
+		this->readPointer = 0;
+		this->writePointer = 0;
+	}
+};
+
 class FileManager {
 public:
 	FileManager(Shell* shell);
 
-	struct File {
-		std::string name;
-		int indexBlockNumber;
-		int size = 0;
-		int readPointer;
-		int writePointer;
-		Lock lock;
-
-		File() {
-			this->readPointer = 0;
-			this->writePointer = 0;
-		}
-
-		File(std::string name) {
-			this->name = name;
-			this->readPointer = 0;
-			this->writePointer = 0;
-		}
-	};
-
 	int createFile(std::string name);
 	int deleteFile(std::string name);
-	int openFile(std::string name);
+	int openFile(std::string name, std::shared_ptr<PCB> pcb);
 	int closeFile(std::string name);
 	int writeToFile(std::string name, std::string data);
 	int readFileByte(std::string name, int howMuch);

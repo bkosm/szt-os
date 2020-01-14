@@ -1,5 +1,6 @@
 #pragma once
 #include "Lock.hpp"
+#include <memory>
 
 class Shell;
 
@@ -13,7 +14,7 @@ public:
 	/* Funkcja tworzaca nowy zamek.
 	 *
 	 * @param startLocked w jakim stanie ma byc utworzony zamek.
-	 * @return Nowy obiekt zamka.
+	 * @return Wskaznik na nowy obiekt zamka.
 	 */
 
 private:

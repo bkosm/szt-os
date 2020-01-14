@@ -3,6 +3,7 @@
 #include <string>
 #include <sstream>  
 #include "FileManager.h"
+#include "../../Shell.hpp"
 #include "../../SztosException.hpp"
 
 int FileManager::searchFreeBlock() {
@@ -61,9 +62,9 @@ int FileManager::createFile(std::string name) {
 	if (name.empty()) return -1;
 
 	if (mainCatalog.size() >= FILE_LIMIT) return -1;
-
 	//Czesc dzialajaca
 	File newFile(name);
+	newFile.lock = shell->getLockManager().createLock();
 	newFile.indexBlockNumber = searchFreeBlock();
 	mainCatalog.push_back(newFile);
 
@@ -80,7 +81,7 @@ int FileManager::deleteFile(std::string name) {
 		if (blockIndex == 0) break;
 	}
 	freeIndexes[mainCatalog[ind].indexBlockNumber] = false;
-	
+
 	for (int index = 0; index < 16; index++) {
 		auto& blockIndex = disk[mainCatalog[ind].indexBlockNumber * BLOCK_SIZE + index];
 
@@ -98,10 +99,19 @@ int FileManager::deleteFile(std::string name) {
 	return 0;
 }
 
-int FileManager::openFile(std::string name) {
+int FileManager::openFile(std::string name, std::shared_ptr<PCB> pcb) {
 	int ind = searchFileId(name);
+
+	if (!mainCatalog[ind].lock.aquire() and pcb != nullptr)
+	{
+		pcb->changeStatus(PCBStatus::Waiting);
+		mainCatalog[ind].lock.getProcessQueue().push_back(pcb);
+		return -1;
+	}
+
 	for (int i = 0; i < openFiles.size(); i++) {
-		if (openFiles[i] == -1) {
+		if (openFiles[i] == -1 && openFiles[i]) {
+
 			openFiles[i] = ind;
 			return 0;
 		}
@@ -111,13 +121,24 @@ int FileManager::openFile(std::string name) {
 
 int FileManager::closeFile(std::string name) {
 	int ind = searchFileId(name);
-	for (int i = 0; i < openFiles.size(); i++) {
-		if (openFiles[i] == ind) {
-			openFiles[i] = -1;
-			return 0;
+
+	if (mainCatalog[ind].lock.unlock())
+	{
+		auto& lockQueue = mainCatalog[ind].lock.getProcessQueue();
+		if (!lockQueue.empty())
+		{
+			auto pcb = lockQueue.front();
+			pcb->changeStatus(PCBStatus::Ready);
+		}
+
+		for (int i = 0; i < openFiles.size(); i++) {
+			if (openFiles[i] == ind) {
+				openFiles[i] = -1;
+				return 0;
+			}
 		}
 	}
-	return 0;
+	return -1;
 }
 
 int FileManager::writeToFile(std::string name, std::string data) {

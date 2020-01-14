@@ -126,7 +126,7 @@ std::string MemoryManager::showMemory() const
 {
 	std::ostringstream output;
 
-	unsigned frameIndex = 0, pageNumber = 1, column = 0;
+	unsigned frameIndex = 0, pageNumber = 0, column = 0;
 
 	output << "RAM CONTENT:" << std::endl;
 	for (auto ch : RAM)

@@ -154,13 +154,13 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 			return;
 		}
 
-		shell.getFileManager().openFile(arguments[1]);
+		shell.getFileManager().openFile(arguments[1], nullptr);
 		shell.getFileManager().writeToFile(arguments[1], arguments[2]);
 		shell.getFileManager().closeFile(arguments[1]);
 	}
 	else if (cmd == "Show File")
 	{
-		shell.getFileManager().openFile(arguments[1]);
+		shell.getFileManager().openFile(arguments[1], nullptr);
 		console.println(shell.getFileManager().readFileAll(arguments[1]));
 		shell.getFileManager().closeFile(arguments[1]);
 	}

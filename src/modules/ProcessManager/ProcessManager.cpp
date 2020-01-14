@@ -260,7 +260,19 @@ PCB_ptr ProcessManager::getProcessFromList(int PID)
 		throw std::length_error("ProcessList is empty.");
 	}
 
-	for (int i = 0; i < this->processList.size(); i++)
+	auto pcb = std::find_if(std::begin(processList), std::end(processList), [PID](const auto& pcb)
+		{
+			return pcb->getPID() == PID;
+		});
+	
+	if (pcb == std::end(processList))
+	{
+		throw std::invalid_argument("The process does not exist.");
+	}
+
+	return *pcb;
+
+	/*for (int i = 0; i < this->processList.size(); i++)
 	{
 		if (this->processList[i]->getPID() == PID)
 		{
@@ -270,7 +282,7 @@ PCB_ptr ProcessManager::getProcessFromList(int PID)
 		{
 			throw std::invalid_argument("The process does not exist.");
 		}
-	}
+	}*/
 }
 
 PCBStatus ProcessManager::convertStringToPCBStatus(std::string& processStatusName) const

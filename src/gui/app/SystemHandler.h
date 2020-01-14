@@ -126,11 +126,7 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 			return;
 		}
 
-		if (pcb->getStatus() == PCBStatus::Dummy)
-		{
-			console.println("The DUMMY status process cannot be deleted.");
-			return;
-		}
+		
 		if (pcb->getStatus() == PCBStatus::Running)
 		{
 			console.println("The Running status process cannot be deleted.");
@@ -168,7 +164,7 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 		}
 
 
-		if (pcb->getPID() == 0 && pcb->getStatus() == PCBStatus::Dummy)
+		if (pcb->getPID() == 0)
 		{
 			console.println("You cannot touch the DUMMY process.");
 			return;

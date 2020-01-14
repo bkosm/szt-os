@@ -127,14 +127,12 @@ std::string MemoryManager::showFrame(int frameNumber) const {
 
 	if (frameNumber >= 0 && frameNumber < 32)
 	{
-		output << "FRAME " << std::setfill('0') << std::setw(2) << frameNumber << " CONTENT:" << std::endl;
+		output << "FRAME " << std::setfill('0') << std::setw(2) << frameNumber << " CONTAINS:" << std::endl;
 		unsigned int inc = frameNumber * 16, end = inc + 16;
 
-		output << std::setfill('0') << std::setw(2) << frameNumber << ": {";
 		for (inc; inc < end; ++inc) {
-			output << RAM[inc];
+			output << "[" << std::setfill('0') << std::setw(2) << inc << "] " << std::setfill(' ') << std::setw(4) << int(RAM[inc]) << "\t" << RAM[inc] << std::endl;
 		}
-		output << "} ";
 	}
 	else {
 		throw SztosException("Podana ramka nie istnieje.");

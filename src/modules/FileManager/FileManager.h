@@ -40,7 +40,7 @@ public:
 	int createFile(std::string name);
 	int deleteFile(std::string name);
 	int openFile(std::string name, std::shared_ptr<PCB> pcb);
-	int closeFile(std::string name);
+	int closeFile(std::string name, std::shared_ptr<PCB> pcb);
 	int writeToFile(std::string name, std::string data);
 	uint8_t readFileByte(std::string name);
 	int sendFileByte(std::string name, int howMuch);
@@ -51,6 +51,9 @@ public:
 	std::string readFileAll(std::string name);
 	std::string displayFileInfo(const std::string& name);
 	std::string displayDiskContentChar();
+	std::string fileList() const;
+	std::string fileLockQueue(std::string name) const;
+	std::string showBlock(int index) const;
 
 private:
 	Shell* shell;

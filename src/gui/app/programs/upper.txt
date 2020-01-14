@@ -2,9 +2,9 @@
 FO "file1"
 FO "file1_out"
 FR DX "file1"
-JZ DX 111
-JB DX 97 105
-JA DX 122 105
+JZ DX 109
+JB DX 97 85
+JA DX 122 85
 SUB DX 32
 FW DX "file1_out"
 JP 26

@@ -4,18 +4,33 @@
 
 Lock::Lock() { locked_ = false; }
 
-bool Lock::aquire()
+bool Lock::aquire(std::shared_ptr<PCB>& pcb)
 {
-	if (locked_ == false) locked_ = true;
+	if (locked_ == false) {
+		processQueue_.push_back(pcb);
 
-	return locked_;
+		locked_ = true;
+		return true;
+	}
+
+	if (pcb != nullptr) {
+		processQueue_.push_back(pcb);
+	}
+
+	return false;
 }
 
-bool Lock::unlock()
+bool Lock::unlock(std::shared_ptr<PCB>& pcb)
 {
-	if (locked_ == true) locked_ = false;
-
-	return locked_;
+	if (locked_ == true and !processQueue_.empty()) {
+		if (processQueue_.at(0) == pcb)
+		{
+			auto elem = processQueue_.front();
+			locked_ = false;
+			return true;
+		}
+	}
+	return false;
 }
 
 std::vector<std::shared_ptr<PCB>>& Lock::getProcessQueue()
@@ -38,4 +53,9 @@ std::string Lock::getProcessQueueString() const
 	}
 
 	return number == 0 ? output.str() += "~none~\n" : output.str();
+}
+
+bool Lock::getState() const
+{
+	return locked_;
 }

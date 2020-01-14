@@ -109,51 +109,53 @@ int FileManager::deleteFile(std::string name) {
 		blockIndex = 0;
 	}
 
-	closeFile(name);
 	mainCatalog.erase(mainCatalog.begin() + ind);
+
+	for (int i = 0; i < openFiles.size(); i++) {
+		if (openFiles[i] == ind) {
+			openFiles[i] = -1;
+			return 0;
+		}
+	}
+
 	return 0;
 }
 
 int FileManager::openFile(std::string name, std::shared_ptr<PCB> pcb) {
 	int ind = searchFileId(name);
 
-	//if (!mainCatalog[ind].lock.aquire() and pcb != nullptr)
-	//{
-	//	pcb->changeStatus(PCBStatus::Waiting);
-	//	mainCatalog[ind].lock.getProcessQueue().push_back(pcb);
-	//	return -1;
-	//}
+	if (!mainCatalog[ind].lock.aquire(pcb))
+	{
+		return -1;
+	}
+
+	//TODO Handle PCB status change
 
 	for (int i = 0; i < openFiles.size(); i++) {
-		if (openFiles[i] == -1 && openFiles[i]) {
+		if (openFiles[i] == -1) {
 
 			openFiles[i] = ind;
 			return 0;
 		}
 	}
-	return 0;
+	return -1;
 }
 
-int FileManager::closeFile(std::string name) {
+int FileManager::closeFile(std::string name, std::shared_ptr<PCB> pcb) {
 	int ind = searchFileId(name);
 
-	/*if (mainCatalog[ind].lock.unlock())
+	if (mainCatalog[ind].lock.unlock(pcb))
 	{
-		auto& lockQueue = mainCatalog[ind].lock.getProcessQueue();
-		if (!lockQueue.empty())
-		{
-			auto pcb = lockQueue.front();
-			pcb->changeStatus(PCBStatus::Ready);
-		}*/
-
+		//TODO Handle PCB status change
+		
 		for (int i = 0; i < openFiles.size(); i++) {
 			if (openFiles[i] == ind) {
 				openFiles[i] = -1;
 				return 0;
 			}
 		}
-	//}
-	return -1;
+	}
+	return -2;
 }
 
 int FileManager::writeToFile(std::string name, std::string data) {
@@ -260,10 +262,10 @@ int FileManager::longFile(std::string name) {
 std::string FileManager::displayFileSystemParams() {
 	std::stringstream ss;
 
-	ss << " |       Pojemnosc dysku : " << DISK_CAPACITY << " B\n";
-	ss << " |         Rozmiar bloku : " << static_cast<int>(BLOCK_SIZE) << " B\n";
-	ss << " |    Maks rozmiar pliku : " << BLOCK_SIZE * BLOCK_SIZE << " B\n";
-	ss << " |     Maks ilosc plikow : " << static_cast<int>(DISK_CAPACITY / BLOCK_SIZE) << " Plikow\n";
+	ss << "Disk capacity:\t" << DISK_CAPACITY << " B\n";
+	ss << "Block size:\t" << static_cast<int>(BLOCK_SIZE) << " B\n";
+	ss << "Max file size:\t" << BLOCK_SIZE * BLOCK_SIZE << " B\n";
+	ss << "Max file number:\t" << static_cast<int>(DISK_CAPACITY / BLOCK_SIZE) << "\n";
 
 	return ss.str();
 }
@@ -330,8 +332,53 @@ std::string FileManager::displayDiskContentChar() {
 	return output.str();
 }
 
+std::string FileManager::fileList() const
+{
+	std::ostringstream ss;
+	int counter = 1;
+
+	for (const auto& file : mainCatalog)
+	{
+		ss << std::setfill('0') << std::setw(3) << counter
+			<< ": " << file.name << "\t[size: " << file.size << "B]"
+			<< "\tLock State: " << std::boolalpha << file.lock.getState() << std::endl;
+		counter++;
+	}
+
+	return ss.str();
+}
+
+std::string FileManager::fileLockQueue(std::string name) const
+{
+	std::ostringstream ss;
+	int counter = 1;
+
+	for (int i = 0; i < mainCatalog.size(); i++) {
+		if (mainCatalog[i].name == name)
+		{
+			ss << mainCatalog[i].lock.getProcessQueueString() << std::endl;
+			break;
+		}
+	}
+
+	return ss.str();
+}
+
+std::string FileManager::showBlock(int index) const
+{
+	std::ostringstream ss;
+
+	ss << "BLOCK " << index << " CONTAINS: " << std::endl;
+	for (int i = 0; i < 16; i++)
+	{
+		ss << "[" << std::setfill('0') << std::setw(2) << i << "] " << std::setfill(' ') << std::setw(4) << int(disk[index * BLOCK_SIZE + i]) << "\t" << disk[index * BLOCK_SIZE + i] << std::endl;
+	}
+
+	return ss.str();
+}
+
 FileManager::FileManager(Shell* shell) : shell(shell)
 {
-	openFiles = { -1 };
-	disk = { 0 };
+	openFiles.fill(-1);
+	disk.fill(0);
 }

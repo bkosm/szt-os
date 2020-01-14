@@ -1,5 +1,6 @@
 #include "InputField.h"
 #include "Definitions.h"
+#include <cctype>
 
 InputField::InputField()
 {
@@ -37,7 +38,19 @@ void InputField::setLabelAndFont(const sf::String& label, const sf::Font& font)
 
 	enteredText_.setFont(font);
 }
+bool InputField::testLetter(char c) const
+{
+	return std::isalnum(c) || std::ispunct(c) || c == ' ';
+}
 
+bool InputField::isStringValid(const sf::String& s) const
+{
+	for (const char c : s.toAnsiString())
+	{
+		if (!testLetter(c)) return false;
+	}
+	return true;
+}
 void InputField::writeText(const sf::String& string)
 {
 		if (string.getData()[0] == 8 and inputString_.getSize() > 0)
@@ -45,7 +58,7 @@ void InputField::writeText(const sf::String& string)
 			inputString_.erase(inputString_.getSize() - 1);
 		}
 			/* handle backspace and newline chars */
-		else if (string.getData()[0] != 8 and string.getData()[0] != 13 and string.getData()[0] != '\t')
+		else if (isStringValid(string))
 		{
 			inputString_ += string;
 		}

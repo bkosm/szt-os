@@ -21,9 +21,12 @@ public:
 	sf::String getInput();
 	float getLength() const;
 
-	bool isFocused{false};
+	bool isFocused{ false };
 
 private:
+	bool isStringValid(const sf::String& s) const;
+	bool testLetter(char c) const;
+
 	sf::RectangleShape background_;
 	sf::Text label_;
 

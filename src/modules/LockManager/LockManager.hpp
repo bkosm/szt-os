@@ -1,6 +1,5 @@
 #pragma once
 #include "Lock.hpp"
-#include <memory>
 
 class Shell;
 
@@ -10,7 +9,7 @@ public:
 	explicit LockManager(Shell *shell);
 	~LockManager() = default;
 
-	Lock createLock(bool startLocked = false) const;
+	static Lock createLock();
 	/* Funkcja tworzaca nowy zamek.
 	 *
 	 * @param startLocked w jakim stanie ma byc utworzony zamek.

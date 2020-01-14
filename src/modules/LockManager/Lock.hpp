@@ -10,12 +10,12 @@ public:
 	Lock();
 	~Lock() = default;
 
-	bool aquire();
+	bool aquire(std::shared_ptr<PCB>& pcb);
 	/* Funkcja blokujaca zamek na pliku.
 	 *
 	 * @return Wynik dzialania funkcji, false oznacza niepowodzenie.
 	 */
-	bool unlock();
+	bool unlock(std::shared_ptr<PCB>& pcb);
 	/* Funkcja odblokowujaca zamek z pliku.
 	 *
 	 * @return Wynik dzialania funkcji, false oznacza niepowodzenie.
@@ -29,6 +29,11 @@ public:
 	/* Funkcja zwaracaja lancuch tekstowy sformatowany do wyswietlenia.
 	 *
 	 * @return Lancuch tekstowy.
+	 */
+	bool getState() const;
+	/* Zwraca aktualny stan zamka.
+	 *
+	 * @return Zmienna boolowska
 	 */
 
 private:

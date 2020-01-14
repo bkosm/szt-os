@@ -141,10 +141,6 @@ std::string Interpreter::loadProgram(const std::string name) {
 		}
 		else if (temp == ".data") {
 			mode = 1;
-			//if (prog.empty()) {
-			//	throw SztosException("Blad struktury programu.");
-			//}
-			//prog = prog.substr(0, prog.length() - 1);
 			continue;
 		}
 
@@ -297,8 +293,6 @@ void Interpreter::insnFO(std::shared_ptr<PCB> process) {
 	{
 		escapeQuote(param1);
 		shell->getFileManager().openFile(param1, process);
-
-		std::cout << "open " << param1 << std::endl;
 	}
 	catch (SztosException & e)
 	{
@@ -311,9 +305,7 @@ void Interpreter::insnFC(std::shared_ptr<PCB> process) {
 	try
 	{
 		escapeQuote(param1);
-		shell->getFileManager().closeFile(param1);
-		std::cout << "close " << param1 << std::endl;
-
+		shell->getFileManager().closeFile(param1,process);
 	}
 	catch (SztosException & e)
 	{
@@ -328,7 +320,6 @@ void Interpreter::insnFR(std::shared_ptr<PCB> process) {
 	{
 		escapeQuote(param2);
 		uint8_t value = shell->getFileManager().readFileByte(param2);
-		std::cout << "read " << static_cast<char>(value) << std::endl;
 		SET(param1, value);
 	}
 	catch (SztosException & e)
@@ -349,8 +340,6 @@ void Interpreter::insnFW(std::shared_ptr<PCB> process) {
 		temp += static_cast<char>(value);
 
 		shell->getFileManager().writeToFile(param2, temp);
-
-		std::cout << "write to " << param2 << ": " << temp << std::endl;
 	}
 	catch (SztosException & e)
 	{

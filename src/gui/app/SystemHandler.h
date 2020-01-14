@@ -4,6 +4,9 @@
 #include "../../SztosException.hpp"
 #include <string>
 #include <stdexcept>
+#include <cctype>
+
+
 
 inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::string>& arguments)
 {
@@ -86,6 +89,7 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 			const auto pcb = shell.getScheduler().getRunningPcb();
 			try {
 				shell.getInterpreter().handleInsn(pcb);
+				console.println("Last insn: " + shell.getInterpreter().getLastInsn());
 			}
 			catch (SztosException & e) {
 				console.println("Blad: " + std::string(e.what()));
@@ -154,15 +158,29 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 			return;
 		}
 
-		shell.getFileManager().openFile(arguments[1], nullptr);
-		shell.getFileManager().writeToFile(arguments[1], arguments[2]);
-		shell.getFileManager().closeFile(arguments[1]);
+		const auto code = shell.getFileManager().openFile(arguments[1], nullptr);
+		if (code == 0)
+		{
+			shell.getFileManager().writeToFile(arguments[1], arguments[2]);
+			shell.getFileManager().closeFile(arguments[1], nullptr);
+		}
+		else
+		{
+			console.println("Nie mozna otworzyc pliku.");
+		}
 	}
 	else if (cmd == "Show File")
 	{
-		shell.getFileManager().openFile(arguments[1], nullptr);
-		console.println(shell.getFileManager().readFileAll(arguments[1]));
-		shell.getFileManager().closeFile(arguments[1]);
+		const auto code = shell.getFileManager().openFile(arguments[1], nullptr);
+		if (code == 0)
+		{
+			console.println(shell.getFileManager().readFileAll(arguments[1]));
+			shell.getFileManager().closeFile(arguments[1], nullptr);
+		}
+		else
+		{
+			console.println("Nie mozna otworzyc pliku.");
+		}
 	}
 	else if (cmd == "Delete File")
 	{
@@ -171,7 +189,58 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 			console.println("Nie podano argumentu.");
 			return;
 		}
+		const auto code = shell.getFileManager().openFile(arguments[1], nullptr);
+		if (code == 0)
+		{
+			shell.getFileManager().deleteFile(arguments[1]);
+		}
+		else
+		{
+			console.println("Nie masz dostepu do pliku.");
+		}
+	}
 
-		shell.getFileManager().deleteFile(arguments[1]);
+	else if (cmd == "Rename File")
+	{
+		const auto code = shell.getFileManager().openFile(arguments[1], nullptr);
+		if (code == 0)
+		{
+			shell.getFileManager().renameFile(arguments[1], arguments[2]);
+			shell.getFileManager().closeFile(arguments[1], nullptr);
+		}
+		else
+		{
+			console.println("Nie mozna otworzyc pliku.");
+		}
+
+	}
+	else if (cmd == "List Files")
+	{
+		console.println(shell.getFileManager().fileList());
+	}
+	else if (cmd == "Open File")
+	{
+		const auto code = shell.getFileManager().openFile(arguments[1], nullptr);
+
+		if (code == 0)
+		{
+			console.println("Otwarto plik.");
+		}
+		else
+		{
+			console.println("Nie mozna otworzyc pliku.");
+		}
+	}
+	else if (cmd == "Close File")
+	{
+		const auto code = shell.getFileManager().closeFile(arguments[1], nullptr);
+	}
+	else if (cmd == "Show Block")
+	{
+		console.println(shell.getFileManager().showBlock(std::stoi(arguments[1])));
+	}
+	else if (cmd == "Show Lock Queue")
+	{
+		console.println(shell.getFileManager().fileLockQueue(arguments[1]));
 	}
 }

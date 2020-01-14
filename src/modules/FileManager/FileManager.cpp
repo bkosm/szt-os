@@ -39,6 +39,21 @@ int FileManager::searchIndexBlock(int fileIndex) {
 	throw SztosException("Plik przekroczyl maksymalna wielkosc.");
 }
 
+File* FileManager::getFileByName(std::string const& name)
+{
+	const auto file = std::find_if(std::begin(mainCatalog), std::end(mainCatalog), [&name](File const& f)
+		{
+			return f.name == name;
+		});
+
+	if (file == std::end(mainCatalog))
+	{
+		throw SztosException("Plik o podanej nazwie nie istnieje");
+	}
+
+	return &*file;
+}
+
 bool FileManager::isNameUsed(std::string name) {
 	for (int i = 0; i < mainCatalog.size(); i++) {
 		if (mainCatalog[i].name == name) return true;
@@ -185,21 +200,21 @@ int FileManager::sendFileByte(std::string name, int howMuch) {
 	}
 }
 
-int FileManager::readFileByte(std::string name, int howMuch) {
-	for (auto i : openFiles) {
+uint8_t FileManager::readFileByte(std::string name) {
+	auto file = getFileByName(name);
 
-		if (mainCatalog[i].name == name) {
-			if (mainCatalog[i].readPointer == howMuch) {
-				mainCatalog[i].readPointer = 0;
-				return 0;
-			}
-
-			for (int j = mainCatalog[i].readPointer; j < howMuch;) {
-				readFileByte(name, howMuch);
-			}
-			return 0;
-		}
+	if (file->byteReadPtr >= file->size)
+	{
+		file->byteReadPtr = 0;
+		return 0;
 	}
+
+	const int blockNum = file->byteReadPtr / BLOCK_SIZE;
+	const int blockIndex = file->byteReadPtr % BLOCK_SIZE;
+	const int offset = disk[file->indexBlockNumber * BLOCK_SIZE + blockNum];
+
+	file->byteReadPtr++;
+	return disk[offset * BLOCK_SIZE + blockIndex];
 }
 
 std::string FileManager::readFileAll(std::string name) {

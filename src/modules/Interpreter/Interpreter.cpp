@@ -101,6 +101,11 @@ void Interpreter::handleInsn(PCB &process) {
 	}
 }
 
+std::string Interpreter::getLastInsn() const
+{
+	return lastInsn;
+}
+
 std::string Interpreter::loadDummyProgram() {
 	return "JP 0 ";
 }

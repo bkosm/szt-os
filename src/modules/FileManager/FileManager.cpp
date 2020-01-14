@@ -73,21 +73,25 @@ int FileManager::createFile(std::string name) {
 int FileManager::deleteFile(std::string name) {
 	int ind = searchFileId(name);
 
-	for (auto index = 0; index < 16; index++) {
+	for (auto i = 0; i < 16; i++)
+	{
+		auto blockIndex = disk[mainCatalog[ind].indexBlockNumber * BLOCK_SIZE + i];
+		freeIndexes[blockIndex] = false;
+		if (blockIndex == 0) break;
+	}
+	freeIndexes[mainCatalog[ind].indexBlockNumber] = false;
+	
+	for (int index = 0; index < 16; index++) {
 		auto& blockIndex = disk[mainCatalog[ind].indexBlockNumber * BLOCK_SIZE + index];
+
+		if (blockIndex == 0) break;
+
 		for (auto i = 0; i < 16; i++) {
 			auto& aByte = disk[blockIndex * BLOCK_SIZE + i];
 			aByte = 0;
 		}
 		blockIndex = 0;
 	}
-
-	for (auto i = 0; i < 16; i++)
-	{
-		auto blockIndex = disk[mainCatalog[ind].indexBlockNumber * BLOCK_SIZE + i];
-		freeIndexes[blockIndex] = false;
-	}
-	freeIndexes[mainCatalog[ind].indexBlockNumber] = false;
 
 	closeFile(name);
 	mainCatalog.erase(mainCatalog.begin() + ind);

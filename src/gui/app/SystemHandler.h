@@ -82,8 +82,7 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 			shell.getScheduler().schedulePcb();
 
 			const auto pcb = shell.getScheduler().getRunningPcb();
-			try
-			{
+			try {
 				shell.getInterpreter().handleInsn(*pcb);
 			}
 			catch (SztosException & e) {
@@ -101,6 +100,7 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 				shell.getProcessManager().deleteProcessFromQueue(pcb->getPID());
 				shell.getProcessManager().deleteProcessFromList(pcb->getPID());
 				shell.getMemoryManager().deleteProgram(*pcb);
+				console.println("Proces zakonczyl sie.");
 			}
 		}
 	}

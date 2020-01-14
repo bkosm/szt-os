@@ -92,7 +92,8 @@ std::string ProcessManager::showProcessList()
 			<< " N : " << element->processName << "\tID: " << element->processID
 			<< "\tAX: " << int(element->AX) << " BX: " << int(element->BX)
 			<< " CX: " << int(element->CX) << " DX: " << int(element->DX) << std::endl
-			<< "~~ ET: " << int(element->estimatedTime) << "\t\tIC: " << int(element->insnCounter) << "\tST: ";
+			<< "~~ ET: " << int(element->estimatedTime) << "\t\tIC: " << int(element->insnCounter) << "\tII: " << int(element->insnIndex)
+			<< "\tST: ";
 		switch (element->status)
 		{
 		case PCBStatus::New:

@@ -17,7 +17,8 @@ private:
 	std::shared_ptr<AppData> data_;
 
 	Cs consoleScreen_;
-	bool drawConsole_{false};
+	bool drawConsole_{ false };
+	bool drawButtons_{ false };
 
 	Taskbar taskbar_;
 	std::vector<Button> buttons_;

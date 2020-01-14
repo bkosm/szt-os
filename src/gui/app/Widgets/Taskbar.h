@@ -13,6 +13,7 @@ public:
 	bool containsStartButton(const sf::Vector2f& point) const;
 	bool containsTermButton(const sf::Vector2f& point) const;
 	bool containsShutdownButton(const sf::Vector2f& point) const;
+	bool containsMenuButton(const sf::Vector2f& point) const;
 
 	void dontDrawMenu();
 	void toggleMenuDraw();

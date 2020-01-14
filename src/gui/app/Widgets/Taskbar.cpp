@@ -28,7 +28,13 @@ bool Taskbar::containsTermButton(const sf::Vector2f& point) const
 
 bool Taskbar::containsShutdownButton(const sf::Vector2f& point) const
 {
-	if (menu_.getButton().getGlobalBounds().contains(point) and menu_.isMenuDrawn()) return true;
+	if (menu_.getShutdownButton().getGlobalBounds().contains(point) and menu_.isMenuDrawn()) return true;
+	return false;
+}
+
+bool Taskbar::containsMenuButton(const sf::Vector2f& point) const
+{
+	if (menu_.getMenuButton().getGlobalBounds().contains(point) and menu_.isMenuDrawn()) return true;
 	return false;
 }
 

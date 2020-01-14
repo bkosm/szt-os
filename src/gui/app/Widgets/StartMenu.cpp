@@ -2,7 +2,8 @@
 #include "StartMenu.h"
 
 StartMenu::StartMenu() :
-	shutdown_(0, 0, sf::Vector2f(300, 100), sf::String("Power off"))
+	shutdown_(0, 0, sf::Vector2f(300, 100), sf::String("Power off")),
+	menu_(0, 0, sf::Vector2f(300, 100), sf::String("Menu"))
 {
 	iconSetup_();
 
@@ -13,7 +14,12 @@ StartMenu::StartMenu() :
 	shutdown_.draw = false;
 	shutdown_.setTemporaryColor(sf::Color(50, 50, 50));
 	shutdown_.setPosition(sf::Vector2f(shutdown_.getGlobalBounds().width / 2,
-	                                   RESOLUTION.height * 15 / 16 - shutdown_.getGlobalBounds().height / 2));
+		RESOLUTION.height * 15 / 16 - shutdown_.getGlobalBounds().height / 2));
+
+	menu_.draw = false;
+	menu_.setTemporaryColor(sf::Color(50, 50, 50));
+	menu_.setPosition(sf::Vector2f(shutdown_.getGlobalBounds().width / 2,
+		RESOLUTION.height * 12.8 / 16 - shutdown_.getGlobalBounds().height / 2));
 }
 
 const sf::Sprite& StartMenu::getLogo() const
@@ -26,9 +32,14 @@ const sf::Sprite& StartMenu::getTermIcon() const
 	return termIcon_;
 }
 
-const Button& StartMenu::getButton() const
+const Button& StartMenu::getShutdownButton() const
 {
 	return shutdown_;
+}
+
+const Button& StartMenu::getMenuButton() const
+{
+	return menu_;
 }
 
 bool StartMenu::toggleTermButtonState()
@@ -54,12 +65,14 @@ void StartMenu::drawMenuButton()
 {
 	logo_.setColor(sf::Color(255, 255, 255, 30));
 	shutdown_.draw = true;
+	menu_.draw = true;
 }
 
 void StartMenu::hideMenuButton()
 {
 	logo_.setColor(sf::Color(255, 255, 255, 255));
 	shutdown_.draw = false;
+	menu_.draw = false;
 }
 
 void StartMenu::drawTo(sf::RenderWindow& window) const
@@ -67,12 +80,16 @@ void StartMenu::drawTo(sf::RenderWindow& window) const
 	window.draw(logo_);
 	window.draw(bar_);
 	window.draw(termIcon_);
-	if (shutdown_.draw) shutdown_.drawTo(window);
+	if (shutdown_.draw) {
+		shutdown_.drawTo(window);
+		menu_.drawTo(window);
+	}
 }
 
 void StartMenu::setFont(const sf::Font& font)
 {
 	shutdown_.setLabelFont(font);
+	menu_.setLabelFont(font);
 }
 
 void StartMenu::iconSetup_()

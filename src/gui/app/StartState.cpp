@@ -29,6 +29,41 @@ void StartState::handleLeftClick_(const sf::Vector2f& mousePos, bool released)
 
 		return;
 	}
+	/* Przycisk start */
+	if (taskbar_.containsStartButton(mousePos))
+	{
+		taskbar_.toggleMenuDraw();
+	}
+	else if (taskbar_.containsShutdownButton(mousePos))
+	{
+		data_->states.addState(std::make_unique<ShutdownState>(data_), true);
+	}
+	else if (taskbar_.containsMenuButton(mousePos))
+	{
+		taskbar_.toggleMenuDraw();
+
+		if (drawButtons_) {
+			drawButtons_ = false;
+			for (auto& button : buttons_) {
+				button.draw = false;
+				for (auto& command : button.commands) {
+					command.draw = false;
+				}
+			}
+		}
+		else {
+			drawButtons_ = true;
+			for (auto& button : buttons_) {
+				button.draw = true;
+			}
+		}
+		return;
+	}
+	/* Ikona terminala */
+	else if (taskbar_.containsTermButton(mousePos))
+	{
+		drawConsole_ = taskbar_.toggleTermButton();
+	}
 	/* Przyciski pulpitu */
 	for (auto& button : buttons_)
 	{
@@ -56,7 +91,14 @@ void StartState::handleLeftClick_(const sf::Vector2f& mousePos, bool released)
 						input.push_back(field.getInput());
 					}
 					/* handluj z konsekwencjami */
-					handleSystemOperations(data_->shell, consoleScreen_, input);
+					try {
+						handleSystemOperations(data_->shell, consoleScreen_, input);
+					}
+					catch (std::exception & e) {
+						consoleScreen_.println(BIKE);
+						consoleScreen_.println("Congratulations, we haven't expected that!");
+					}
+
 				}
 				else
 				{
@@ -71,21 +113,6 @@ void StartState::handleLeftClick_(const sf::Vector2f& mousePos, bool released)
 				}
 			}
 		}
-	}
-
-	/* Przycisk start */
-	if (taskbar_.containsStartButton(mousePos))
-	{
-		taskbar_.toggleMenuDraw();
-	}
-	else if (taskbar_.containsShutdownButton(mousePos))
-	{
-		data_->states.addState(std::make_unique<ShutdownState>(data_), true);
-	}
-	/* Ikona terminala */
-	else if (taskbar_.containsTermButton(mousePos))
-	{
-		drawConsole_ = taskbar_.toggleTermButton();
 	}
 }
 

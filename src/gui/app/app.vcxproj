@@ -59,6 +59,8 @@
     <ClInclude Include="CommandButton.h" />
     <ClInclude Include="Definitions.h" />
     <ClInclude Include="InputField.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="resource1.h" />
     <ClInclude Include="SelbaWard\Common.h" />
     <ClInclude Include="SelbaWard\ConsoleScreen.h" />
     <ClInclude Include="ShutdownState.h" />
@@ -71,6 +73,12 @@
     <ClInclude Include="Widgets\DateTimeWidget.h" />
     <ClInclude Include="Widgets\StartMenu.h" />
     <ClInclude Include="Widgets\Taskbar.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="app1.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="resources\icon64.ico" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

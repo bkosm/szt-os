@@ -10,7 +10,8 @@ public:
 
 	const sf::Sprite& getLogo() const;
 	const sf::Sprite& getTermIcon() const;
-	const Button& getButton() const;
+	const Button& getShutdownButton() const;
+	const Button& getMenuButton() const;
 
 	bool toggleTermButtonState();
 
@@ -26,6 +27,7 @@ private:
 	void iconSetup_();
 
 	Button shutdown_;
+	Button menu_;
 
 	sf::Sprite logo_;
 	sf::Texture logoTexture_;

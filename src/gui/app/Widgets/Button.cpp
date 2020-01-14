@@ -19,26 +19,32 @@ sf::FloatRect Button::getGlobalBounds() const
 
 void Button::markAsClicked()
 {
-	shape_.setFillColor(sf::Color(0, 0, 0, 50));
-	label_.setFillColor(sf::Color(255, 255, 255, 50));
+	if (draw) {
+		shape_.setFillColor(sf::Color(0, 0, 0, 50));
+		label_.setFillColor(sf::Color(255, 255, 255, 50));
 
-	clicked = true;
+		clicked = true;
+	}
 }
 
 void Button::markAsReleased()
 {
-	shape_.setFillColor(sf::Color(0, 0, 0));
-	label_.setFillColor(sf::Color(255, 255, 255));
+	if (draw) {
+		shape_.setFillColor(sf::Color(0, 0, 0));
+		label_.setFillColor(sf::Color(255, 255, 255));
 
-	clicked = false;
+		clicked = false;
+	}
 }
 
 void Button::drawCommands()
 {
-	areCommandsDrawn = true;
-	for (auto& command : commands)
-	{
-		command.draw = true;
+	if (draw) {
+		areCommandsDrawn = true;
+		for (auto& command : commands)
+		{
+			command.draw = true;
+		}
 	}
 }
 
@@ -59,8 +65,10 @@ void Button::setTemporaryColor(const sf::Color& color)
 
 void Button::drawTo(sf::RenderWindow& window) const
 {
-	window.draw(shape_);
-	window.draw(label_);
+	if (draw) {
+		window.draw(shape_);
+		window.draw(label_);
+	}
 }
 
 void Button::setPosition(const sf::Vector2f& position)
@@ -83,5 +91,5 @@ void Button::setRelativeLabelPosition_()
 	const auto labelIndent = (shapePos.width - labelSize.width) / 2.0;
 
 	label_.setPosition(sf::Vector2f(shapePos.left + labelIndent,
-	                                shapePos.top + shapePos.height / 2 - labelSize.height / 2));
+		shapePos.top + shapePos.height / 2 - labelSize.height / 2));
 }

@@ -26,6 +26,6 @@ private:
 
 	void updateEstimatedTime(const PCB_ptr& pcb) const;
 	void updateAllEstimatedTimes() const;
-	void schedulePcb();
+	void chooseRunningPcb();
 };
 

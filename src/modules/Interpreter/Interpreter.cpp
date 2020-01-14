@@ -54,6 +54,14 @@ std::string Interpreter::readNextParam(PCB &process) {
 	}
 }
 
+std::string Interpreter::escapeQuote(const std::string& s)
+{
+	if (s.front() != '\"' || s.back() != '\"')
+	{
+		
+	}
+}
+
 void Interpreter::handleInsn(PCB &process) {
 	uint8_t prevInsnIndex = process.insnIndex;
 	lastInsn = "";
@@ -263,7 +271,17 @@ void Interpreter::insnLO(PCB &process) {
 
 void Interpreter::insnCP(PCB &process) {
 	LOAD(param1); LOAD(param2);
-	// TODO create process
+
+	param1 = param1.substr(1, param1.length() - 2);
+	param2 = param1.substr(1, param2.length() - 2);
+
+	try
+	{
+		shell->getProcessManager().createProcess(param1, param2);
+	} catch (SztosException &e)
+	{
+		throw e;
+	}
 }
 
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@

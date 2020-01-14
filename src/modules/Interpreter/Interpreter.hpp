@@ -31,6 +31,7 @@ class Interpreter {
 	void insnFR(PCB &process); void insnFW(PCB &process);
 
 	std::string readNextParam(PCB &process);
+	std::string escapeQuote(const std::string &s);
 
 	uint8_t getValue(PCB &process, std::string dest);
 	void setValue(PCB &process, std::string dest, uint8_t value);

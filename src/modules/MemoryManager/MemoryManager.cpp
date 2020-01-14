@@ -42,7 +42,7 @@ void MemoryManager::loadProgram(PCB& pcb, const std::string& programName)
 	{
 		programCode = shell->getInterpreter().loadProgram(programName);
 	}
-	catch (SztosException &e)
+	catch (SztosException & e)
 	{
 		throw e;
 	}
@@ -100,7 +100,7 @@ uint8_t MemoryManager::getByte(PCB& pcb, uint16_t target)
 		throw SztosException("Proces odwolal sie do blednej ramki.");
 	}
 
-	uint8_t byteNum = (frameNum * FRAME_SIZE) + (target % FRAME_SIZE);
+	uint16_t byteNum = (frameNum * FRAME_SIZE) + (target % FRAME_SIZE);
 	return RAM[byteNum];
 }
 
@@ -119,7 +119,7 @@ void MemoryManager::setByte(PCB& pcb, uint16_t target, uint8_t data)
 		throw SztosException("Proces odwolal sie do blednej ramki.");
 	}
 
-	RAM[(frameNum * FRAME_SIZE) + (target % FRAME_SIZE)] = data;;
+	RAM[(frameNum * FRAME_SIZE) + (target % FRAME_SIZE)] = data;
 }
 
 std::string MemoryManager::showMemory() const

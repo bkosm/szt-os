@@ -184,7 +184,7 @@ void StartState::configureButtons_()
 	buttons_[4].commands[4].inputFields[0].setLabelAndFont("File name:", data_->resources.appFont);
 	/* File Manager 2 command buttons */
 	/* TEST */
-	buttons_[5].commands.emplace_back("TEST", 1, data_->resources.appFont, data_->resources.runButtonTexture);
+	buttons_[5].commands.emplace_back("Delete File", 1, data_->resources.appFont, data_->resources.runButtonTexture);
 	buttons_[5].commands[0].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 3 / 100));
 	buttons_[5].commands[0].inputFields[0].setLabelAndFont("File name:", data_->resources.appFont);
 }

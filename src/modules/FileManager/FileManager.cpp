@@ -72,6 +72,23 @@ int FileManager::createFile(std::string name) {
 
 int FileManager::deleteFile(std::string name) {
 	int ind = searchFileId(name);
+
+	for (auto index = 0; index < 16; index++) {
+		auto& blockIndex = disk[mainCatalog[ind].indexBlockNumber * BLOCK_SIZE + index];
+		for (auto i = 0; i < 16; i++) {
+			auto& aByte = disk[blockIndex * BLOCK_SIZE + i];
+			aByte = 0;
+		}
+		blockIndex = 0;
+	}
+
+	for (auto i = 0; i < 16; i++)
+	{
+		auto blockIndex = disk[mainCatalog[ind].indexBlockNumber * BLOCK_SIZE + i];
+		freeIndexes[blockIndex] = false;
+	}
+	freeIndexes[mainCatalog[ind].indexBlockNumber] = false;
+
 	closeFile(name);
 	mainCatalog.erase(mainCatalog.begin() + ind);
 	return 0;
@@ -161,33 +178,20 @@ int FileManager::readFileByte(std::string name, int howMuch) {
 }
 
 std::string FileManager::readFileAll(std::string name) {
-	int block;
-	std::string result;
-
 	for (auto i : openFiles) {
 		if (mainCatalog[i].name == name) {
-			mainCatalog[i].readPointer = 0;
-			/*
+			std::string result;
 			for (auto index = 0; index < 16; index++) {
 				auto blockIndex = disk[mainCatalog[i].indexBlockNumber * BLOCK_SIZE + index];
-				if (blockIndex != 0) {
-					for (auto i = 0; i < 16; i++) {
+				for (auto i = 0; i < 16; i++) {
+					if (blockIndex != 0) {
 						auto aByte = disk[blockIndex * BLOCK_SIZE + i];
 						if (aByte == 0) return result;
 
 						result += disk[blockIndex * BLOCK_SIZE + i];
 					}
 				}
-			}*/
-
-			for (int j = 0; j < mainCatalog[i].size; j++) {
-				int k = 0;
-				if (j % 8 == 0 && j > 1)k++;
-				block = disk[mainCatalog[i].indexBlockNumber * BLOCK_SIZE + k] * BLOCK_SIZE;
-				result += disk[block + mainCatalog[i].readPointer % BLOCK_SIZE];
-				mainCatalog[i].readPointer++;
 			}
-			mainCatalog[i].readPointer = 0;
 			return result;
 		}
 	}
@@ -244,7 +248,7 @@ std::string FileManager::displayDiskContentChar() {
 	for (auto ch : disk)
 	{
 		if (ch == '\t' or ch == '\n') ch = ' ';
-		
+
 		if (column == 2) {
 			if (frameIndex == 0)
 			{

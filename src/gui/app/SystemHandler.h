@@ -1,4 +1,5 @@
 #pragma once
+#include "Definitions.h"
 #include "SelbaWard/ConsoleScreen.h"
 #include "../../Shell.hpp"
 #include "../../SztosException.hpp"
@@ -46,6 +47,10 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 		try
 		{
 			shell.getProcessManager().createProcess(arguments[1], arguments[2]);
+			if (arguments[1] == "rowerek")
+			{
+				console.println(BIKE);
+			}
 		}
 		catch (SztosException & e)
 		{

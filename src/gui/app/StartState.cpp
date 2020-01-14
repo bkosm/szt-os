@@ -163,6 +163,9 @@ void StartState::configureButtons_()
 	/* SHOW PRIORITY */
 	buttons_[0].commands.emplace_back("Show Priority", 0, data_->resources.appFont, data_->resources.runButtonTexture);
 	buttons_[0].commands[1].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 20 / 100));
+	/* SHOW LAST INSTRUCTION */
+	buttons_[0].commands.emplace_back("Show Last Instruction", 0, data_->resources.appFont, data_->resources.runButtonTexture);
+	buttons_[0].commands[2].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 39 / 100));
 	/* Process Manager 1 command buttons */
 	/* CREATE PROCESS */
 	buttons_[1].commands.emplace_back("Create Process", 2, data_->resources.appFont, data_->resources.runButtonTexture);

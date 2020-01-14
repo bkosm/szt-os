@@ -166,6 +166,11 @@ void StartState::configureButtons_()
 	/* SHOW LAST INSTRUCTION */
 	buttons_[0].commands.emplace_back("Show Last Instruction", 0, data_->resources.appFont, data_->resources.runButtonTexture);
 	buttons_[0].commands[2].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 39 / 100));
+	/* PARSE PROGRAM LABELS */
+	buttons_[0].commands.emplace_back("Parse Program Labels", 2, data_->resources.appFont, data_->resources.runButtonTexture);
+	buttons_[0].commands[3].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 55 / 100));
+	buttons_[0].commands[3].inputFields[0].setLabelAndFont("Input file name:", data_->resources.appFont);
+	buttons_[0].commands[3].inputFields[1].setLabelAndFont("Output file name:", data_->resources.appFont);
 	/* Process Manager 1 command buttons */
 	/* CREATE PROCESS */
 	buttons_[1].commands.emplace_back("Create Process", 2, data_->resources.appFont, data_->resources.runButtonTexture);

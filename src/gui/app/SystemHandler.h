@@ -138,7 +138,7 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 			return;
 		}
 
-		
+
 		if (pcb->getStatus() == PCBStatus::Running)
 		{
 			console.println("The Running status process cannot be deleted.");
@@ -367,6 +367,11 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 		}
 
 		console.println(shell.getMemoryManager().showFrame(std::stoi(arguments[1])));
+	}
+	else if (cmd == "Show Last Instruction") {
+
+	}
+	else if (cmd == "Parse Program Labels") {
 
 	}
 

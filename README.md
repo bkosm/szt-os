@@ -35,6 +35,15 @@ Gui is based on the [SFML](https://github.com/SFML/SFML) library with a console 
 1. Add the absolute path to SFML's lib folder (`~\src\gui\SFML\lib`) in `Additional Library Directories` on the right.
 1. Make sure that you build the for the x64 platform and you're good to go.
 
+# Screenshots
+
+<p align="center">
+  <img src="/src/gui/app/resources/screen2.jpg" width="1000" title="Screen2">
+</p>
+<p align="center">
+  <img src="/src/gui/app/resources/screen1.jpg" width="1000" title="Screen1">
+</p>
+
 # Authors
 - Artur Jackowiak 
 - Bartosz Kosmala

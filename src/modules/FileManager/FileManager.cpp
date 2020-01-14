@@ -117,12 +117,12 @@ int FileManager::deleteFile(std::string name) {
 int FileManager::openFile(std::string name, std::shared_ptr<PCB> pcb) {
 	int ind = searchFileId(name);
 
-	if (!mainCatalog[ind].lock.aquire() and pcb != nullptr)
-	{
-		pcb->changeStatus(PCBStatus::Waiting);
-		mainCatalog[ind].lock.getProcessQueue().push_back(pcb);
-		return -1;
-	}
+	//if (!mainCatalog[ind].lock.aquire() and pcb != nullptr)
+	//{
+	//	pcb->changeStatus(PCBStatus::Waiting);
+	//	mainCatalog[ind].lock.getProcessQueue().push_back(pcb);
+	//	return -1;
+	//}
 
 	for (int i = 0; i < openFiles.size(); i++) {
 		if (openFiles[i] == -1 && openFiles[i]) {
@@ -137,14 +137,14 @@ int FileManager::openFile(std::string name, std::shared_ptr<PCB> pcb) {
 int FileManager::closeFile(std::string name) {
 	int ind = searchFileId(name);
 
-	if (mainCatalog[ind].lock.unlock())
+	/*if (mainCatalog[ind].lock.unlock())
 	{
 		auto& lockQueue = mainCatalog[ind].lock.getProcessQueue();
 		if (!lockQueue.empty())
 		{
 			auto pcb = lockQueue.front();
 			pcb->changeStatus(PCBStatus::Ready);
-		}
+		}*/
 
 		for (int i = 0; i < openFiles.size(); i++) {
 			if (openFiles[i] == ind) {
@@ -152,7 +152,7 @@ int FileManager::closeFile(std::string name) {
 				return 0;
 			}
 		}
-	}
+	//}
 	return -1;
 }
 

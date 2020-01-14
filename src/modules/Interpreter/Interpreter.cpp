@@ -111,6 +111,7 @@ void Interpreter::handleInsn(std::shared_ptr<PCB> process) {
 		buffer += c;
 		if (buffer == "HLT") {
 			process->changeStatus(PCBStatus::Terminated);
+			lastInsn = "HLT";
 			return;
 		}
 	}

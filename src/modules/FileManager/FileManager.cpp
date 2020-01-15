@@ -128,6 +128,18 @@ int FileManager::deleteFile(std::string name) {
 int FileManager::openFile(std::string name, std::shared_ptr<PCB> pcb) {
 	int ind = searchFileId(name);
 
+	bool exist = false;
+	for (auto file : getFiles()) {
+
+		if (file.name == name) {
+			exist = true;
+		}
+
+	}
+	if (exist == false) {
+		throw SztosException("The file with the given name does not exist.");
+	}
+
 	if (!mainCatalog[ind].lock.aquire(pcb))
 	{
 		return -1;
@@ -150,6 +162,7 @@ int FileManager::closeFile(std::string name, std::shared_ptr<PCB> pcb) {
 
 	if (mainCatalog[ind].lock.unlock(pcb))
 	{
+		std::cout << "Unlocked!" << std::endl;
 		//TODO Handle PCB status change
 		
 		for (int i = 0; i < openFiles.size(); i++) {

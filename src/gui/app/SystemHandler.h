@@ -301,27 +301,21 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 			return;
 		}
 
-		bool exist = false;
-		for (auto file : shell.getFileManager().getFiles()) {
-
-			if (file.name == arguments[1]) {
-				exist = true;
+		try
+		{
+			const auto code = shell.getFileManager().openFile(arguments[1], nullptr);
+			if (code == 0)
+			{
+				shell.getFileManager().deleteFile(arguments[1]);
 			}
-
+			else
+			{
+				console.println("No file access.");
+			}
 		}
-		if (exist == false) {
-			console.println("The file with the given name does not exist.");
-			return;
-		}
-
-		const auto code = shell.getFileManager().openFile(arguments[1], nullptr);
-		if (code == 0)
+		catch (SztosException & e)
 		{
-			shell.getFileManager().deleteFile(arguments[1]);
-		}
-		else
-		{
-			console.println("No file access.");
+			console.println("Error: " + std::string(e.what()));
 		}
 	}
 

@@ -4,7 +4,7 @@
 
 Lock::Lock() { locked_ = false; }
 
-bool Lock::aquire(std::shared_ptr<PCB>& pcb)
+bool Lock::aquire(std::shared_ptr<PCB> pcb)
 {
 	if (locked_ == false) {
 		processQueue_.push_back(pcb);
@@ -20,12 +20,12 @@ bool Lock::aquire(std::shared_ptr<PCB>& pcb)
 	return false;
 }
 
-bool Lock::unlock(std::shared_ptr<PCB>& pcb)
+bool Lock::unlock(std::shared_ptr<PCB> pcb)
 {
 	if (locked_ == true and !processQueue_.empty()) {
 		if (processQueue_.at(0) == pcb)
 		{
-			auto elem = processQueue_.front();
+			processQueue_.erase(processQueue_.begin());
 			locked_ = false;
 			return true;
 		}
@@ -47,6 +47,14 @@ std::string Lock::getProcessQueueString() const
 	for (const auto& pcb : processQueue_)
 	{
 		++number;
+
+		if (pcb == nullptr)
+		{
+			output << std::setfill('0') << std::setw(5) << std::to_string(number)
+				<< " - INTERFACE" << std::endl;
+			continue;
+		}
+
 		output << std::setfill('0') << std::setw(5) << std::to_string(number)
 			<< " - Name: " << pcb->processName
 			<< "\t| PID: " + std::to_string(pcb->processID) << std::endl;

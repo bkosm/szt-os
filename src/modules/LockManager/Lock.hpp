@@ -10,12 +10,12 @@ public:
 	Lock();
 	~Lock() = default;
 
-	bool aquire(std::shared_ptr<PCB>& pcb);
+	bool aquire(std::shared_ptr<PCB> pcb);
 	/* Funkcja blokujaca zamek na pliku.
 	 *
 	 * @return Wynik dzialania funkcji, false oznacza niepowodzenie.
 	 */
-	bool unlock(std::shared_ptr<PCB>& pcb);
+	bool unlock(std::shared_ptr<PCB> pcb);
 	/* Funkcja odblokowujaca zamek z pliku.
 	 *
 	 * @return Wynik dzialania funkcji, false oznacza niepowodzenie.

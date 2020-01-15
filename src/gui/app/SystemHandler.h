@@ -210,7 +210,7 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 	{
 		console.println(shell.getProcessManager().showProcessList());
 	}
-	else if (cmd == "Create File")
+	else if (cmd == "Create File") //
 	{
 		if (arguments[1].empty())
 		{
@@ -235,21 +235,15 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 	}
 	else if (cmd == "Show File Info")
 	{
-		bool exist = false;
-		for (auto file : shell.getFileManager().getFiles()) {
-
-			if (file.name == arguments[1]) {
-				exist = true;
-			}
-
+		try
+		{
+			const auto info = shell.getFileManager().displayFileInfo(arguments[1]);
+			console.println(info);
 		}
-		if (exist == false) {
-			console.println("The file with the given name does not exist.");
-			return;
+		catch (SztosException & e)
+		{
+			console.println("Error: " + std::string(e.what()));
 		}
-
-		const auto info = shell.getFileManager().displayFileInfo(arguments[1]);
-		console.println(info);
 	}
 	else if (cmd == "Show Disk")
 	{
@@ -365,46 +359,35 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 	}
 	else if (cmd == "Open File")
 	{
-		bool exist = false;
-		for (auto file : shell.getFileManager().getFiles()) {
+		try
+		{
+			const auto code = shell.getFileManager().openFile(arguments[1], nullptr);
 
-			if (file.name == arguments[1]) {
-				exist = true;
+			if (code == 0)
+			{
+				console.println("Open file.");
 			}
-
+			else
+			{
+				console.println("Could not open file.");
+			}
 		}
-		if (exist == false) {
-			console.println("The file with the given name does not exist.");
-			return;
-		}
-
-		const auto code = shell.getFileManager().openFile(arguments[1], nullptr);
-
-		if (code == 0)
+		catch (SztosException & e)
 		{
-			console.println("Open file.");
-		}
-		else
-		{
-			console.println("Could not open file.");
+			console.println("Error: " + std::string(e.what()));
 		}
 	}
 	else if (cmd == "Close File")
 	{
-		bool exist = false;
-		for (auto file : shell.getFileManager().getFiles()) {
-
-			if (file.name == arguments[1]) {
-				exist = true;
-			}
-
+		try
+		{
+			const auto code = shell.getFileManager().closeFile(arguments[1], nullptr);
 		}
-		if (exist == false) {
-			console.println("The file with the given name does not exist.");
-			return;
+		catch (SztosException & e)
+		{
+			console.println("Error: " + std::string(e.what()));
 		}
 
-		const auto code = shell.getFileManager().closeFile(arguments[1], nullptr);
 	}
 	else if (cmd == "Show Block")
 	{

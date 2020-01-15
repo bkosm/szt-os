@@ -10,7 +10,6 @@
 #include <cctype>
 
 
-
 inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::string>& arguments)
 {
 	const auto cmd = arguments[0];
@@ -24,7 +23,8 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 		}
 		else
 		{
-			if (cmd == "Go" and arguments[i].empty()) {
+			if (cmd == "Go" and arguments[i].empty())
+			{
 				arguments[i] = "1";
 			}
 			console.print(arguments[i] + " ");
@@ -33,8 +33,10 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 	console.println({});
 
 	if (arguments.empty()) return;
-	for (auto arg : arguments) {
-		if (arg.empty()) {
+	for (auto arg : arguments)
+	{
+		if (arg.empty())
+		{
 			console.println("Invalid arguments.");
 			return;
 		}
@@ -57,12 +59,13 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 				console.println(BIKE);
 			}
 		}
-		catch (SztosException &e)
+		catch (SztosException& e)
 		{
 			console.println("Error: " + std::string(e.what()));
 			return;
 		}
-		catch (std::exception &e) {
+		catch (std::exception& e)
+		{
 			console.println("Unknown error: " + std::string(e.what()));
 			return;
 		}
@@ -77,7 +80,7 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 		{
 			numOfGo = std::stoi(arguments[1]);
 		}
-		catch (std::exception & e)
+		catch (std::exception& e)
 		{
 			console.println("Argument is not a number.");
 			return;
@@ -99,58 +102,71 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 					terminatedPcbs.push_back(pcbPtr);
 				}
 			}
-			
-			for (auto pcbPtr : terminatedPcbs) {
+
+			for (auto pcbPtr : terminatedPcbs)
+			{
 				try
 				{
 					shell.getProcessManager().deleteProcessFromList(pcbPtr->getPID());
 				}
-				catch (SztosException & e)
+				catch (SztosException& e)
 				{
-					console.println("Encountered error that should not happen ??? (pre-clear terminated processes) (Error: " + std::string(e.what()) + ").");
+					console.println(
+						"Encountered error that should not happen ??? (pre-clear terminated processes) (Error: " + std::
+						string(e.what()) + ").");
 				}
 
 				shell.getMemoryManager().deleteProgram(*pcbPtr);
 			}
 
 			const auto pcb = shell.getScheduler().getRunningPcb();
-			try {
+			try
+			{
 				shell.getInterpreter().handleInsn(pcb);
 			}
-			catch (SztosException & e) {
+			catch (SztosException& e)
+			{
 				console.println("Error: " + std::string(e.what()));
 				return;
 			}
-			catch (std::exception & e) {
+			catch (std::exception& e)
+			{
 				console.println("Unknown error: " + std::string(e.what()));
 				return;
 			}
 
 			if (pcb->status == PCBStatus::Terminated)
 			{
-				try {
+				try
+				{
 					shell.getProcessManager().deleteProcessFromQueue(pcb->getPID());
-					
+
 					console.println("Process was terminated at " + std::to_string(i + 1)
 						+ " iteration. You can check process memory before next GO command.");
-				} catch (SztosException &e)
-				{
-					console.println("Encountered error that should not happen ??? (on-terminate) (Error: " + std::string(e.what()) + ").");
 				}
-				
+				catch (SztosException& e)
+				{
+					console.println(
+						"Encountered error that should not happen ??? (on-terminate) (Error: " + std::string(e.what()) +
+						").");
+				}
+
 				break;
 			}
 			else if (pcb->status == PCBStatus::Error)
 			{
-				try {
+				try
+				{
 					shell.getProcessManager().deleteProcessFromQueue(pcb->getPID());
 
 					console.println("Process encountered error at " + std::to_string(i + 1)
 						+ " iteration. You can check process memory. Process with error have to be removed manually.");
 				}
-				catch (SztosException & e)
+				catch (SztosException& e)
 				{
-					console.println("Encountered error that should not happen ??? (on-error) (Error: " + std::string(e.what()) + ").");
+					console.println(
+						"Encountered error that should not happen ??? (on-error) (Error: " + std::string(e.what()) +
+						").");
 				}
 
 				break;
@@ -164,12 +180,13 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 		{
 			pcb = shell.getProcessManager().getProcessFromList(std::stoi(arguments[1]));
 		}
-		catch (SztosException &e)
+		catch (SztosException& e)
 		{
 			console.println("Error: " + std::string(e.what()));
 			return;
 		}
-		catch (std::exception & e) {
+		catch (std::exception& e)
+		{
 			console.println("Unknown error: " + std::string(e.what()));
 			return;
 		}
@@ -187,57 +204,32 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 			shell.getMemoryManager().deleteProgram(*pcb);
 			console.println("Killed process.");
 		}
-		catch (SztosException & e)
+		catch (SztosException& e)
 		{
 			console.println("Error: " + std::string(e.what()));
 		}
-		catch (std::exception & e) {
+		catch (std::exception& e)
+		{
 			console.println("Unknown error: " + std::string(e.what()));
 			return;
 		}
 	}
-	else if (cmd == "Change Status")
+	else if (cmd == "Change Estimated Time")
 	{
-		std::shared_ptr<PCB> pcb = nullptr;
 		try
 		{
-			pcb = shell.getProcessManager().getProcessFromList(std::stoi(arguments[1]));
+			auto pid = std::stoi(arguments[1]);
+			auto tao = std::stoi(arguments[2]);
+			auto pcb = shell.getProcessManager().getProcessFromList(pid);
+			pcb->estimatedTime = static_cast<uint8_t>(std::min(tao, 254));
 		}
-		catch (SztosException & e)
+		catch (SztosException& e)
 		{
 			console.println("Error: " + std::string(e.what()));
-			return;
 		}
-		catch (std::exception & e) {
+		catch (std::exception& e)
+		{
 			console.println("Unknown error: " + std::string(e.what()));
-			return;
-		}
-
-
-		if (pcb->getPID() == 0)
-		{
-			console.println("You cannot touch the DUMMY process.");
-			return;
-		}
-		if (shell.getProcessManager().getProcessList().size() <= std::stoi(arguments[1]))
-		{
-			console.println("There is no process with the given ID.");
-			return;
-		}
-
-		try
-		{
-			shell.getProcessManager().changeStatusChosenProcess(std::stoi(arguments[1]), shell.getProcessManager().convertStringToPCBStatus(arguments[2]));
-			console.println("Changed status for process.");
-		}
-		catch (SztosException & e)
-		{
-			console.println("Error: " + std::string(e.what()));
-			return;
-		}
-		catch (std::exception & e) {
-			console.println("Unknown error: " + std::string(e.what()));
-			return;
 		}
 	}
 	else if (cmd == "Show Memory")
@@ -261,12 +253,14 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 		}
 
 		bool exist = false;
-		for (auto file : shell.getFileManager().getFiles()) {
-
-			if (file.name == arguments[1]) {
+		for (auto file : shell.getFileManager().getFiles())
+		{
+			if (file.name == arguments[1])
+			{
 				exist = true;
 			}
-			if (exist == true) {
+			if (exist == true)
+			{
 				console.println("A file with the given name already exists.");
 				return;
 			}
@@ -282,7 +276,7 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 			const auto info = shell.getFileManager().displayFileInfo(arguments[1]);
 			console.println(info);
 		}
-		catch (SztosException & e)
+		catch (SztosException& e)
 		{
 			console.println("Error: " + std::string(e.what()));
 		}
@@ -318,7 +312,7 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 				console.println("Could not open file.");
 			}
 		}
-		catch (SztosException & e)
+		catch (SztosException& e)
 		{
 			console.println("Error: " + std::string(e.what()));
 		}
@@ -338,7 +332,7 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 				console.println("Could not open file.");
 			}
 		}
-		catch (SztosException & e)
+		catch (SztosException& e)
 		{
 			console.println("Error: " + std::string(e.what()));
 		}
@@ -363,7 +357,7 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 				console.println("No file access.");
 			}
 		}
-		catch (SztosException & e)
+		catch (SztosException& e)
 		{
 			console.println("Error: " + std::string(e.what()));
 		}
@@ -387,7 +381,7 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 				console.println("Could not open file.");
 			}
 		}
-		catch (SztosException & e)
+		catch (SztosException& e)
 		{
 			console.println("Error: " + std::string(e.what()));
 		}
@@ -398,11 +392,10 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 		{
 			const auto code = shell.getFileManager().closeFile(arguments[1], nullptr);
 		}
-		catch (SztosException & e)
+		catch (SztosException& e)
 		{
 			console.println("Error: " + std::string(e.what()));
 		}
-
 	}
 	else if (cmd == "Show Block")
 	{
@@ -414,16 +407,14 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 				return;
 			}
 			console.println(shell.getFileManager().showBlock(std::stoi(arguments[1])));
-
 		}
-		catch (std::exception & e)
+		catch (std::exception& e)
 		{
 			console.println("Error: " + std::string(e.what()) + ".");
 		}
 	}
 	else if (cmd == "Show Lock Queue") // DO ZROBIENIA 
 	{
-
 		console.println(shell.getFileManager().fileLockQueue(arguments[1]));
 	}
 	else if (cmd == "Show Frame") /* DODANE - EDYCJA */
@@ -434,7 +425,7 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 		{
 			frameNumber = std::stoi(arguments[1]);
 		}
-		catch (std::exception & e)
+		catch (std::exception& e)
 		{
 			console.println("Error: " + std::string(e.what()) + ".");
 			return;
@@ -453,26 +444,30 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 
 		console.println(shell.getMemoryManager().showFrame(frameNumber));
 	}
-	else if (cmd == "Show Last Instruction") {
+	else if (cmd == "Show Last Instruction")
+	{
 		console.println("Last insn: " + shell.getInterpreter().getLastInsn());
 	}
-	else if (cmd == "Parse Program Labels") {
+	else if (cmd == "Parse Program Labels")
+	{
 		try
 		{
 			parseCode(arguments[1], arguments[2]);
 			console.println("LabelParser has been executed.");
-		} catch (SztosException &e)
+		}
+		catch (SztosException& e)
 		{
 			console.println("Error: " + std::string(e.what()));
 			return;
 		}
-		catch (std::exception & e) {
+		catch (std::exception& e)
+		{
 			console.println("Unknown error: " + std::string(e.what()));
 			return;
 		}
-		
 	}
-	else if (cmd == "Show Process Pages") {
+	else if (cmd == "Show Process Pages")
+	{
 		try
 		{
 			console.println(shell.getProcessManager().showProcessPages(std::stoi(arguments[1])));

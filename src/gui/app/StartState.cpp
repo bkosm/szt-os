@@ -171,6 +171,11 @@ void StartState::configureButtons_()
 	buttons_[0].commands[3].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 55 / 100));
 	buttons_[0].commands[3].inputFields[0].setLabelAndFont("Input file name:", data_->resources.appFont);
 	buttons_[0].commands[3].inputFields[1].setLabelAndFont("Output file name:", data_->resources.appFont);
+	/* CHANGE ET */
+	buttons_[0].commands.emplace_back("Change Estimated Time", 2, data_->resources.appFont, data_->resources.runButtonTexture);
+	buttons_[0].commands[4].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 70 / 100));
+	buttons_[0].commands[4].inputFields[0].setLabelAndFont("Process ID:", data_->resources.appFont);
+	buttons_[0].commands[4].inputFields[1].setLabelAndFont("ET:", data_->resources.appFont);
 	/* Process Manager 1 command buttons */
 	/* CREATE PROCESS */
 	buttons_[1].commands.emplace_back("Create Process", 2, data_->resources.appFont, data_->resources.runButtonTexture);
@@ -181,14 +186,9 @@ void StartState::configureButtons_()
 	buttons_[1].commands.emplace_back("Kill Process", 1, data_->resources.appFont, data_->resources.runButtonTexture);
 	buttons_[1].commands[1].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 28 / 100));
 	buttons_[1].commands[1].inputFields[0].setLabelAndFont("Process ID:", data_->resources.appFont);
-	/* CHANGE STATUS */
-	buttons_[1].commands.emplace_back("Change Status", 2, data_->resources.appFont, data_->resources.runButtonTexture);
-	buttons_[1].commands[2].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 45 / 100));
-	buttons_[1].commands[2].inputFields[0].setLabelAndFont("Process ID:", data_->resources.appFont);
-	buttons_[1].commands[2].inputFields[1].setLabelAndFont("Status:", data_->resources.appFont);
 	/* SHOW PROCESSES */
 	buttons_[1].commands.emplace_back("Show Processes", 0, data_->resources.appFont, data_->resources.runButtonTexture);
-	buttons_[1].commands[3].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 71 / 100));
+	buttons_[1].commands[2].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 45 / 100));
 	/* Process Manager 2 command buttons */
 	/* Memory Manager command buttons */
 	/* SHOW MEMORY */

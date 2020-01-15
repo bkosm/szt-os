@@ -295,8 +295,7 @@ void Interpreter::insnFCR(std::shared_ptr<PCB> process) {
 	try
 	{
 		escapeQuote(param1);
-		int success = shell->getFileManager().createFile(param1);
-		if (success != 0) throw SztosException("Unable to open file " + param1 + ".");
+		shell->getFileManager().createFile(param1);
 	}
 	catch (SztosException & e)
 	{

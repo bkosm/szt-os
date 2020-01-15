@@ -165,6 +165,28 @@ std::string ProcessManager::showPriority()
 	return stream.str();
 }
 
+std::string ProcessManager::showProcessPages(int pid){
+	if (processList.empty())
+	{
+		throw SztosException("Process list is empty.");
+	}
+	if (pid >= processList.size() || processList.size() < 0)
+	{
+		throw SztosException("Out of range.");
+	}
+	
+	auto process = getProcessFromList(pid);
+	std::ostringstream ss;
+
+	ss << "Process uses pages: ";
+	for (auto page : process->pages) {
+		ss << int(page) << " ";
+	}
+	ss << std::endl;
+
+	return ss.str();
+}
+
 std::vector<PCB_ptr>& ProcessManager::getReadyQueue()
 {
 	return readyQueue;

@@ -10,6 +10,22 @@ std::vector<File>& FileManager::getFiles() {
 	return mainCatalog;
 }
 
+void FileManager::isFileNameExist(std::string name)
+{
+	bool exist = false;
+	for (auto file : getFiles()) {
+
+		if (file.name == name) {
+			exist = true;
+		}
+
+	}
+	if (exist == false) {
+		throw SztosException("The file with the given name does not exist.");
+	}
+}
+
+
 int FileManager::searchFreeBlock() {
 
 	for (int i = 0; i < freeIndexes.size(); i++) {
@@ -128,17 +144,7 @@ int FileManager::deleteFile(std::string name) {
 int FileManager::openFile(std::string name, std::shared_ptr<PCB> pcb) {
 	int ind = searchFileId(name);
 
-	bool exist = false;
-	for (auto file : getFiles()) {
-
-		if (file.name == name) {
-			exist = true;
-		}
-
-	}
-	if (exist == false) {
-		throw SztosException("The file with the given name does not exist.");
-	}
+	isFileNameExist(name);
 
 	if (!mainCatalog[ind].lock.aquire(pcb))
 	{
@@ -160,6 +166,8 @@ int FileManager::openFile(std::string name, std::shared_ptr<PCB> pcb) {
 
 int FileManager::closeFile(std::string name, std::shared_ptr<PCB> pcb) {
 	int ind = searchFileId(name);
+	
+	isFileNameExist(name);
 
 	if (mainCatalog[ind].lock.unlock(pcb))
 	{
@@ -296,6 +304,8 @@ std::string FileManager::displayFileSystemParams() {
 
 std::string FileManager::displayFileInfo(const std::string& name) {
 	std::stringstream ss;
+
+	isFileNameExist(name);
 
 	ss << "File name:\t" << name << "\n";
 	int i = searchFileId(name);

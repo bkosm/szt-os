@@ -20,13 +20,11 @@ public:
 	int processID;
 	PCBStatus status;
 	//===== PROCESSOR CONTROL ======
-	int t;
-	int tau;
+	uint8_t estimatedTime = 0;
 	//===== INTEPRETER =====
 	uint8_t AX = 0, BX = 0, CX = 0, DX = 0;
 	uint8_t insnIndex = 0;
 	uint8_t insnCounter = 0;
-	uint8_t estimatedTime = 0;
 	//===== MEMORY CONTROL =====
 	std::vector<uint8_t> pages;/*tablica stronic procesu znajdującego się w PCB*/
 	unsigned int sizePageProcess = 16; /*rozmiar strony*/
@@ -41,9 +39,11 @@ public:
 	~PCB() = default;
 
 	std::string showProcess() const;
+
 	int getPID() const;
 	PCBStatus getStatus() const;
 	void changeStatus(PCBStatus status);
+
 	/*
 	 * PCB - konstruktor
 	 *

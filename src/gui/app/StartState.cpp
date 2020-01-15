@@ -190,10 +190,6 @@ void StartState::configureButtons_()
 	buttons_[1].commands.emplace_back("Show Processes", 0, data_->resources.appFont, data_->resources.runButtonTexture);
 	buttons_[1].commands[3].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 71 / 100));
 	/* Process Manager 2 command buttons */
-	/* TEST */
-	buttons_[2].commands.emplace_back("TEST", 1, data_->resources.appFont, data_->resources.runButtonTexture);
-	buttons_[2].commands[0].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 3 / 100));
-	buttons_[2].commands[0].inputFields[0].setLabelAndFont("File name:", data_->resources.appFont);
 	/* Memory Manager command buttons */
 	/* SHOW MEMORY */
 	buttons_[3].commands.emplace_back("Show Memory", 0, data_->resources.appFont, data_->resources.runButtonTexture);
@@ -202,6 +198,10 @@ void StartState::configureButtons_()
 	buttons_[3].commands.emplace_back("Show Frame", 1, data_->resources.appFont, data_->resources.runButtonTexture);
 	buttons_[3].commands[1].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 22 / 100));
 	buttons_[3].commands[1].inputFields[0].setLabelAndFont("Frame number:", data_->resources.appFont);
+	/* SHOW PROCESS PAGES */
+	buttons_[3].commands.emplace_back("Show Process Pages", 1, data_->resources.appFont, data_->resources.runButtonTexture);
+	buttons_[3].commands[2].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 39 / 100));
+	buttons_[3].commands[2].inputFields[0].setLabelAndFont("Process ID:", data_->resources.appFont);
 	/* File Manager 1 command buttons */
 	/* CREATE FILE */
 	buttons_[4].commands.emplace_back("Create File", 1, data_->resources.appFont, data_->resources.runButtonTexture);

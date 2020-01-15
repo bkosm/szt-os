@@ -28,6 +28,7 @@ public:
 	std::string showProcessList();
 	std::string showReadyQueue();
 	std::string showPriority();
+	std::string showProcessPages(int pid);
 
 	void deleteProcessFromList(int pid);
 	void deleteProcessFromQueue(int pid);

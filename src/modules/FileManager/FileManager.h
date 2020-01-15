@@ -70,4 +70,5 @@ private:
 	int searchFreeBlock();
 	int searchFileId(std::string name);
 	int searchIndexBlock(int fileIndex);
+	void isFileNameExist(std::string name);
 };

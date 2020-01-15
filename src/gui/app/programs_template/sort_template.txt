@@ -1,0 +1,23 @@
+.text
+LO CX <dataStartI>
+LO DX <dataEndJ>
+compI:JAE CX <dataEndJ> <end>
+startJ:LO AX <dataStartI>
+compJ:JAE AX DX <endI>
+LO BX AX
+INC BX
+JBE [AX] [BX] <endJ>
+LO [<temp>] [AX]
+LO [AX] [BX]
+LO [BX] [<temp>]
+endJ:INC AX
+JP <compJ>
+endI:INC CX
+DSC DX
+JP <compI>
+end:HLT
+.data
+temp:0
+dataStartI:100
+125
+dataEndJ:90

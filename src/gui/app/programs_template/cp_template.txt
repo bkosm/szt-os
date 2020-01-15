@@ -1,0 +1,5 @@
+.text
+CP "trojkat" "trojkat.txt"
+CP "sort" "sort.txt"
+HLT
+.data

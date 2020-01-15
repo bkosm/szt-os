@@ -27,7 +27,8 @@ Interpreter::Interpreter(Shell *shell) : insnMap {
 	INSN(ADD),	INSN(SUB),	INSN(MUL),	INSN(DIV),	INSN(INC),	INSN(DSC),
 	INSN(JP),	INSN(JZ),	INSN(JNZ),
 	INSN(JE),	INSN(JNE),	INSN(JA),	INSN(JAE),	INSN(JB),	INSN(JBE),
-	INSN(LO),	INSN(CP),	INSN(FO),	INSN(FC),	INSN(FR),	INSN(FW)
+	INSN(LO),	INSN(CP),
+	INSN(FCR),	INSN(FO),	INSN(FC),	INSN(FR),	INSN(FW)
 }, shell(shell), lastInsn()
 {
 }
@@ -280,13 +281,28 @@ void Interpreter::insnCP(std::shared_ptr<PCB> process) {
 	{
 		escapeQuote(param1); escapeQuote(param2);
 		shell->getProcessManager().createProcess(param1, param2);
-	} catch (SztosException &e)
+	}
+	catch (SztosException & e)
 	{
 		throw e;
 	}
 }
 
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+void Interpreter::insnFCR(std::shared_ptr<PCB> process) {
+	LOAD(param1);
+	try
+	{
+		escapeQuote(param1);
+		int success = shell->getFileManager().createFile(param1);
+		if (success != 0) throw SztosException("Unable to open file " + param1 + ".");
+	}
+	catch (SztosException & e)
+	{
+		throw e;
+	}
+}
 
 void Interpreter::insnFO(std::shared_ptr<PCB> process) {
 	LOAD(param1);

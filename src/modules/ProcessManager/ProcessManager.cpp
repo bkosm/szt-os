@@ -18,7 +18,7 @@ ProcessManager::ProcessManager(Shell* shell) : shell(shell)
 PCB_ptr ProcessManager::createProcess(std::string name, std::string programName)
 {
 	auto pcb = std::make_shared<PCB>(std::move(name), getNextPID(), PCBStatus::New);
-	processList.push_back(pcb);
+	addProcessToList(pcb);
 
 	try {
 		shell->getMemoryManager().loadProgram(*pcb, programName);
@@ -30,14 +30,14 @@ PCB_ptr ProcessManager::createProcess(std::string name, std::string programName)
 
 	pcb->estimatedTime = shell->getScheduler().getDefaultEstimatedTime();
 	pcb->changeStatus(PCBStatus::Ready);
-	shell->getProcessManager().addProcessToQueue(pcb);
+	addProcessToQueue(pcb);
 	return pcb;
 }
 
 PCB_ptr ProcessManager::createDummyProcess()
 {
 	auto pcb = std::make_shared<PCB>("dummy", getNextPID(), PCBStatus::New);
-	processList.push_back(pcb);
+	addProcessToList(pcb);
 
 	try {
 		shell->getMemoryManager().loadDummy(*pcb);
@@ -49,7 +49,7 @@ PCB_ptr ProcessManager::createDummyProcess()
 
 	pcb->estimatedTime = UINT8_MAX;
 	pcb->changeStatus(PCBStatus::Ready);
-	shell->getProcessManager().addProcessToQueue(pcb);
+	addProcessToQueue(pcb);
 	return pcb;
 }
 
@@ -222,38 +222,42 @@ void ProcessManager::deleteProcessFromList(int pid)
 {
 	if (processList.empty())
 	{
-		throw std::length_error("ProcessList is empty. You cannot delete a process.");
-		return;
+		throw SztosException("ProcessList is empty. You cannot delete a process.");
 	}
 
-	if(processList.size() < pid)
+	try
 	{
-		throw std::invalid_argument("The process with the given ID does not exist.");
-		return;
-	}
+		deleteProcessFromQueue(pid);
+	} catch (SztosException &) {}
 
+	size_t prevSize = processList.size();
 	processList.erase(std::remove_if(std::begin(processList), std::end(processList),
 		[&pid](auto& pcb) { return pcb->processID == pid; }),
 		std::end(processList));
+
+	if (prevSize == processList.size())
+	{
+		throw SztosException("The process with the given ID does not exist.");
+	}
 }
 
 void ProcessManager::deleteProcessFromQueue(int pid)
 {
 	if (readyQueue.empty())
 	{
-		throw std::length_error("ReadyQueue is empty. You cannot delete a process.");
-		return;
-	}
-	if (processList.size() < pid)
-	{
-		throw std::invalid_argument("The process with the given ID does not exist.");
-		return;
+		throw SztosException("ReadyQueue is empty. You cannot delete a process.");
 	}
 
-	readyQueue.erase(std::remove_if(std::begin(readyQueue), std::end(readyQueue),
+	size_t prevSize = readyQueue.size();
+	auto it = readyQueue.erase(std::remove_if(std::begin(readyQueue), std::end(readyQueue),
 		[&pid](auto& pcb) { return pcb->processID == pid; }),
 		std::end(readyQueue));
 
+	if (prevSize == readyQueue.size())
+	{
+		throw SztosException("The process with the given ID does not exist in ready queue.");
+	}
+	
 	shell->getScheduler().onReadyQueueChange();
 }
 
@@ -273,7 +277,7 @@ PCB_ptr ProcessManager::getProcessFromList(std::string processName)
 {
 	if (processList.empty())
 	{
-		throw std::length_error("ProcessList is empty.");
+		throw SztosException("ProcessList is empty.");
 	}
 
 	for (int i = 0; i < this->processList.size(); i++)
@@ -284,7 +288,7 @@ PCB_ptr ProcessManager::getProcessFromList(std::string processName)
 		}
 		else
 		{
-			throw std::invalid_argument("The process does not exist.");
+			throw SztosException("The process does not exist.");
 		}
 	}
 }
@@ -293,12 +297,7 @@ PCB_ptr ProcessManager::getProcessFromList(int PID)
 {
 	if (processList.empty())
 	{
-		throw std::length_error("ProcessList is empty.");
-	}
-	if (processList.size() <= PID)
-	{
-		throw SztosException("The process with the given ID does not exist.");
-		
+		throw SztosException("ProcessList is empty.");
 	}
 
 	auto pcb = std::find_if(std::begin(processList), std::end(processList), [PID](const auto& pcb)
@@ -308,22 +307,10 @@ PCB_ptr ProcessManager::getProcessFromList(int PID)
 	
 	if (pcb == std::end(processList))
 	{
-		throw std::invalid_argument("The process does not exist.");
+		throw SztosException("The process does not exist.");
 	}
 
 	return *pcb;
-
-	/*for (int i = 0; i < this->processList.size(); i++)
-	{
-		if (this->processList[i]->getPID() == PID)
-		{
-			return this->processList.at(i);
-		}
-		else
-		{
-			throw std::invalid_argument("The process does not exist.");
-		}
-	}*/
 }
 
 PCBStatus ProcessManager::convertStringToPCBStatus(std::string& processStatusName) const
@@ -352,7 +339,7 @@ void ProcessManager::changeStatusChosenProcess(int pid, PCBStatus sts)
 	auto it = std::find_if(std::begin(processList), std::end(processList), [pid](PCB_ptr& pcb) { return pcb->getPID() == pid; });
 	if (it == std::end(processList))
 	{
-		throw std::invalid_argument("The process does not exist.");
+		throw SztosException("The process does not exist.");
 	}
 
 	(*it)->changeStatus(sts);

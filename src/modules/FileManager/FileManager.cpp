@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>  
+#include <algorithm>
 #include "FileManager.h"
 #include "../../Shell.hpp"
 #include "../../SztosException.hpp"
@@ -27,7 +28,10 @@ void FileManager::isFileNameExist(std::string name)
 
 
 int FileManager::searchFreeBlock() {
-
+	if (std::all_of(freeIndexes.begin(), freeIndexes.end(), [] (bool isFree) { return isFree; }))
+	{
+		throw SztosException("Maximum file size exceeded.");
+	}
 	for (int i = 0; i < freeIndexes.size(); i++) {
 		if (freeIndexes[i] == false) {
 			freeIndexes[i] = true;
@@ -56,7 +60,7 @@ int FileManager::searchIndexBlock(int fileIndex) {
 			return indexBlockElem;
 		}
 	}
-	throw SztosException("Plik przekroczyl maksymalna wielkosc.");
+	throw SztosException("Maximum file size exceeded.");
 }
 
 File* FileManager::getFileByName(std::string const& name)

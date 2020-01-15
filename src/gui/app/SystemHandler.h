@@ -334,6 +334,7 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 		catch (SztosException& e)
 		{
 			console.println("Error: " + std::string(e.what()));
+			shell.getFileManager().closeFile(arguments[1], nullptr);
 			return;
 		}
 	}

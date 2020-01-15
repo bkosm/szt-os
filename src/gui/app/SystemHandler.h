@@ -108,7 +108,7 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 				return;
 			}
 			catch (std::exception & e) {
-				console.println("Unknown error: " + std::string(e.what()));
+				console.println("Error: " + std::string(e.what()));
 				return;
 			}
 
@@ -235,6 +235,19 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 	}
 	else if (cmd == "Show File Info")
 	{
+		bool exist = false;
+		for (auto file : shell.getFileManager().getFiles()) {
+
+			if (file.name == arguments[1]) {
+				exist = true;
+			}
+
+		}
+		if (exist == false) {
+			console.println("The file with the given name does not exist.");
+			return;
+		}
+
 		const auto info = shell.getFileManager().displayFileInfo(arguments[1]);
 		console.println(info);
 	}
@@ -264,7 +277,7 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 		}
 		else
 		{
-			console.println("Nie mozna otworzyc pliku.");
+			console.println("Could not open file.");
 		}
 	}
 	else if (cmd == "Show File")
@@ -277,7 +290,7 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 		}
 		else
 		{
-			console.println("Nie mozna otworzyc pliku.");
+			console.println("Could not open file.");
 		}
 	}
 	else if (cmd == "Delete File")
@@ -287,6 +300,20 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 			console.println("No argument provided.");
 			return;
 		}
+
+		bool exist = false;
+		for (auto file : shell.getFileManager().getFiles()) {
+
+			if (file.name == arguments[1]) {
+				exist = true;
+			}
+
+		}
+		if (exist == false) {
+			console.println("The file with the given name does not exist.");
+			return;
+		}
+
 		const auto code = shell.getFileManager().openFile(arguments[1], nullptr);
 		if (code == 0)
 		{
@@ -294,21 +321,47 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 		}
 		else
 		{
-			console.println("Nie masz dostepu do pliku.");
+			console.println("No file access.");
 		}
 	}
 
 	else if (cmd == "Rename File")
 	{
+		if (shell.getFileManager().getFiles().empty())
+		{
+			console.println("File list is empty.");
+			return;
+		}
+
+		bool exist = false;
+		for (auto file : shell.getFileManager().getFiles()) {
+
+			if (file.name == arguments[1]) {
+				exist = true;
+			}
+
+		}
+		if (exist == false) {
+			console.println("The file with the given name does not exist.");
+			return;
+		}
+
 		const auto code = shell.getFileManager().openFile(arguments[1], nullptr);
 		if (code == 0)
 		{
-			shell.getFileManager().renameFile(arguments[1], arguments[2]);
-			shell.getFileManager().closeFile(arguments[1], nullptr);
+			try
+			{
+				shell.getFileManager().renameFile(arguments[1], arguments[2]);
+			}
+			catch (SztosException & e)
+			{
+				console.println("Error: " + std::string(e.what()));
+			}
+			shell.getFileManager().closeFile(arguments[2], nullptr);
 		}
 		else
 		{
-			console.println("Nie mozna otworzyc pliku.");
+			console.println("Could not open file.");
 		}
 
 	}
@@ -318,27 +371,67 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 	}
 	else if (cmd == "Open File")
 	{
+		bool exist = false;
+		for (auto file : shell.getFileManager().getFiles()) {
+
+			if (file.name == arguments[1]) {
+				exist = true;
+			}
+
+		}
+		if (exist == false) {
+			console.println("The file with the given name does not exist.");
+			return;
+		}
+
 		const auto code = shell.getFileManager().openFile(arguments[1], nullptr);
 
 		if (code == 0)
 		{
-			console.println("Otwarto plik.");
+			console.println("Open file.");
 		}
 		else
 		{
-			console.println("Nie mozna otworzyc pliku.");
+			console.println("Could not open file.");
 		}
 	}
 	else if (cmd == "Close File")
 	{
+		bool exist = false;
+		for (auto file : shell.getFileManager().getFiles()) {
+
+			if (file.name == arguments[1]) {
+				exist = true;
+			}
+
+		}
+		if (exist == false) {
+			console.println("The file with the given name does not exist.");
+			return;
+		}
+
 		const auto code = shell.getFileManager().closeFile(arguments[1], nullptr);
 	}
 	else if (cmd == "Show Block")
 	{
-		console.println(shell.getFileManager().showBlock(std::stoi(arguments[1])));
+		try
+		{
+			if (std::stoi(arguments[1]) < 0 || std::stoi(arguments[1]) >= 64)
+			{
+				console.println("Memory range exceeded.");
+				return;
+			}
+			console.println(shell.getFileManager().showBlock(std::stoi(arguments[1])));
+
+		}
+		catch (std::exception & e)
+		{
+			console.println("Error: " + std::string(e.what()) + ".");
+		}
 	}
-	else if (cmd == "Show Lock Queue")
+	else if (cmd == "Show Lock Queue") // DO ZROBIENIA 
 	{
+
 		console.println(shell.getFileManager().fileLockQueue(arguments[1]));
 	}
 	else if (cmd == "Show Frame") /* DODANE - EDYCJA */
@@ -351,7 +444,7 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 		}
 		catch (std::exception & e)
 		{
-			console.println("Error: " + std::string(e.what()));
+			console.println("Error: " + std::string(e.what()) + ".");
 			return;
 		}
 

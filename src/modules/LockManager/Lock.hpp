@@ -15,11 +15,13 @@ public:
 	bool aquire(std::shared_ptr<PCB> pcb);
 	/* Funkcja blokujaca zamek na pliku.
 	 *
+	 * @param pcb wskaznik na process ktory zada pliku.
 	 * @return Wynik dzialania funkcji, false oznacza niepowodzenie.
 	 */
 	bool unlock(std::shared_ptr<PCB> pcb);
 	/* Funkcja odblokowujaca zamek z pliku.
 	 *
+	 * @param pcb wskaznik na process ktory zwalnia plik.
 	 * @return Wynik dzialania funkcji, false oznacza niepowodzenie.
 	 */
 	std::vector<std::shared_ptr<PCB>>& getProcessQueue();
@@ -37,10 +39,16 @@ public:
 	 *
 	 * @return Zmienna boolowska
 	 */
-	void setLocked();
 
 private:
+	void setLocked();
+	/* Ustawia zamek bezwarunkowo na zamkniety, potrzebna do zarzadzania kolejka
+	 * zamkow przez Lock Managera.
+	 */
 	std::vector<std::shared_ptr<PCB>> processQueue_;
 
 	bool locked_;
+
+	/* Wymagane do zabezpieczenia enkapsulacji funkcji setLocked */
+	friend class LockManager;
 };

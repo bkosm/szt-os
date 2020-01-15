@@ -177,6 +177,7 @@ int FileManager::closeFile(std::string name, std::shared_ptr<PCB> pcb) {
 	if (mainCatalog[ind].lock.unlock(pcb))
 	{
 		auto queue = mainCatalog[ind].lock.getProcessQueue();
+
 		if (!queue.empty())
 		{
 			queue.front()->changeStatus(PCBStatus::Ready);

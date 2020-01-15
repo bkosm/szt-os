@@ -138,11 +138,11 @@ void StartState::configureButtons_()
 {
 	buttons_ = {
 		Button(float(RESOLUTION.width) / 8.0, float(RESOLUTION.height) / 100.0 * 10.0,
-			   START_STATE_BUTTON_SIZE, "Processor Status"),
+			   START_STATE_BUTTON_SIZE, "Processor Status 1"),
 		Button(float(RESOLUTION.width) / 8.0, float(RESOLUTION.height) / 100.0 * 22.0,
-			   START_STATE_BUTTON_SIZE, "Process Manager 1"),
+			   START_STATE_BUTTON_SIZE, "Processor Status 2"),
 		Button(float(RESOLUTION.width) / 8.0, float(RESOLUTION.height) / 100.0 * 34.0,
-			   START_STATE_BUTTON_SIZE, "Process Manager 2"),
+			   START_STATE_BUTTON_SIZE, "Process Manager"),
 		Button(float(RESOLUTION.width) / 8.0, float(RESOLUTION.height) / 100.0 * 46.0,
 			   START_STATE_BUTTON_SIZE, "Memory Manager"),
 		Button(float(RESOLUTION.width) / 8.0, float(RESOLUTION.height) / 100.0 * 58.0,
@@ -155,7 +155,7 @@ void StartState::configureButtons_()
 
 	for (auto& button : buttons_) button.setLabelFont(data_->resources.appFont);
 
-	/* Processor Status command buttons */
+	/* Processor Status 1 command buttons */
 	/* GO */
 	buttons_[0].commands.emplace_back("Go", 1, data_->resources.appFont, data_->resources.runButtonTexture);
 	buttons_[0].commands[0].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 3 / 100));
@@ -171,25 +171,25 @@ void StartState::configureButtons_()
 	buttons_[0].commands[3].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 55 / 100));
 	buttons_[0].commands[3].inputFields[0].setLabelAndFont("Input file name:", data_->resources.appFont);
 	buttons_[0].commands[3].inputFields[1].setLabelAndFont("Output file name:", data_->resources.appFont);
+	/* Processor Status 2 command buttons */
 	/* CHANGE ET */
-	buttons_[0].commands.emplace_back("Change Estimated Time", 2, data_->resources.appFont, data_->resources.runButtonTexture);
-	buttons_[0].commands[4].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 70 / 100));
-	buttons_[0].commands[4].inputFields[0].setLabelAndFont("Process ID:", data_->resources.appFont);
-	buttons_[0].commands[4].inputFields[1].setLabelAndFont("ET:", data_->resources.appFont);
-	/* Process Manager 1 command buttons */
-	/* CREATE PROCESS */
-	buttons_[1].commands.emplace_back("Create Process", 2, data_->resources.appFont, data_->resources.runButtonTexture);
+	buttons_[1].commands.emplace_back("Change Estimated Time", 2, data_->resources.appFont, data_->resources.runButtonTexture);
 	buttons_[1].commands[0].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 3 / 100));
-	buttons_[1].commands[0].inputFields[0].setLabelAndFont("Process name:", data_->resources.appFont);
-	buttons_[1].commands[0].inputFields[1].setLabelAndFont("Filepath of the program:", data_->resources.appFont);
+	buttons_[1].commands[0].inputFields[0].setLabelAndFont("Process ID:", data_->resources.appFont);
+	buttons_[1].commands[0].inputFields[1].setLabelAndFont("ET:", data_->resources.appFont);
+	/* Process Manager command buttons */
+	/* CREATE PROCESS */
+	buttons_[2].commands.emplace_back("Create Process", 2, data_->resources.appFont, data_->resources.runButtonTexture);
+	buttons_[2].commands[0].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 3 / 100));
+	buttons_[2].commands[0].inputFields[0].setLabelAndFont("Process name:", data_->resources.appFont);
+	buttons_[2].commands[0].inputFields[1].setLabelAndFont("Filepath of the program:", data_->resources.appFont);
 	/* KILL PROCESS */
-	buttons_[1].commands.emplace_back("Kill Process", 1, data_->resources.appFont, data_->resources.runButtonTexture);
-	buttons_[1].commands[1].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 28 / 100));
-	buttons_[1].commands[1].inputFields[0].setLabelAndFont("Process ID:", data_->resources.appFont);
+	buttons_[2].commands.emplace_back("Kill Process", 1, data_->resources.appFont, data_->resources.runButtonTexture);
+	buttons_[2].commands[1].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 28 / 100));
+	buttons_[2].commands[1].inputFields[0].setLabelAndFont("Process ID:", data_->resources.appFont);
 	/* SHOW PROCESSES */
-	buttons_[1].commands.emplace_back("Show Processes", 0, data_->resources.appFont, data_->resources.runButtonTexture);
-	buttons_[1].commands[2].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 45 / 100));
-	/* Process Manager 2 command buttons */
+	buttons_[2].commands.emplace_back("Show Processes", 0, data_->resources.appFont, data_->resources.runButtonTexture);
+	buttons_[2].commands[2].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 45 / 100));
 	/* Memory Manager command buttons */
 	/* SHOW MEMORY */
 	buttons_[3].commands.emplace_back("Show Memory", 0, data_->resources.appFont, data_->resources.runButtonTexture);

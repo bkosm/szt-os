@@ -263,28 +263,42 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 			return;
 		}
 
-		const auto code = shell.getFileManager().openFile(arguments[1], nullptr);
-		if (code == 0)
+		try
 		{
-			shell.getFileManager().writeToFile(arguments[1], arguments[2]);
-			shell.getFileManager().closeFile(arguments[1], nullptr);
+			const auto code = shell.getFileManager().openFile(arguments[1], nullptr);
+			if (code == 0)
+			{
+				shell.getFileManager().writeToFile(arguments[1], arguments[2]);
+				shell.getFileManager().closeFile(arguments[1], nullptr);
+			}
+			else
+			{
+				console.println("Could not open file.");
+			}
 		}
-		else
+		catch (SztosException & e)
 		{
-			console.println("Could not open file.");
+			console.println("Error: " + std::string(e.what()));
 		}
 	}
 	else if (cmd == "Show File")
 	{
-		const auto code = shell.getFileManager().openFile(arguments[1], nullptr);
-		if (code == 0)
+		try
 		{
-			console.println(shell.getFileManager().readFileAll(arguments[1]));
-			shell.getFileManager().closeFile(arguments[1], nullptr);
+			const auto code = shell.getFileManager().openFile(arguments[1], nullptr);
+			if (code == 0)
+			{
+				console.println(shell.getFileManager().readFileAll(arguments[1]));
+				shell.getFileManager().closeFile(arguments[1], nullptr);
+			}
+			else
+			{
+				console.println("Could not open file.");
+			}
 		}
-		else
+		catch (SztosException & e)
 		{
-			console.println("Could not open file.");
+			console.println("Error: " + std::string(e.what()));
 		}
 	}
 	else if (cmd == "Delete File")
@@ -444,5 +458,18 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 	else if (cmd == "Parse Program Labels") {
 
 	}
-
+	else if (cmd == "Show Process Pages") {
+		try
+		{
+			console.println(shell.getProcessManager().showProcessPages(std::stoi(arguments[1])));
+		}
+		catch (SztosException& e)
+		{
+			console.println("Error: " + std::string(e.what()));
+		}
+		catch (std::exception& e)
+		{
+			console.println("Error: " + std::string(e.what()));
+		}
+	}
 }

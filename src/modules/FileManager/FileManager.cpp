@@ -176,14 +176,11 @@ int FileManager::closeFile(std::string name, std::shared_ptr<PCB> pcb) {
 
 	if (mainCatalog[ind].lock.unlock(pcb))
 	{
-		if (pcb != nullptr) {
-			auto queue = mainCatalog[ind].lock.getProcessQueue();
-
-			if (!queue.empty())
-			{
-				queue.front()->changeStatus(PCBStatus::Ready);
-				shell->getProcessManager().addProcessToQueue(queue.front());
-			}
+		auto queue = mainCatalog[ind].lock.getProcessQueue();
+		if (!queue.empty())
+		{
+			queue.front()->changeStatus(PCBStatus::Ready);
+			shell->getProcessManager().addProcessToQueue(queue.front());
 		}
 
 		for (int i = 0; i < openFiles.size(); i++) {
@@ -395,7 +392,7 @@ std::string FileManager::fileList() const
 	{
 		ss << std::setfill('0') << std::setw(3) << counter
 			<< ": " << file.name << "\t[size: " << file.size << "B]"
-			<< "\tLock State: " << std::boolalpha << file.lock.getState() << std::endl;
+			<< "\tLocked by a process: " << std::boolalpha << file.lock.getState() << std::endl;
 		counter++;
 	}
 

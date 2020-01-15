@@ -22,13 +22,17 @@ bool Lock::aquire(std::shared_ptr<PCB> pcb)
 
 bool Lock::unlock(std::shared_ptr<PCB> pcb)
 {
-	if (locked_ == true and !processQueue_.empty()) {
-		if (processQueue_.at(0) == pcb)
+	if (locked_ == true and !processQueue_.empty() and processQueue_.at(0) == pcb) {
+		if (processQueue_.size() == 1)
 		{
 			processQueue_.erase(processQueue_.begin());
 			locked_ = false;
 			return true;
 		}
+
+		processQueue_.erase(processQueue_.begin());
+		locked_ = true;
+		return true;
 	}
 	return false;
 }

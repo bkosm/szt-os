@@ -389,6 +389,7 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 			if (code == 0)
 			{
 				shell.getFileManager().deleteFile(arguments[1]);
+				console.println("File was deleted.");
 			}
 			else
 			{

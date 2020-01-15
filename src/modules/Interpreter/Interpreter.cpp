@@ -105,7 +105,12 @@ void Interpreter::handleInsn(std::shared_ptr<PCB> process) {
 				process->changeStatus(PCBStatus::Error);
 				process->insnIndex = prevInsnIndex;
 				throw e;
+			} catch (std::exception &e) {
+				process->changeStatus(PCBStatus::Error);
+				process->insnIndex = prevInsnIndex;
+				throw e;
 			}
+
 			return;
 		}
 

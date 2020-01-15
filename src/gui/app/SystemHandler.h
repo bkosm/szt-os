@@ -178,6 +178,10 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 		try
 		{
 			pcb = shell.getProcessManager().getProcessFromList(std::stoi(arguments[1]));
+			if (std::stoi(arguments[1]) == 0) {
+				console.println("Cannot kill process dummy.");
+				return;
+			}
 		}
 		catch (SztosException& e)
 		{
@@ -327,6 +331,7 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 			console.println("File list is empty.");
 			return;
 		}
+		
 
 		try
 		{
@@ -345,7 +350,6 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 		catch (SztosException& e)
 		{
 			console.println("Error: " + std::string(e.what()));
-			shell.getFileManager().closeFile(arguments[1], nullptr);
 			return;
 		}
 	}

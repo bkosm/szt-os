@@ -247,10 +247,16 @@ int FileManager::renameFile(std::string name, std::string newName) {
 
 	for (int i = 0; i < mainCatalog.size(); i++) {
 		if (mainCatalog[i].name == name) {
+			for (int j = 0; j < mainCatalog.size(); j++)
+			{
+				if (mainCatalog[j].name == newName)
+				{
+					throw SztosException("A file with the given name already exists.");
+				}
+			}
 			mainCatalog[i].name = newName;
 			return 0;
 		}
-		return 0;
 	}
 	return 0;
 }

@@ -126,29 +126,39 @@ std::string ProcessManager::showProcessList()
 std::string ProcessManager::showReadyQueue()
 {
 	std::ostringstream output;
-	output << "| READY QUEUE |\n";
-	for (auto const element : readyQueue)
+	unsigned number = 1;
+
+	output << "READY PROCESS QUEUE:" << std::endl;
+	for (auto const& element : processList)
 	{
-		output << "| " + element->processName + " | " + std::to_string(element->processID) + " | ";
+		output << std::setfill('0') << std::setw(2) << number
+			<< " N : " << element->processName << "\tID: " << element->processID
+			<< "\tST: ";
 		switch (element->status)
 		{
 		case PCBStatus::New:
-			output << "NEW |\n";
+			output << "NEW\n";
 			break;
 		case PCBStatus::Ready:
-			output << "READY |\n";
+			output << "READY\n";
 			break;
 		case PCBStatus::Running:
-			output << "RUNNING |\n";
+			output << "RUNNING\n";
 			break;
 		case PCBStatus::Waiting:
-			output << "WAITING |\n";
+			output << "WAITING\n";
 			break;
 		case PCBStatus::Terminated:
-			output << "TERMINATED |\n"; //useless
+			output << "TERMINATED\n";
 			break;
+		case PCBStatus::Error:
+			output << "ERROR\n";
+			break;
+		default: break;
 		}
+		++number;
 	}
+	
 	return output.str();
 }
 

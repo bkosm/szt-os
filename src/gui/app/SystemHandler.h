@@ -207,6 +207,7 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 		catch (SztosException& e)
 		{
 			console.println("Error: " + std::string(e.what()));
+			return;
 		}
 		catch (std::exception& e)
 		{
@@ -216,20 +217,34 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 	}
 	else if (cmd == "Change Estimated Time")
 	{
+		int pid, tao;
 		try
 		{
-			auto pid = std::stoi(arguments[1]);
-			auto tao = std::stoi(arguments[2]);
-			auto pcb = shell.getProcessManager().getProcessFromList(pid);
-			pcb->estimatedTime = static_cast<uint8_t>(std::min(tao, 254));
-		}
-		catch (SztosException& e)
-		{
-			console.println("Error: " + std::string(e.what()));
+			pid = std::stoi(arguments[1]);
+			tao = std::stoi(arguments[2]);
 		}
 		catch (std::exception& e)
 		{
+			console.println("Arguments have to be numbers.");
+			return;
+		}
+
+		try
+		{
+			auto pcb = shell.getProcessManager().getProcessFromList(pid);
+			pcb->estimatedTime = static_cast<uint8_t>(std::min(tao, 254));
+			pcb->insnCounter = 0;
+			shell.getScheduler().onReadyQueueChange();
+		}
+		catch (SztosException & e)
+		{
+			console.println("Error: " + std::string(e.what()));
+			return;
+		}
+		catch (std::exception & e)
+		{
 			console.println("Unknown error: " + std::string(e.what()));
+			return;
 		}
 	}
 	else if (cmd == "Show Memory")
@@ -243,6 +258,8 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 	else if (cmd == "Show Processes")
 	{
 		console.println(shell.getProcessManager().showProcessList());
+		console.println("\n");
+		console.println(shell.getProcessManager().showReadyQueue());
 	}
 	else if (cmd == "Create File") //
 	{
@@ -279,6 +296,7 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 		catch (SztosException& e)
 		{
 			console.println("Error: " + std::string(e.what()));
+			return;
 		}
 	}
 	else if (cmd == "Show Disk")
@@ -310,11 +328,13 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 			else
 			{
 				console.println("Could not open file.");
+				return;
 			}
 		}
 		catch (SztosException& e)
 		{
 			console.println("Error: " + std::string(e.what()));
+			return;
 		}
 	}
 	else if (cmd == "Show File")
@@ -330,11 +350,13 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 			else
 			{
 				console.println("Could not open file.");
+				return;
 			}
 		}
 		catch (SztosException& e)
 		{
 			console.println("Error: " + std::string(e.what()));
+			return;
 		}
 	}
 	else if (cmd == "Delete File")
@@ -355,11 +377,13 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 			else
 			{
 				console.println("No file access.");
+				return;
 			}
 		}
 		catch (SztosException& e)
 		{
 			console.println("Error: " + std::string(e.what()));
+			return;
 		}
 	}
 	else if (cmd == "List Files")
@@ -384,6 +408,7 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 		catch (SztosException& e)
 		{
 			console.println("Error: " + std::string(e.what()));
+			return;
 		}
 	}
 	else if (cmd == "Close File")
@@ -395,6 +420,7 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 		catch (SztosException& e)
 		{
 			console.println("Error: " + std::string(e.what()));
+			return;
 		}
 	}
 	else if (cmd == "Show Block")

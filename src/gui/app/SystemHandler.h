@@ -94,16 +94,17 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 
 		for (int i = 0; i < numOfGo; ++i)
 		{
-			std::vector<std::shared_ptr<PCB>> terminatedPcbs;
+			std::vector<std::shared_ptr<PCB>> pcbsToRemove;
 			for (auto pcbPtr : shell.getProcessManager().getProcessList())
 			{
-				if (pcbPtr->status == PCBStatus::Terminated)
+				if (pcbPtr->status == PCBStatus::Terminated
+					|| pcbPtr->status == PCBStatus::Error)
 				{
-					terminatedPcbs.push_back(pcbPtr);
+					pcbsToRemove.push_back(pcbPtr);
 				}
 			}
 
-			for (auto pcbPtr : terminatedPcbs)
+			for (auto pcbPtr : pcbsToRemove)
 			{
 				try
 				{
@@ -127,12 +128,10 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 			catch (SztosException& e)
 			{
 				console.println("Error: " + std::string(e.what()));
-				return;
 			}
 			catch (std::exception& e)
 			{
 				console.println("Unknown error: " + std::string(e.what()));
-				return;
 			}
 
 			if (pcb->status == PCBStatus::Terminated)
@@ -160,7 +159,7 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 					shell.getProcessManager().deleteProcessFromQueue(pcb->getPID());
 
 					console.println("Process encountered error at " + std::to_string(i + 1)
-						+ " iteration. You can check process memory. Process with error have to be removed manually.");
+						+ " iteration. You can check process memory before next GO command.");
 				}
 				catch (SztosException& e)
 				{
@@ -192,11 +191,11 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 		}
 
 
-		if (pcb->getStatus() == PCBStatus::Running)
-		{
-			console.println("The Running status process cannot be deleted.");
-			return;
-		}
+		//if (pcb->getStatus() == PCBStatus::Running)
+		//{
+		//	console.println("The Running status process cannot be deleted.");
+		//	return;
+		//}
 
 		try
 		{
@@ -229,8 +228,20 @@ inline void handleSystemOperations(Shell& shell, Cs& console, std::vector<std::s
 			return;
 		}
 
+		if (pid == 0)
+		{
+			console.println("Cannot change estimated time of dummy process.");
+			return;
+		}
+		if (pid < 0 or tao <= 0)
+		{
+			console.println("Both arguments have to be positive numbers.");
+			return;
+		}
+		
 		try
 		{
+			
 			auto pcb = shell.getProcessManager().getProcessFromList(pid);
 			pcb->estimatedTime = static_cast<uint8_t>(std::min(tao, 254));
 			pcb->insnCounter = 0;

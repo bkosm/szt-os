@@ -59,12 +59,12 @@ std::string Interpreter::readNextParam(std::shared_ptr<PCB> process) {
 void Interpreter::escapeQuote(std::string &s)
 {
 	if (s.length() < 2) {
-		throw SztosException("Argument nie jest w cudzyslowiach (" + s + ").");
+		throw SztosException("Argument is not quoted (" + s + ").");
 	}
 	
 	if (s.front() != '\"' || s.back() != '\"')
 	{
-		throw SztosException("Nie udalo sie usunac cudzyslowiow z argumentu (" + s + ").");
+		throw SztosException("Argument is not quoted (" + s + ").");
 	}
 	
 	s = s.substr(1, s.length() - 2);
@@ -94,7 +94,7 @@ void Interpreter::handleInsn(std::shared_ptr<PCB> process) {
 			} catch (std::out_of_range &e) {
 				process->changeStatus(PCBStatus::Error);
 				process->insnIndex = prevInsnIndex;
-				throw SztosException("Nieznana instrukcja: " + buffer);
+				throw SztosException("Unknown instruction: " + buffer);
 			}
 
 			lastInsn = buffer;
@@ -130,7 +130,7 @@ std::string Interpreter::loadDummyProgram() {
 std::string Interpreter::loadProgram(const std::string name) {
 	std::ifstream in("programs/" + name);
 	if (!in.is_open()) {
-		throw SztosException("Nie ma takiego pliku.");
+		throw SztosException("File " + name + " does not exist.");
 	}
 
 	std::string prog = "";
@@ -154,7 +154,7 @@ std::string Interpreter::loadProgram(const std::string name) {
 			try {
 				prog += static_cast<char>(std::stoul(temp));
 			} catch (std::exception &e) {
-				throw SztosException("Blad konwersji liczb w programie.");
+				throw SztosException("Could not convert param ." + temp + " to number in data segment.");
 			}
 		}
 	}
@@ -163,7 +163,7 @@ std::string Interpreter::loadProgram(const std::string name) {
 }
 
 uint8_t Interpreter::getValue(std::shared_ptr<PCB> process, std::string dest) {
-	if (dest.length() == 0) throw SztosException("Parametr instrukcji jest pusty.");
+	if (dest.length() == 0) throw SztosException("Instruction parameter is empty.");
 
 	bool isAddr;
 	if (dest.front() == '[' && dest.back() == ']') {
@@ -181,7 +181,7 @@ uint8_t Interpreter::getValue(std::shared_ptr<PCB> process, std::string dest) {
 		else if (dest == "DX") { value = process->DX; }
 		else value = static_cast<uint8_t>(std::stoul(dest));
 	} catch (std::exception &e) {
-		throw SztosException("Nie udalo sie przekonwertowac parametru instrukcji na liczbe (w poleceniu: \"" + lastInsn + "\").");
+		throw SztosException("Could not convert instruction parameter to a number (" + dest + ").");
 	}
 
 	if (isAddr) {
@@ -197,7 +197,7 @@ uint8_t Interpreter::getValue(std::shared_ptr<PCB> process, std::string dest) {
 }
 
 void Interpreter::setValue(std::shared_ptr<PCB> process, std::string dest, uint8_t value) {
-	if (dest.length() == 0) throw SztosException("Parametr instrukcji jest pusty.");
+	if (dest.length() == 0) throw SztosException("Instruction parameter is empty.");
 
 	if (dest.front() == '[' && dest.back() == ']') {
 		dest = dest.substr(1, dest.length() - 2);
@@ -210,7 +210,7 @@ void Interpreter::setValue(std::shared_ptr<PCB> process, std::string dest, uint8
 			else if (dest == "DX") { target = process->DX; }
 			else target = static_cast<uint8_t>(std::stoul(dest));
 		} catch (std::exception &e) {
-			throw SztosException("Nie udalo sie przekonwertowac parametru instrukcji na liczbe (w poleceniu: \"" + lastInsn + "\").");
+			throw SztosException("Could not convert instruction parameter to a number (" + dest + ").");
 		}
 
 		try {

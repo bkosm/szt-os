@@ -129,7 +129,7 @@ std::string ProcessManager::showReadyQueue()
 	unsigned number = 1;
 
 	output << "READY PROCESS QUEUE:" << std::endl;
-	for (auto const& element : processList)
+	for (auto const& element : readyQueue)
 	{
 		output << std::setfill('0') << std::setw(2) << number
 			<< " N : " << element->processName << "\tID: " << element->processID
@@ -158,7 +158,7 @@ std::string ProcessManager::showReadyQueue()
 		}
 		++number;
 	}
-	
+
 	return output.str();
 }
 
@@ -175,7 +175,7 @@ std::string ProcessManager::showPriority()
 	return stream.str();
 }
 
-std::string ProcessManager::showProcessPages(int pid){
+std::string ProcessManager::showProcessPages(int pid) {
 	if (processList.empty())
 	{
 		throw SztosException("Process list is empty.");
@@ -184,7 +184,7 @@ std::string ProcessManager::showProcessPages(int pid){
 	{
 		throw SztosException("Out of range.");
 	}
-	
+
 	auto process = getProcessFromList(pid);
 	std::ostringstream ss;
 
@@ -238,7 +238,18 @@ void ProcessManager::deleteProcessFromList(int pid)
 	try
 	{
 		deleteProcessFromQueue(pid);
-	} catch (SztosException &) {}
+	}
+	catch (SztosException&) {}
+
+	try
+	{
+		auto ptr = getProcessFromList(pid);
+		shell->getLockManager().deleteProcessFromLockQueue(ptr);
+	}
+	catch (SztosException & e)
+	{
+		throw;
+	}
 
 	size_t prevSize = processList.size();
 	processList.erase(std::remove_if(std::begin(processList), std::end(processList),
@@ -267,7 +278,7 @@ void ProcessManager::deleteProcessFromQueue(int pid)
 	{
 		throw SztosException("The process with the given ID does not exist in ready queue.");
 	}
-	
+
 	shell->getScheduler().onReadyQueueChange();
 }
 
@@ -314,7 +325,7 @@ PCB_ptr ProcessManager::getProcessFromList(int PID)
 		{
 			return pcb->getPID() == PID;
 		});
-	
+
 	if (pcb == std::end(processList))
 	{
 		throw SztosException("The process does not exist.");

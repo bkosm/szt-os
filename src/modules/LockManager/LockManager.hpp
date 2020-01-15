@@ -8,6 +8,7 @@ class LockManager
 public:
 	explicit LockManager(Shell *shell);
 	~LockManager() = default;
+	void deleteProcessFromLockQueue(std::shared_ptr<PCB> pcb) const;
 
 	static Lock createLock();
 	/* Funkcja tworzaca nowy zamek.

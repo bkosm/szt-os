@@ -28,7 +28,7 @@ void FileManager::isFileNameExist(std::string name)
 
 
 int FileManager::searchFreeBlock() {
-	if (std::all_of(freeIndexes.begin(), freeIndexes.end(), [] (bool isFree) { return isFree; }))
+	if (std::all_of(freeIndexes.begin(), freeIndexes.end(), [](bool isFree) { return isFree; }))
 	{
 		throw SztosException("Maximum file size exceeded.");
 	}
@@ -201,7 +201,15 @@ int FileManager::writeToFile(std::string name, std::string data) {
 
 		if (mainCatalog[fileIndex].name == name) {
 
-			mainCatalog[fileIndex].size += data.size();
+			if (mainCatalog[fileIndex].size + data.size() > 256)
+			{
+				mainCatalog[fileIndex].size = 256;
+			}
+			else
+			{
+				mainCatalog[fileIndex].size += data.size();
+			}
+
 
 			for (auto letter : data)
 			{

@@ -18,7 +18,7 @@ void MemoryManager::loadDummy(PCB& pcb) {
 	std::vector<uint8_t> freeFrames = getFreeFrames();
 
 	if (neededPages > freeFrames.size()) {
-		throw SztosException("Program nie miesci sie w pamieci.");
+		throw SztosException("Program does not fit into memory.");
 	}
 
 	int programIndex = 0;
@@ -52,7 +52,7 @@ void MemoryManager::loadProgram(PCB& pcb, const std::string& programName)
 
 	if (neededPages > freeFrames.size())
 	{
-		throw SztosException("Program nie miesci sie w pamieci.");
+		throw SztosException("Program does not fit into memory..");
 	}
 
 	int programIndex = 0;
@@ -90,14 +90,14 @@ uint8_t MemoryManager::getByte(PCB& pcb, uint16_t target)
 	uint8_t pageNum = target / FRAME_SIZE;
 	if (pageNum >= pcb.pages.size())
 	{
-		throw SztosException("Proces odwolal sie do blednej stronicy.");
+		throw SztosException("Process tried to access wrong page (" + std::to_string(pageNum) + ").");
 	}
 
 	uint8_t frameNum = pcb.pages[pageNum];
 
 	if (frameNum >= MAX_FRAMES)
 	{
-		throw SztosException("Proces odwolal sie do blednej ramki.");
+		throw SztosException("Proces tried to access wrong frame (" + std::to_string(frameNum) + ").");
 	}
 
 	uint16_t byteNum = (frameNum * FRAME_SIZE) + (target % FRAME_SIZE);
@@ -109,14 +109,14 @@ void MemoryManager::setByte(PCB& pcb, uint16_t target, uint8_t data)
 	uint8_t pageNum = target / FRAME_SIZE;
 	if (pageNum >= pcb.pages.size())
 	{
-		throw SztosException("Proces odwolal sie do blednej stronicy.");
+		throw SztosException("Process tried to access wrong page (" + std::to_string(pageNum) + ").");
 	}
 
 	uint8_t frameNum = pcb.pages[pageNum];
 
 	if (frameNum >= MAX_FRAMES)
 	{
-		throw SztosException("Proces odwolal sie do blednej ramki.");
+		throw SztosException("Proces tried to access wrong frame (" + std::to_string(frameNum) + ").");
 	}
 
 	RAM[(frameNum * FRAME_SIZE) + (target % FRAME_SIZE)] = data;
@@ -135,7 +135,7 @@ std::string MemoryManager::showFrame(int frameNumber) const {
 		}
 	}
 	else {
-		throw SztosException("Podana ramka nie istnieje.");
+		throw SztosException("Frame " + std::to_string(frameNumber) + " does not exist.");
 	}
 	return output.str();
 }

@@ -4,6 +4,8 @@
 #include <vector>
 #include <memory>
 
+class LockManager;
+
 class Lock
 {
 public:
@@ -35,6 +37,7 @@ public:
 	 *
 	 * @return Zmienna boolowska
 	 */
+	void setLocked();
 
 private:
 	std::vector<std::shared_ptr<PCB>> processQueue_;

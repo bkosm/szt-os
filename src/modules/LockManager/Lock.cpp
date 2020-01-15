@@ -67,3 +67,8 @@ bool Lock::getState() const
 {
 	return locked_;
 }
+
+void Lock::setLocked()
+{
+	locked_ = true;
+}

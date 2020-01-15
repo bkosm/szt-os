@@ -144,6 +144,8 @@ bool validateAndUpdate(InsnList &insnList, std::vector<Label> &labels) {
 			}
 		}
 
+		if (currLabelNum >= labels.size()) return valid;
+		
 		Label &label = labels[currLabelNum];
 
 		if (i == label.lineID) {
@@ -199,20 +201,16 @@ void applyTargets(std::vector<Target> &targets) {
 
 void parseCode(const std::string &inName, const std::string &outName) {
 	std::string param;
-
-	std::cout << "Wprowadz nazwe pliku do przetworzenia: ";
-	std::getline(std::cin, param);
-	std::cout << std::endl;
 	
-	std::ifstream in(inName);
-	std::ofstream out(outName);
+	std::ifstream in("programs_template/" + inName);
+	std::ofstream out("programs/" + outName);
 
 	if (!in.is_open()) {
-		throw SztosException("Nie udalo sie otworzyc pliku wejœciowego (" + inName + ").");
+		throw SztosException("Failed to open input file (" + inName + ").");
 	}
 
 	if (!out.is_open()) {
-		throw SztosException("Nie udalo sie otworzyc pliku wyjœciowego (" + outName + ").");
+		throw SztosException("Failed to open output file (" + outName + ").");
 	}
 
 	InsnList insnList;

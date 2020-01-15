@@ -228,18 +228,13 @@ void StartState::configureButtons_()
 	buttons_[5].commands.emplace_back("Delete File", 1, data_->resources.appFont, data_->resources.runButtonTexture);
 	buttons_[5].commands[0].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 3 / 100));
 	buttons_[5].commands[0].inputFields[0].setLabelAndFont("File name:", data_->resources.appFont);
-	/* Rename File */
-	buttons_[5].commands.emplace_back("Rename File", 2, data_->resources.appFont, data_->resources.runButtonTexture);
-	buttons_[5].commands[1].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 20 / 100));
-	buttons_[5].commands[1].inputFields[0].setLabelAndFont("File name:", data_->resources.appFont);
-	buttons_[5].commands[1].inputFields[1].setLabelAndFont("New file name:", data_->resources.appFont);
 	/* List Files */
 	buttons_[5].commands.emplace_back("List Files", 0, data_->resources.appFont, data_->resources.runButtonTexture);
-	buttons_[5].commands[2].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 45 / 100));
+	buttons_[5].commands[1].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 20 / 100));
 	/* Show Block */
 	buttons_[5].commands.emplace_back("Show Block", 1, data_->resources.appFont, data_->resources.runButtonTexture);
-	buttons_[5].commands[3].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 61 / 100));
-	buttons_[5].commands[3].inputFields[0].setLabelAndFont("Block number:", data_->resources.appFont);
+	buttons_[5].commands[2].setPosition(sf::Vector2f(RESOLUTION.width * 24 / 100, RESOLUTION.height * 36 / 100));
+	buttons_[5].commands[2].inputFields[0].setLabelAndFont("Block number:", data_->resources.appFont);
 	/* File Manager 3 command buttons */
 	/* Open File */
 	buttons_[6].commands.emplace_back("Open File", 1, data_->resources.appFont, data_->resources.runButtonTexture);

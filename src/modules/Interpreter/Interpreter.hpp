@@ -28,6 +28,7 @@ class Interpreter {
 
 	void insnCP(std::shared_ptr<PCB> process);
 
+	void insnFCR(std::shared_ptr<PCB> process);
 	void insnFO(std::shared_ptr<PCB> process); void insnFC(std::shared_ptr<PCB> process);
 	void insnFR(std::shared_ptr<PCB> process); void insnFW(std::shared_ptr<PCB> process);
 

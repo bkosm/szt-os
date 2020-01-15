@@ -142,10 +142,11 @@ int FileManager::openFile(std::string name, std::shared_ptr<PCB> pcb) {
 
 	if (!mainCatalog[ind].lock.aquire(pcb))
 	{
+		pcb->changeStatus(PCBStatus::Waiting);
+		shell->getProcessManager().deleteProcessFromQueue(pcb->getPID());
+
 		return -1;
 	}
-
-	//TODO Handle PCB status change
 
 	for (int i = 0; i < openFiles.size(); i++) {
 		if (openFiles[i] == -1) {
@@ -162,8 +163,8 @@ int FileManager::closeFile(std::string name, std::shared_ptr<PCB> pcb) {
 
 	if (mainCatalog[ind].lock.unlock(pcb))
 	{
-		std::cout << "Unlocked!" << std::endl;
-		//TODO Handle PCB status change
+		pcb->changeStatus(PCBStatus::Ready);
+		shell->getProcessManager().addProcessToQueue(pcb);
 		
 		for (int i = 0; i < openFiles.size(); i++) {
 			if (openFiles[i] == ind) {

@@ -26,7 +26,7 @@ An operating system simulator containing:
 Gui is based on the [SFML](https://github.com/SFML/SFML) library with a console window pulled from [SelbaWard](https://github.com/Hapaxia/SelbaWard/wiki).
 
 # How to build in Visual Studio 2019
-1. Open `~\src\gui\app\app\sln` in Visual Studio.
+1. Open `~\src\gui\app\app.sln` in Visual Studio.
 1. Open project properties by pressing the `Project` button in upper left corner, and then `app Properties`.
 1. Make sure `Configuration` is set to `All Configurations`.
 1. In `C/C++` click on `General`. 
